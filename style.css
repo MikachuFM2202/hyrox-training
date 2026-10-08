@@ -1,6 +1,7 @@
 /* HYROX-style theme: black, #262626 panels, uppercase wide grotesk, square edges. Phone first.
    The official site uses Brutal Type (licensed); Archivo Expanded is the free stand-in.
-   Scroll performance: no backdrop-filter, no fixed backgrounds, no looping filter/shadow animations. */
+   Scroll performance: no backdrop-filter, no fixed backgrounds, no looping filter/shadow animations,
+   and svh (not dvh) heights so the phone's sliding address bar doesn't force a relayout every frame. */
 :root {
   --bg: #050505; --panel: #111; --panel2: #1a1a1a; --line: #262626; --text: #f5f5f5; --mute: #9a9a9a;
   --o1: #ff3d2e; --o2: #ff6b2b; --o3: #ffa41b; --ok: #2ecc71; --opt: #f1c40f;
@@ -15,9 +16,9 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { overflow-x: clip; }
 html, body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 Inter, system-ui, sans-serif; -webkit-text-size-adjust: 100%; }
-body { min-height: 100dvh; overscroll-behavior-y: none;
+body { min-height: 100svh;
   background: radial-gradient(900px 500px at 85% -10%, rgba(255,107,43,.10), transparent 60%), var(--bg) no-repeat; }
-#app { min-height: 100dvh; display: flex; flex-direction: column; padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right)); max-width: 760px; margin: 0 auto; }
+#app { min-height: 100svh; display: flex; flex-direction: column; padding: 0 max(16px, env(safe-area-inset-left)) 0 max(16px, env(safe-area-inset-right)); max-width: 760px; margin: 0 auto; }
 body.in-main #app { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 20px); }
 button, select, input { font: inherit; color: inherit; }
 input, select { font-size: 16px; }   /* 16px stops iOS zooming on focus */
@@ -217,8 +218,8 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .r-meta b.skipped { color: #ff6b6b; }
 .r-note { font-size: 12px; color: var(--o3); }
 .r-demo, .r-skip { flex: none; width: 40px; height: 40px; display: grid; place-items: center; background: none; border: 0; text-decoration: none; transition: transform .15s, color .2s; }
-.r-demo { color: var(--o2); font-size: 13px; }
-.r-demo::before { content: ''; position: absolute; }
+.r-demo { color: var(--o2); font-size: 13px; display: flex; flex-direction: column; line-height: 1.1; }
+.r-demo small { font: 9px var(--mono); color: var(--mute); margin-top: 2px; }
 .r-skip { color: #555; font-size: 14px; }
 .r-demo:active, .r-skip:active { transform: scale(.85); }
 .rows li.done .r-name { color: var(--mute); text-decoration: line-through; text-decoration-color: #555; }

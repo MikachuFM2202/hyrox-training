@@ -38,7 +38,12 @@ const todayIso = () => iso(new Date());
 const dow = s => (fromIso(s).getDay() + 6) % 7;                // 0 = Monday
 const monday = s => addDays(s, -dow(s));
 const daysTo = s => Math.round((fromIso(s) - fromIso(todayIso())) / DAY);
-const fmt = (s, o = { day: 'numeric', month: 'short' }) => fromIso(s).toLocaleDateString('en-GB', o);
+const fmts = new Map();   // Intl formatters are slow to build; reuse one per option set
+const fmt = (s, o = { day: 'numeric', month: 'short' }) => {
+  const k = JSON.stringify(o);
+  if (!fmts.has(k)) fmts.set(k, new Intl.DateTimeFormat('en-GB', o));
+  return fmts.get(k).format(fromIso(s));
+};
 
 // ---- people ---------------------------------------------------------------
 const crew = () => Object.values(S.people)
@@ -311,7 +316,7 @@ function row(who, mine, people, k, it, sectionFull) {
         <span class="r-meta">${v === 2 ? '<b class="skipped">Skipped</b>' : `<b>${esc(it.sets || '')}</b>`}${it.muscles ? ` · ${esc(it.muscles)}` : ''}</span>
         ${it.note ? `<span class="r-note">${esc(it.note)}</span>` : ''}
         ${others.length ? `<span class="who">${others.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</span></label>
-    ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video: ${esc(it.name)}">▶</a>` : ''}
+    ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video${it.clip ? ', ' + esc(it.clip) : ''}: ${esc(it.name)}">▶${it.clip ? `<small>${esc(it.clip)}</small>` : ''}</a>` : ''}
     ${mine ? `<button class="r-skip" data-act="skip" data-k="${esc(k)}" data-l="${esc(it.name)}" aria-label="${v === 2 ? 'Undo skip' : 'Skip'} ${esc(it.name)}">${v === 2 ? '↺' : '✕'}</button>` : ''}
   </li>`;
 }
@@ -332,15 +337,16 @@ function calTab(who) {
   const first = `${calMonth}-01`, end = iso(new Date(y, m, 1)), today = todayIso();
   const cells = [];
   for (let d = monday(first); d < end || dow(d) !== 0; d = addDays(d, 1)) cells.push(d);
-  const gymDays = cells.filter(d => d.slice(0, 7) === calMonth && dayStats(who, d) && !dayStats(who, d).s.optional);
-  const doneDays = gymDays.filter(d => dayStats(who, d).pct === 100).length;
+  const stats = Object.fromEntries(cells.map(d => [d, dayStats(who, d)]));
+  const gymDays = cells.filter(d => d.slice(0, 7) === calMonth && stats[d] && !stats[d].s.optional);
+  const doneDays = gymDays.filter(d => stats[d].pct === 100).length;
   return `<section class="card cal reveal">
     <div class="cal-head"><button class="nav" data-act="cal" data-d="-1" aria-label="Previous month">‹</button>
-      <h2>${fromIso(first).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}</h2>
+      <h2>${fmt(first, { month: 'long', year: 'numeric' })}</h2>
       <button class="nav" data-act="cal" data-d="1" aria-label="Next month">›</button></div>
     <div class="cal-grid">${DOW.map(d => `<span class="cal-dow">${d[0]}</span>`).join('')}
       ${cells.map(d => {
-        const st = dayStats(who, d), other = d.slice(0, 7) !== calMonth;
+        const st = stats[d], other = d.slice(0, 7) !== calMonth;
         const mark = d >= plan.race.date && d <= plan.race.end ? 'race' : plan.countdowns.some(c => c.date === d) ? 'event' : '';
         return `<button class="cal-cell ${other ? 'other' : ''} ${!st ? 'rest' : st.s.optional ? 'opt' : 'gym'} ${st?.pct === 100 ? 'done' : ''} ${d === today ? 'today' : ''} ${d === sel ? 'sel' : ''} ${mark}" data-act="sel" data-date="${d}" aria-label="${fmt(d)}${st ? ', ' + st.pct + '%' : ''}">
           <span>${fromIso(d).getDate()}</span>${st?.pct === 100 ? '<i>💪</i>' : st?.pct ? `<small>${st.pct}%</small>` : ''}</button>`;
