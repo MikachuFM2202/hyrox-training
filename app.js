@@ -20,6 +20,7 @@ let seenOnline = null;   // who was online at the last render, to pop in newcome
 
 // Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
 const PASS_HASH = '64d27cba265dd65d63ef0b8cb90436d3d4c5bbeb9c59b4ea0309ac4f26bd78e8';
+const MIKA_PIN_HASH = '31d8edb99534fd4800651db4d241d86e0380fa7376718b88590c2d772b41d5f4';   // same caveat: keeps guests honest, not attackers
 let unlocked = S.ls.get('pass', '') === PASS_HASH;
 let preview = S.ls.get('preview', false);   // look around before an access key exists; ticks stay on this device and sync once a key is added
 const sha256 = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -90,7 +91,13 @@ const bar = (id, pct, cls = '') => `<span class="bar ${cls}"><i data-bar="${id}"
 // ---- render ---------------------------------------------------------------
 const typing = () => document.activeElement?.matches?.('#app input[type=text], #app input[name=name]');
 
+// A sync landing mid-scroll would swap the DOM under the finger; hold it until the scroll settles.
+let lastScroll = 0, lastTouch = 0, held = 0;
+addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
+addEventListener('pointerdown', () => { lastTouch = performance.now(); }, { passive: true });   // taps always render at once
+
 function render() {
+  if (lastScroll > lastTouch && performance.now() - lastScroll < 250) { clearTimeout(held); held = setTimeout(render, 300); return; }
   if (!plan) { $app.innerHTML = '<div class="loading"><span>HYROX</span></div>'; return; }
   // Don't yank a half-typed bonus exercise out from under the user; render when they leave the field.
   if (screen === 'main' && typing()) { deferred = true; return; }
@@ -104,8 +111,6 @@ function render() {
 
   const open = [...$app.querySelectorAll('details[open][data-keep]')].map(d => d.dataset.keep);
   const bars = Object.fromEntries([...$app.querySelectorAll('[data-bar]')].map(b => [b.dataset.bar, b.style.getPropertyValue('--w')]));
-  // Looping animations take a negative delay of "time since load", so a re-render continues them mid-cycle instead of restarting.
-  $app.style.setProperty('--phase', `${-performance.now() / 1000}s`);
   $app.innerHTML = html;
   document.body.classList.toggle('intro', intro && screen === 'main');
   document.body.classList.toggle('in-main', screen === 'main');
@@ -152,6 +157,16 @@ function gate() {
 
 function join() {
   const gs = guests(), full = gs.length >= MAX_GUESTS;
+  if (joinMode === 'mika') return `<section class="gate">${brand()}
+    <button class="link back" data-act="joinback">‹ Back</button>
+    ${avatar({ ...OWNER, color: S.people.mika?.color || COLORS[0] }, 'xl')}
+    <h1>Mika’s<br><span class="grad">PIN</span></h1>
+    <form data-form="mika">
+      <input name="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="PIN" autocomplete="off" required aria-label="Mika's PIN">
+      <button class="btn">Enter</button>
+    </form>
+    <p class="err" role="alert">${esc(err)}</p>
+  </section>`;
   if (joinMode !== 'guest') return `<section class="gate">${brand()}
     <h1>Who’s<br><span class="grad">training?</span></h1>
     <div class="pick2">
@@ -207,7 +222,7 @@ function main() {
     ${brand()}
     <div class="crew-dots" aria-label="${live.length} online">
       <span class="count"><b>${live.length}</b><i> online</i></span>
-      ${people.map(p => `<button class="dot ${online(p) ? 'on' : ''} ${p.id === who.id ? 'sel' : ''} ${fresh.includes(p) ? 'pop-in' : ''}" style="--c:${col(p.color)}" data-act="view" data-id="${esc(p.id)}" title="${esc(p.name)}${p.id === me.id ? ' (you)' : ''} · ${online(p) ? 'online' : 'seen ' + ago(p.seen)}" aria-label="${esc(p.name)}">${avatar(p)}</button>`).join('')}
+      ${people.map(p => `<button class="dot ${online(p) ? 'on' : ''} ${p.id === who.id ? 'sel' : ''} ${fresh.includes(p) ? 'pop-in' : ''}" style="--c:${col(p.color)}" data-act="view" data-id="${esc(p.id)}" title="${esc(p.name)}${p.id === me.id ? ' (you)' : ''} · ${online(p) ? 'online' : 'offline'}" aria-label="${esc(p.name)}">${avatar(p)}</button>`).join('')}
     </div>
   </header>
   <div class="view ${tabChanged ? 'tab-in' : ''}">${body}</div>
@@ -443,7 +458,7 @@ $app.addEventListener('click', async e => {
   else if (act === 'muscle') { mm.muscle = b.dataset.m; if (b.tagName === 'BUTTON') mm.view = MUSCLES[mm.muscle].view; render(); }
   else if (act === 'mfilter') { mm.filter = b.dataset.f; render(); }
   else if (act === 'mview') { mm.view = b.dataset.v; render(); }
-  else if (act === 'asmika') { err = ''; intro = true; S.join({ ...OWNER, color: S.people.mika?.color || COLORS[0] }); }
+  else if (act === 'asmika') { err = ''; joinMode = 'mika'; render(); $app.querySelector('input[name=pin]')?.focus(); }
   else if (act === 'asguest') { joinMode = 'guest'; err = ''; render(); }
   else if (act === 'joinback') { joinMode = ''; err = ''; render(); }
   else if (act === 'claim') { const p = S.people[b.dataset.id]; err = ''; intro = true; S.join({ id: p.id, name: p.name, color: p.color, head: p.head, role: 'guest' }); }
@@ -469,6 +484,10 @@ $app.addEventListener('submit', async e => {
     const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = 'Checking…';
     try { err = ''; await S.connect(f.get('k')); } catch (x) { err = x.message; }
     render();
+  } else if (form === 'mika') {
+    if (await sha256(f.get('pin')) !== MIKA_PIN_HASH) { err = 'Wrong PIN'; render(); return; }
+    err = ''; joinMode = ''; intro = true;
+    S.join({ ...OWNER, color: S.people.mika?.color || COLORS[0] });
   } else if (form === 'guest') {
     const head = f.get('head');
     if (!HEADS[head] || guests().length >= MAX_GUESTS || guests().some(g => g.head === head)) { err = 'That legend was just taken. Pick another.'; render(); return; }

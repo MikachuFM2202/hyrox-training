@@ -15,7 +15,7 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 
 1. Enter the site password.
 2. Paste the access key, or tap "Preview without syncing" to try the site without saving to GitHub.
-3. Pick **Mika**, or **Guest**. A guest picks a bodybuilder head and a colour.
+3. Pick **Mika** (needs the Mika PIN), or **Guest**. A guest picks a bodybuilder head and a colour.
 
 There are at most 5 guests, which keeps polling and GitHub API use small. Mika can free a guest's spot from the Crew tab (✕), and a guest can use "Leave crew". When someone comes online, their head pops into the top-right corner.
 
