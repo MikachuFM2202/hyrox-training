@@ -6,8 +6,31 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 - **Day checklist:** sections with "Pick N" targets. Each row shows the exercise, the muscles it works, sets and reps, and a demo video link, with tick (✅) and skip (✕) buttons. Above the rows: an "X left · next" counter, a 5-minute warm-up, Mark all complete, and confetti when the session is done.
 - **Rules from the plan:** "Skip section" (core sore), swapping any day's session (no legs this week, extra session on a rest day), and a Bonus section for work outside the plan.
 - **Calendar:** a month view with gym and optional days, % done per day, 💪 on completed days, and the race and wedding dates marked.
+- **Muscle map:** front/back body with a day filter (All/Tue/Thu/Sat/Sun). Tap a muscle to see which exercises hit it. Orange = primary, blue = secondary, green = core/rehab, dark = rest. It is built from each exercise's `muscles` text in `plan.json` (`muscles.js`).
+- **Phone first:** a bottom tab bar with Today, Calendar, Muscles and Crew.
 - **Crew:** the top-right corner shows how many people are online and a dot for each person. Tap a dot to see that person's checklist (read only). Everyone's ticks show as coloured dots on each exercise.
 - **Install:** the site is a PWA. On Android or Chrome use "Install app". On iPhone, use Safari: Share → Add to Home Screen.
+
+## Signing in
+
+1. Enter the site password.
+2. Paste the access key, or tap "Preview without syncing" to try the site without saving to GitHub.
+3. Pick **Mika**, or **Guest**. A guest picks a bodybuilder head and a colour.
+
+There are at most 5 guests, which keeps polling and GitHub API use small. Mika can free a guest's spot from the Crew tab (✕), and a guest can use "Leave crew". When someone comes online, their head pops into the top-right corner.
+
+## Guest head photos
+
+The photos come from Wikimedia Commons, cropped to the face, and are used here under their free licences:
+
+| Head | Source | Licence | Author |
+|---|---|---|---|
+| Arnold | [Arnold Schwarzenegger 1974](https://commons.wikimedia.org/wiki/File:Arnold_Schwarzenegger_1974.jpg) | Public domain | Madison Square Garden Center |
+| Ronnie | [Ronnie Coleman FIBO2014](https://commons.wikimedia.org/wiki/File:Ronnie_Coleman_FIBO2014.jpg) | CC BY 2.0 | Health Gauge |
+| Lou | [Lou Ferrigno (16432300998)](https://commons.wikimedia.org/wiki/File:Lou_Ferrigno_(16432300998).jpg) | CC BY 2.0 | Paula R. Lively |
+| CBum | [Chris Bumstead on Gymshark](https://commons.wikimedia.org/wiki/File:Chris_Bumstead_on_Gymshark.jpg) | CC BY 3.0 | Gymshark |
+| Zane | [Frank Zane 2011 Shankbone](https://commons.wikimedia.org/wiki/File:Frank_Zane_2011_Shankbone.JPG) | CC BY 3.0 | David Shankbone |
+| Cutler | [Jay Cutler bodybuilder 2008-crop](https://commons.wikimedia.org/wiki/File:Jay_Cutler_bodybuilder_2008-crop.jpg) | CC BY 3.0 | robbden, Nesnad |
 
 ## How it works
 
@@ -34,5 +57,5 @@ Never commit the token: GitHub revokes leaked tokens automatically. To cut someo
 
 ```sh
 python3 -m http.server 8765   # then open http://localhost:8765
-node merge.test.mjs           # sync merge rules
+node merge.test.mjs           # sync merge rules + muscle-map word mapping
 ```

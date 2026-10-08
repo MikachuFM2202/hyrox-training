@@ -92,6 +92,7 @@ export function poll() {
         if (JSON.stringify(next) !== JSON.stringify(people[id])) { people[id] = next; changed = true; }
       }
       if (changed) ls.set('people', people);
+      if (people[meId]?.removed) { meId = ''; ls.del('me'); dirty = false; ls.set('dirty', false); }   // Mika freed my guest spot
       status.last = Date.now();
       if (dirty) save(); else setStatus('ok');  // also retries a save that failed while offline
     } catch (e) {
@@ -115,13 +116,42 @@ function update(fn, msg) {
   clearTimeout(timer); timer = setTimeout(save, 800);
 }
 
-export function join({ id, name, color }) {
-  meId = id || uid(); ls.set('me', meId);
+/** Become a person: { id?, name, color, head, role }. Mika always uses id "mika", so all of Mika's devices share one file. */
+export function join(profile) {
+  meId = profile.id || uid(); ls.set('me', meId);
   const now = Date.now();
-  people[meId] = merge(people[meId], { id: meId, name, color, u: now, seen: now, checks: {} });
-  update(d => d, `${name} joined the crew`);
+  people[meId] = merge(people[meId], { ...profile, id: meId, removed: false, u: now, seen: now, checks: {} });
+  update(d => d, `${profile.name} joined the crew`);
 }
-export const setProfile = (name, color) => update(d => ({ ...d, name, color, u: Date.now() }), `${name} updated profile`);
+export const setProfile = fields => update(d => ({ ...d, ...fields, u: Date.now() }), `${people[meId].name} updated profile`);
+
+/** Stop being this person on this device (saves first so no ticks are lost). */
+export async function switchPerson() {
+  clearTimeout(timer); await save();
+  meId = ''; ls.del('me'); dirty = false; ls.set('dirty', false); emit();
+}
+
+/** Free a guest spot: marks the person's file removed (never deletes it, so a device mid-save can't resurrect it). */
+export async function remove(id) {
+  const t = Date.now();
+  people[id] = { ...people[id], removed: true, u: t };
+  ls.set('people', people); emit();
+  if (!token) return;
+  const path = `contents/people/${id}.json`;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const cur = await gh(`${path}?ref=${BRANCH}&_=${Date.now()}`);
+      const doc = merge(JSON.parse(unb64(cur.content)), people[id]);
+      const r = await gh(path, { method: 'PUT', body: JSON.stringify({ message: `${doc.name} left the crew`, branch: BRANCH, sha: cur.sha, content: b64(JSON.stringify(doc, null, 1)) }) });
+      shas[id] = r.content.sha; people[id] = doc; ls.set('people', people);
+      return;
+    } catch (e) {
+      if (e.status === 404) return;                        // never synced: nothing to mark
+      if (attempt < 3 && e.status === 409) continue;
+      setStatus('error', errText(e)); return;
+    }
+  }
+}
 /** Set one or more checklist entries: {key: {v, ...extra}}. v: 0 open, 1 done, 2 skipped (or a session id for day swaps). */
 export const set = (entries, label) => update(d => {
   const t = Date.now(), checks = { ...d.checks };
