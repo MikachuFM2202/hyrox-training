@@ -1,0 +1,16 @@
+{
+ "id": "mika",
+ "name": "Mika",
+ "head": "mika",
+ "role": "owner",
+ "color": "#ff6b2b",
+ "removed": false,
+ "u": 1791481266762,
+ "seen": 1791481266762,
+ "checks": {
+  "2026-10-08|pendulum-squat-light-only": {
+   "v": 0,
+   "t": 1791447635694
+  }
+ }
+}
