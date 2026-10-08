@@ -1,0 +1,24 @@
+{
+ "name": "Arnold",
+ "color": "#b07cff",
+ "head": "arnold",
+ "role": "guest",
+ "id": "1etodxm1x7fhld",
+ "removed": false,
+ "u": 1791447670782,
+ "seen": 1791448186243,
+ "checks": {
+  "2026-10-11|rowing-machine": {
+   "v": 0,
+   "t": 1791448162725
+  },
+  "2026-10-11|stationary-bike": {
+   "v": 0,
+   "t": 1791448164579
+  },
+  "2026-10-11|seated-cable-row-light": {
+   "v": 0,
+   "t": 1791448186243
+  }
+ }
+}
