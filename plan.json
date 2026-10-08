@@ -1,0 +1,597 @@
+{
+ "athlete": "Mika",
+ "race": {
+  "name": "HYROX Kuala Lumpur",
+  "date": "2026-12-11",
+  "end": "2026-12-13",
+  "venue": "MITEC, Kuala Lumpur",
+  "season": "Season 26/27"
+ },
+ "countdowns": [
+  {
+   "label": "HYROX KL",
+   "date": "2026-12-11"
+  },
+  {
+   "label": "Wedding",
+   "date": "2027-04-12"
+  }
+ ],
+ "goals": [
+  "115 kg → 90 kg (85 kg by the wedding)",
+  "Finish HYROX KL, Dec 2026",
+  "Smaller belly & thighs, bigger chest & arms"
+ ],
+ "rules": [
+  "Achilles: eccentric heel drops every leg day (3 × 15, slow). No running until cleared. No heavy calf raises.",
+  "Knees: leg extension light only. No deep squats, lunges, heavy leg press, jump squats or hip thrusts.",
+  "Core sore: skip core for the week and add an extra arm exercise. Very sore: skip it entirely.",
+  "No legs this week: swap Thursday to the Saturday session (Push + Pull + Arms + Core)."
+ ],
+ "schedule": [
+  "rest",
+  "A",
+  "rest",
+  "B",
+  "rest",
+  "C",
+  "D"
+ ],
+ "warmup": {
+  "title": "Warm-up · 5 min",
+  "legExtra": "Leg day: 5 min stationary bike first",
+  "items": [
+   {
+    "name": "Arm Circles (fwd + back)",
+    "sets": "45 sec",
+    "muscles": "Loosen shoulders"
+   },
+   {
+    "name": "Band Pull Apart",
+    "sets": "45 sec",
+    "muscles": "Activate rear delts"
+   },
+   {
+    "name": "Chest Opener Stretch",
+    "sets": "45 sec",
+    "muscles": "Prep chest & pecs"
+   },
+   {
+    "name": "Shoulder Cross-Body Stretch",
+    "sets": "45 sec",
+    "muscles": "Rotator cuff prep"
+   },
+   {
+    "name": "Scapular Wall Slides",
+    "sets": "45 sec",
+    "muscles": "Activate scapula"
+   },
+   {
+    "name": "Light Cable Face Pull",
+    "sets": "45 sec",
+    "muscles": "Prime the shoulder joint"
+   },
+   {
+    "name": "Deep Breathing + Wrist Circles",
+    "sets": "30 sec",
+    "muscles": "CNS ready, wrist prep"
+   }
+  ]
+ },
+ "sessions": {
+  "A": {
+   "title": "Push + Pull + Arms + Core",
+   "short": "Push / Pull",
+   "sections": [
+    {
+     "name": "Chest",
+     "pick": 3,
+     "items": [
+      {
+       "name": "Machine Chest Press",
+       "sets": "4 × 15",
+       "muscles": "Pecs, Anterior Delt, Triceps",
+       "link": "https://www.youtube.com/watch?v=pLofEAcfsO8"
+      },
+      {
+       "name": "Incline Chest Press",
+       "sets": "4 × 15",
+       "muscles": "Upper Pecs, Anterior Delt, Triceps",
+       "link": "https://www.youtube.com/watch?v=LiDArz1R2NU"
+      },
+      {
+       "name": "Cable Chest Fly",
+       "sets": "4 × 15",
+       "muscles": "Pecs, Anterior Delt",
+       "link": "https://vt.tiktok.com/ZSq6jxpHT/",
+       "note": "Pec Fly machine is the same exercise"
+      }
+     ]
+    },
+    {
+     "name": "Back",
+     "pick": 3,
+     "items": [
+      {
+       "name": "Lat Pulldown",
+       "sets": "4 × 15",
+       "muscles": "Lats, Biceps, Rear Delt",
+       "link": "https://www.youtube.com/watch?v=CAwf7n6Luuc"
+      },
+      {
+       "name": "Seated Cable Row",
+       "sets": "4 × 15",
+       "muscles": "Lats, Rhomboids, Traps, Biceps",
+       "link": "https://www.youtube.com/watch?v=OeLb503NZHk",
+       "note": "aka Low Row"
+      },
+      {
+       "name": "Reverse Fly Machine",
+       "sets": "4 × 15",
+       "muscles": "Rear Delt, Rhomboids, Traps",
+       "link": "https://www.youtube.com/watch?v=6ZtPFqEUYFo",
+       "note": "Replaces Face Pull"
+      }
+     ]
+    },
+    {
+     "name": "Arms",
+     "pick": 2,
+     "items": [
+      {
+       "name": "Bicep Curl (Dumbbell)",
+       "sets": "4 × 15",
+       "muscles": "Biceps, Brachialis, Forearms",
+       "link": "https://www.youtube.com/watch?v=Jfp4b5Olc7A"
+      },
+      {
+       "name": "Tricep Pushdown (Cable)",
+       "sets": "4 × 15",
+       "muscles": "Triceps (all 3 heads)",
+       "link": "https://www.youtube.com/watch?v=_w-HpW70nSQ",
+       "note": "aka Tricep Extension"
+      }
+     ]
+    },
+    {
+     "name": "Core",
+     "pick": 3,
+     "items": [
+      {
+       "name": "Hanging Leg Raises",
+       "sets": "4 × 10",
+       "muscles": "Lower Abs, Hip Flexors",
+       "link": "https://www.youtube.com/watch?v=l0WoMsA0yB0"
+      },
+      {
+       "name": "Dead Bug",
+       "sets": "3 × 10",
+       "muscles": "Deep Core, Transverse Abdominis",
+       "link": "https://www.youtube.com/watch?v=g_BYB0R-4Ws"
+      },
+      {
+       "name": "Plank",
+       "sets": "3 × 30s",
+       "muscles": "Full Core, Shoulders, Glutes",
+       "link": "https://www.youtube.com/watch?v=ASdvN_XEl_c"
+      },
+      {
+       "name": "Seated Knee Tucks",
+       "sets": "3 × 15",
+       "muscles": "Lower Abs, Hip Flexors",
+       "link": "https://www.youtube.com/watch?v=d_up4yEZhFI"
+      },
+      {
+       "name": "Bicycle Crunches",
+       "sets": "3 × 20",
+       "muscles": "Upper Abs, Obliques"
+      },
+      {
+       "name": "Cable Crunch",
+       "sets": "3 × 15",
+       "muscles": "Rectus Abdominis",
+       "link": "https://www.youtube.com/watch?v=AV5aNPmFnKI"
+      },
+      {
+       "name": "Russian Twist",
+       "sets": "3 × 20",
+       "muscles": "Obliques",
+       "link": "https://www.youtube.com/watch?v=wkD8rjkodUI"
+      },
+      {
+       "name": "Abdominal Crunch Machine",
+       "sets": "3 × 15",
+       "muscles": "Rectus Abdominis"
+      }
+     ],
+     "note": "Sore? Skip core this week and add an extra arm exercise under Bonus."
+    }
+   ]
+  },
+  "B": {
+   "title": "Legs + Arms + Core",
+   "short": "Legs",
+   "leg": true,
+   "sections": [
+    {
+     "name": "Legs · knee safe",
+     "pick": 5,
+     "items": [
+      {
+       "name": "Leg Curl (Hamstring Machine)",
+       "sets": "4 × 15",
+       "muscles": "Hamstrings, Glutes",
+       "link": "https://www.youtube.com/watch?v=1Tq3QdYUuHs"
+      },
+      {
+       "name": "Leg Extension (LIGHT)",
+       "sets": "4 × 15",
+       "muscles": "Quadriceps",
+       "link": "https://www.youtube.com/watch?v=YyvSfVjQeL0",
+       "note": "Light weight only, knees recovering"
+      },
+      {
+       "name": "Adductor Machine (Inner)",
+       "sets": "3 × 15",
+       "muscles": "Inner Thigh, Adductors",
+       "link": "https://www.youtube.com/watch?v=M_P9BKQ0aQ4"
+      },
+      {
+       "name": "Abductor Machine (Outer)",
+       "sets": "3 × 15",
+       "muscles": "Outer Thigh, Glutes",
+       "link": "https://www.youtube.com/watch?v=YBoSMSEXoYs"
+      },
+      {
+       "name": "Eccentric Heel Drop",
+       "sets": "3 × 15",
+       "muscles": "Achilles Tendon, Calves",
+       "link": "https://www.youtube.com/watch?v=T0HKAKCO_Ro",
+       "note": "Achilles rehab, don't skip"
+      },
+      {
+       "name": "Pendulum Squat (light only)",
+       "sets": "4 × 15",
+       "muscles": "Quads, Glutes",
+       "note": "Occasional swap"
+      }
+     ]
+    },
+    {
+     "name": "Arms",
+     "pick": 3,
+     "items": [
+      {
+       "name": "Bicep Curl (Dumbbell)",
+       "sets": "4 × 15",
+       "muscles": "Biceps, Brachialis, Forearms",
+       "link": "https://www.youtube.com/watch?v=Jfp4b5Olc7A"
+      },
+      {
+       "name": "Hammer Curl",
+       "sets": "4 × 15",
+       "muscles": "Brachialis, Biceps, Forearms",
+       "link": "https://www.youtube.com/watch?v=zC3nLlEvin4"
+      },
+      {
+       "name": "Tricep Pushdown (Cable)",
+       "sets": "4 × 15",
+       "muscles": "Triceps (all 3 heads)",
+       "link": "https://www.youtube.com/watch?v=_w-HpW70nSQ"
+      }
+     ]
+    },
+    {
+     "name": "Core",
+     "pick": 3,
+     "items": [
+      {
+       "name": "Hanging Leg Raises",
+       "sets": "4 × 10",
+       "muscles": "Lower Abs, Hip Flexors",
+       "link": "https://www.youtube.com/watch?v=l0WoMsA0yB0"
+      },
+      {
+       "name": "Russian Twist",
+       "sets": "3 × 20",
+       "muscles": "Obliques",
+       "link": "https://www.youtube.com/watch?v=wkD8rjkodUI"
+      },
+      {
+       "name": "Plank",
+       "sets": "3 × 40s",
+       "muscles": "Full Core",
+       "link": "https://www.youtube.com/watch?v=ASdvN_XEl_c"
+      },
+      {
+       "name": "Dead Bug",
+       "sets": "3 × 10",
+       "muscles": "Deep Core",
+       "link": "https://www.youtube.com/watch?v=g_BYB0R-4Ws"
+      },
+      {
+       "name": "Seated Knee Tucks",
+       "sets": "3 × 15",
+       "muscles": "Lower Abs, Hip Flexors",
+       "link": "https://www.youtube.com/watch?v=d_up4yEZhFI"
+      }
+     ],
+     "note": "Sore? Skip core this week and add an extra arm exercise under Bonus."
+    }
+   ]
+  },
+  "C": {
+   "title": "Push + Pull + Arms + Core",
+   "short": "Push / Pull",
+   "sections": [
+    {
+     "name": "Push",
+     "pick": 4,
+     "items": [
+      {
+       "name": "Shoulder Press (Machine)",
+       "sets": "4 × 12",
+       "muscles": "Deltoids, Triceps, Traps",
+       "link": "https://www.youtube.com/watch?v=BAZkFGeUy5U"
+      },
+      {
+       "name": "Cable Chest Fly",
+       "sets": "4 × 15",
+       "muscles": "Pecs, Anterior Delt",
+       "link": "https://vt.tiktok.com/ZSq6jxpHT/"
+      },
+      {
+       "name": "Dumbbell Front Raise",
+       "sets": "3 × 15",
+       "muscles": "Anterior Delt, Upper Pecs",
+       "link": "https://www.youtube.com/watch?v=CH9JzDStL3U"
+      },
+      {
+       "name": "Lateral Raise Machine",
+       "sets": "4 × 15",
+       "muscles": "Medial Delt, Supraspinatus",
+       "link": "https://www.youtube.com/watch?v=EqkR5b7OOKY"
+      },
+      {
+       "name": "Overhead Tricep Extension",
+       "sets": "4 × 15",
+       "muscles": "Triceps Long Head",
+       "link": "https://www.youtube.com/watch?v=57fWTQID-1Y"
+      }
+     ]
+    },
+    {
+     "name": "Pull",
+     "pick": 4,
+     "items": [
+      {
+       "name": "Hammer Curl",
+       "sets": "4 × 15",
+       "muscles": "Brachialis, Biceps, Forearms",
+       "link": "https://www.youtube.com/watch?v=zC3nLlEvin4"
+      },
+      {
+       "name": "Cable Straight Arm Pulldown",
+       "sets": "4 × 15",
+       "muscles": "Lats, Teres Major, Core",
+       "link": "https://www.youtube.com/watch?v=duHQk2PxNos"
+      },
+      {
+       "name": "Incline Dumbbell Row",
+       "sets": "4 × 15",
+       "muscles": "Lats, Rhomboids, Rear Delt",
+       "link": "https://www.youtube.com/watch?v=llFTFDwmGcw"
+      },
+      {
+       "name": "Reverse Fly Machine",
+       "sets": "3 × 15",
+       "muscles": "Rear Delt, Rhomboids, Traps",
+       "link": "https://www.youtube.com/watch?v=6ZtPFqEUYFo"
+      },
+      {
+       "name": "Deltoid Machine",
+       "sets": "3 × 15",
+       "muscles": "Medial + Rear Delt"
+      }
+     ]
+    },
+    {
+     "name": "Core",
+     "pick": 3,
+     "items": [
+      {
+       "name": "Hanging Leg Raises",
+       "sets": "4 × 10",
+       "muscles": "Lower Abs, Hip Flexors",
+       "link": "https://www.youtube.com/watch?v=l0WoMsA0yB0"
+      },
+      {
+       "name": "Russian Twist",
+       "sets": "3 × 20",
+       "muscles": "Obliques",
+       "link": "https://www.youtube.com/watch?v=wkD8rjkodUI"
+      },
+      {
+       "name": "Plank",
+       "sets": "3 × 45s",
+       "muscles": "Full Core",
+       "link": "https://www.youtube.com/watch?v=ASdvN_XEl_c"
+      },
+      {
+       "name": "Cable Crunch",
+       "sets": "3 × 15",
+       "muscles": "Rectus Abdominis",
+       "link": "https://www.youtube.com/watch?v=AV5aNPmFnKI"
+      },
+      {
+       "name": "Mountain Climbers",
+       "sets": "3 × 20",
+       "muscles": "Core, Shoulders"
+      },
+      {
+       "name": "Ab Wheel Rollout",
+       "sets": "3 × 10",
+       "muscles": "Abs, Lats"
+      }
+     ],
+     "note": "Sore? Skip core this week and add an extra arm exercise under Bonus."
+    }
+   ]
+  },
+  "D": {
+   "title": "Active Recovery + Knee Rehab",
+   "short": "Recovery",
+   "optional": true,
+   "sections": [
+    {
+     "name": "Cardio warm-up",
+     "pick": 1,
+     "items": [
+      {
+       "name": "Rowing Machine",
+       "sets": "10 min easy",
+       "muscles": "Full Body Cardio"
+      },
+      {
+       "name": "Stationary Bike",
+       "sets": "10 min easy",
+       "muscles": "Lower Body Cardio"
+      }
+     ]
+    },
+    {
+     "name": "Knee strengthening",
+     "pick": 5,
+     "items": [
+      {
+       "name": "Seated Leg Extension (very light)",
+       "sets": "3 × 15",
+       "muscles": "Quads (VMO focus)",
+       "link": "https://www.youtube.com/watch?v=YyvSfVjQeL0"
+      },
+      {
+       "name": "Straight Leg Raise",
+       "sets": "3 × 15",
+       "muscles": "Quad Control, Hip Flexors"
+      },
+      {
+       "name": "Glute Bridge",
+       "sets": "3 × 20",
+       "muscles": "Glutes, Hamstrings",
+       "link": "https://www.youtube.com/watch?v=OUgsJ8-Vi0E"
+      },
+      {
+       "name": "Terminal Knee Extension w/ Band",
+       "sets": "3 × 15",
+       "muscles": "VMO, Knee Stabilisers",
+       "link": "https://www.youtube.com/watch?v=0jPkjGJFsKU",
+       "note": "Key knee exercise"
+      },
+      {
+       "name": "Eccentric Heel Drop",
+       "sets": "3 × 15",
+       "muscles": "Achilles, Calves",
+       "link": "https://www.youtube.com/watch?v=T0HKAKCO_Ro"
+      }
+     ]
+    },
+    {
+     "name": "Stretches",
+     "pick": 6,
+     "items": [
+      {
+       "name": "Quad Stretch (standing)",
+       "sets": "45 sec / side"
+      },
+      {
+       "name": "Hamstring Stretch (seated)",
+       "sets": "45 sec / side"
+      },
+      {
+       "name": "Calf Stretch (wall)",
+       "sets": "45 sec / side"
+      },
+      {
+       "name": "IT Band Stretch (cross leg)",
+       "sets": "45 sec / side",
+       "link": "https://www.youtube.com/watch?v=XS0CgcKkMqU"
+      },
+      {
+       "name": "Hip Flexor Stretch (kneeling)",
+       "sets": "45 sec / side",
+       "link": "https://www.youtube.com/watch?v=YqF8GfmjSXY"
+      },
+      {
+       "name": "Achilles & Calf Stretch (gentle)",
+       "sets": "60 sec / side",
+       "link": "https://www.youtube.com/watch?v=8C4JMvSRaYQ"
+      }
+     ]
+    },
+    {
+     "name": "Light resistance · optional",
+     "pick": 0,
+     "items": [
+      {
+       "name": "Reverse Fly (light)",
+       "sets": "3 × 15",
+       "muscles": "Rear Delt",
+       "link": "https://www.youtube.com/watch?v=6ZtPFqEUYFo"
+      },
+      {
+       "name": "Dumbbell Lateral Raise (light)",
+       "sets": "3 × 15",
+       "muscles": "Medial Delt",
+       "link": "https://www.youtube.com/watch?v=EqkR5b7OOKY"
+      },
+      {
+       "name": "Seated Cable Row (light)",
+       "sets": "3 × 15",
+       "muscles": "Back",
+       "link": "https://www.youtube.com/watch?v=OeLb503NZHk"
+      },
+      {
+       "name": "Chest Fly Machine (light)",
+       "sets": "3 × 15",
+       "muscles": "Chest",
+       "link": "https://www.youtube.com/watch?v=ovFc-5YdcXw"
+      },
+      {
+       "name": "Lat Pulldown (light)",
+       "sets": "3 × 15",
+       "muscles": "Lats",
+       "link": "https://www.youtube.com/watch?v=CAwf7n6Luuc"
+      },
+      {
+       "name": "Hammer Curl",
+       "sets": "3 × 15",
+       "muscles": "Arms",
+       "link": "https://www.youtube.com/watch?v=zC3nLlEvin4"
+      }
+     ]
+    },
+    {
+     "name": "Light core · optional",
+     "pick": 0,
+     "items": [
+      {
+       "name": "Dead Bug",
+       "sets": "3 × 10",
+       "link": "https://www.youtube.com/watch?v=g_BYB0R-4Ws"
+      },
+      {
+       "name": "Plank",
+       "sets": "3 × 45s",
+       "link": "https://www.youtube.com/watch?v=ASdvN_XEl_c"
+      },
+      {
+       "name": "Russian Twist",
+       "sets": "3 × 20",
+       "link": "https://www.youtube.com/watch?v=wkD8rjkodUI"
+      }
+     ]
+    }
+   ]
+  }
+ }
+}
