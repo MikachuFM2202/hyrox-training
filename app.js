@@ -14,6 +14,7 @@ let intro = true, justSet = '', deferred = false;
 // Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
 const PASS_HASH = '64d27cba265dd65d63ef0b8cb90436d3d4c5bbeb9c59b4ea0309ac4f26bd78e8';
 let unlocked = S.ls.get('pass', '') === PASS_HASH;
+let preview = S.ls.get('preview', false);   // look around before an access key exists; ticks stay on this device and sync once a key is added
 const sha256 = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
 
 // The owner can share a one-tap link: https://…/#k=<key>. The key is read once, then wiped from the address bar.
@@ -82,7 +83,7 @@ function render() {
   const open = [...$app.querySelectorAll('details[open][data-keep]')].map(d => d.dataset.keep);
   const bars = Object.fromEntries([...$app.querySelectorAll('[data-bar]')].map(b => [b.dataset.bar, b.style.width]));
 
-  screen = !unlocked ? 'pass' : !S.hasToken() ? 'gate' : !S.me() ? 'join' : 'main';
+  screen = !unlocked ? 'pass' : !S.hasToken() && !preview ? 'gate' : !S.me() ? 'join' : 'main';
   $app.innerHTML = screen === 'pass' ? pass() : screen === 'gate' ? gate() : screen === 'join' ? join() : main();
   document.body.classList.toggle('intro', intro);
 
@@ -121,6 +122,7 @@ function gate() {
       <button class="btn">Enter</button>
     </form>
     <p class="err" role="alert">${esc(err || (S.status.state === 'error' ? S.status.error : ''))}</p>
+    <button class="link" data-act="preview">No key yet? Preview without syncing</button>
   </section>`;
 }
 
@@ -170,6 +172,7 @@ function main() {
     </div>
   </section>
 
+  ${S.hasToken() ? '' : '<div class="viewing" style="--c:#ffa41b">Preview mode · ticks stay on this device only <button class="btn-ghost" data-act="addkey">Add access key</button></div>'}
   ${mine ? '' : `<div class="viewing reveal" style="--c:${col(who.color)}"><span class="pdot"></span>Viewing <b>${esc(who.name)}</b>’s checklist · read only <button class="btn-ghost" data-act="view" data-id="${esc(me.id)}">Back to mine</button></div>`}
 
   <nav class="week reveal" aria-label="Week">
@@ -296,7 +299,7 @@ function calendar(who) {
 function footer(me) {
   const st = S.status;
   return `<footer class="foot">
-    <span class="sync ${st.state}">${st.state === 'error' ? '⚠ ' + esc(st.error) : st.state === 'saving' ? 'Saving…' : st.last ? 'Synced ' + ago(st.last) : 'Connecting…'}</span>
+    <span class="sync ${st.state}">${!S.hasToken() ? 'Preview · not synced' : st.state === 'error' ? '⚠ ' + esc(st.error) : st.state === 'saving' ? 'Saving…' : st.last ? 'Synced ' + ago(st.last) : 'Connecting…'}</span>
     ${installEvt ? '<button class="btn-ghost" data-act="install">Install app</button>' : /iphone|ipad/i.test(navigator.userAgent) && !navigator.standalone ? '<span class="hint">Install: Share → Add to Home Screen</span>' : ''}
     <details data-keep="profile"><summary>Profile</summary>
       <form data-form="profile"><input name="name" maxlength="20" value="${esc(me.name)}" required aria-label="Your name">${swatches(me.color)}<button class="btn">Save</button></form>
@@ -364,6 +367,7 @@ $app.addEventListener('click', e => {
   else if (act === 'claim') { const p = S.people[b.dataset.id]; S.join({ id: p.id, name: p.name, color: p.color }); }
   else if (act === 'install') { installEvt.prompt(); installEvt = null; render(); }
   else if (act === 'signout') { S.signOut(); viewing = null; }
+  else if (act === 'preview' || act === 'addkey') { preview = act === 'preview'; S.ls.set('preview', preview); err = ''; render(); }
 });
 
 $app.addEventListener('submit', async e => {
