@@ -6,15 +6,15 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791481266762,
- "seen": 1791481361286,
+ "seen": 1791481362259,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
    "t": 1791447635694
   },
   "2026-10-10|shoulder-press-machine": {
-   "v": 1,
-   "t": 1791481361286
+   "v": 0,
+   "t": 1791481362259
   }
  }
 }
