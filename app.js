@@ -1,7 +1,7 @@
 import * as S from './store.js';
 import { muscleMap, MUSCLES } from './muscles.js';
 
-const COLORS = ['#ff6b2b', '#ffb020', '#2ecc71', '#4da6ff', '#b07cff', '#ff4d6d', '#ff5fc8', '#2ee6e6'];
+const COLORS = ['#ff6b2b', '#ffb020', '#2ecc71', '#4da6ff', '#b07cff', '#ff5fc8', '#2ee6e6'];   // no near-duplicates: these tell people apart in charts
 // Guest heads: freely licensed Wikimedia Commons photos, credits in README.md.
 const HEADS = { arnold: 'Arnold', ronnie: 'Ronnie', lou: 'Lou', cbum: 'CBum', zane: 'Zane', cutler: 'Cutler' };
 const MAX_GUESTS = 5;   // keeps polling + GitHub API use small enough to stay stable
@@ -21,6 +21,7 @@ const safeUrl = u => /^https:\/\//.test(u || '') ? u : '';
 let plan = null, sel = '', calMonth = null, viewing = null, screen = '', err = '', installEvt = null;
 let tab = 'today', joinMode = '', intro = true, justSet = '', deferred = false, lastHtml = '', tabChanged = false;
 let mm = { view: 'front', filter: 'all', muscle: 'chest' };
+let trendOpen = new Set();   // exercise slugs whose weight chart is expanded
 let seenOnline = null;   // who was online at the last render, to pop in newcomers
 
 // Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
@@ -188,7 +189,7 @@ function join() {
   </section>`;
 
   const taken = new Set(gs.map(g => g.head)), usedC = new Set(crew().map(p => p.color));
-  const freeHead = Object.keys(HEADS).find(h => !taken.has(h)), freeC = COLORS.find(c => !usedC.has(c)) || COLORS[1];
+  const freeHead = Object.keys(HEADS).find(h => !taken.has(h)), freeC = pickable('').find(c => !usedC.has(c)) || pickable('')[0];
   return `<section class="gate">${brand()}
     <button class="link back" data-act="joinback">‹ Back</button>
     <h1>Pick your<br><span class="grad">legend</span></h1>
@@ -200,14 +201,16 @@ function join() {
         <label class="${taken.has(h) ? 'taken' : ''}"><input type="radio" name="head" value="${h}" ${h === freeHead ? 'checked' : ''} ${taken.has(h) ? 'disabled' : ''}>
           <img src="heads/${h}.jpg" alt=""><span>${n}${taken.has(h) ? ' · taken' : ''}</span></label>`).join('')}</div>
       <p>Your colour</p>
-      ${swatches(freeC)}
+      ${swatches(freeC, '')}
       <button class="btn">Join as guest</button>
     </form>`}
     <p class="err" role="alert">${esc(err)}</p>
   </section>`;
 }
 
-const swatches = selC => `<div class="swatches" role="radiogroup" aria-label="Colour">${COLORS.map(c =>
+/** Colours a person may pick: never Mika's or Aidan's (unless it's their own), so weights and charts stay readable. */
+const pickable = id => COLORS.filter(c => !Object.keys(MEMBERS).some(m => m !== id && memberProfile(m).color === c));
+const swatches = (selC, id) => `<div class="swatches" role="radiogroup" aria-label="Colour">${pickable(id).map(c =>
   `<label><input type="radio" name="color" value="${c}" ${c === selC ? 'checked' : ''}><span style="background:${c}"></span></label>`).join('')}</div>`;
 
 const ICONS = {
@@ -327,6 +330,7 @@ function row(who, mine, people, k, it, sectionFull) {
     ${kgBox(who, mine, k, it)}
     ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video${it.clip ? ', ' + esc(it.clip) : ''}: ${esc(it.name)}">▶${it.clip ? `<small>${esc(it.clip)}</small>` : ''}</a>` : ''}
     ${mine ? `<button class="r-skip" data-act="skip" data-k="${esc(k)}" data-l="${esc(it.name)}" aria-label="${v === 2 ? 'Undo skip' : 'Skip'} ${esc(it.name)}">${v === 2 ? '↺' : '✕'}</button>` : ''}
+    ${k === itemKey(sel, it) && trendOpen.has(slug(it.name)) ? trendChart(who, people, it) : ''}
   </li>`;
 }
 
@@ -341,13 +345,48 @@ function kgVs(who, people, k, it) {
   return `<span class="r-vs">${vs.map(([p, l]) => `<span style="--c:${col(p.color)}" title="${esc(p.name)}">${avatar(p, 'xs')}<b>${mine && l.kg > mine ? '▲' : ''}${l.kg}</b>kg${l.date !== sel ? `<small>${fmt(l.date, { day: 'numeric', month: 'short' })}</small>` : ''}</span>`).join('')}</span>`;
 }
 
+const TREND_MAX = 12;   // points per person; older logs scroll off the left
+const trendSeries = (who, people, it) => [who, ...people.filter(p => p.id !== who.id)]
+  .map(p => ({ p, pts: S.kgHistory(p.checks, slug(it.name), sel).slice(-TREND_MAX) })).filter(s => s.pts.length);
+const hasTrend = (who, people, it) => trendSeries(who, people, it).some(s => s.pts.length >= 2);
+
+/** Weight over time for one exercise: one line per person in their colour, dates on a shared axis. */
+function trendChart(who, people, it) {
+  const series = trendSeries(who, people, it);
+  const dates = [...new Set(series.flatMap(s => s.pts.map(p => p.date)))].sort();
+  const kgs = series.flatMap(s => s.pts.map(p => p.kg));
+  let lo = Math.min(...kgs), hi = Math.max(...kgs);
+  if (hi - lo < 5) { const mid = (hi + lo) / 2; lo = Math.max(0, mid - 2.5); hi = lo + 5; }   // flat lines still get a readable scale
+  const W = 300, H = 110, L = 34, R = 44, T = 10, B = 20;
+  const t0 = +fromIso(dates[0]), span = Math.max(1, +fromIso(dates.at(-1)) - t0);
+  const x = d => dates.length < 2 ? (L + W - R) / 2 : L + (W - L - R) * (+fromIso(d) - t0) / span;
+  const y = kg => T + (H - T - B) * (1 - (kg - lo) / (hi - lo));
+  const kgTxt = n => String(Math.round(n * 10) / 10);
+  const grid = [lo, (lo + hi) / 2, hi].map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 3}" text-anchor="end">${kgTxt(v)}</text>`).join('');
+  const ends = [dates[0], dates.at(-1)].filter((d, i, a) => a.indexOf(d) === i)
+    .map((d, i, a) => `<text x="${x(d)}" y="${H - 5}" text-anchor="${a.length < 2 ? 'middle' : i ? 'end' : 'start'}">${fmt(d, { day: 'numeric', month: 'short' })}</text>`).join('');
+  const labelY = series.map(s => y(s.pts.at(-1).kg) + 4);
+  [...labelY.keys()].sort((a, b) => labelY[a] - labelY[b]).forEach((i, n, order) => { if (n && labelY[i] - labelY[order[n - 1]] < 11) labelY[i] = labelY[order[n - 1]] + 11; });
+  const lines = series.map(({ p, pts }, si) => `<g style="--c:${col(p.color)}">
+    ${pts.length > 1 ? `<polyline points="${pts.map(q => `${x(q.date)},${y(q.kg)}`).join(' ')}"/>` : ''}
+    ${pts.map(q => `<circle cx="${x(q.date)}" cy="${y(q.kg)}" r="4"><title>${esc(p.name)} · ${fmt(q.date, { day: 'numeric', month: 'short' })} · ${q.kg} kg</title></circle>`).join('')}
+    <text class="end" x="${W - R + 8}" y="${labelY[si]}">${pts.at(-1).kg}</text></g>`).join('');
+  return `<div class="trend" role="img" aria-label="${esc(it.name)} weight trend: ${series.map(({ p, pts }) => `${esc(p.name)} ${pts.map(q => q.kg).join(', ')} kg`).join('; ')}">
+    ${series.length > 1 ? `<div class="t-legend">${series.map(({ p }) => `<span style="--c:${col(p.color)}">${esc(p.name)}</span>`).join('')}</div>` : ''}
+    <svg viewBox="0 0 ${W} ${H}" aria-hidden="true"><g class="t-grid">${grid}${ends}</g>${lines}</svg>
+    <table class="sr-only"><tr><th>Date</th>${series.map(({ p }) => `<th>${esc(p.name)}</th>`).join('')}</tr>${dates.map(d => `<tr><td>${d}</td>${series.map(({ pts }) => `<td>${pts.find(q => q.date === d)?.kg ?? ''}</td>`).join('')}</tr>`).join('')}</table>
+  </div>`;
+}
+
 function kgBox(who, mine, k, it) {
   if (k !== itemKey(sel, it) || !lifts(it)) return '';   // warm-up rows share row() but aren't lifts
   const cur = num(val(who, kgKey(sel, it))), last = S.lastKg(who.checks, sel, slug(it.name));
-  if (!mine && !cur) return '';
+  if (!mine && !cur && !hasTrend(who, crew(), it)) return '';
   return `<span class="r-kg ${cur && last && cur > last.kg ? 'up' : ''}"><input type="text" inputmode="decimal" enterkeyhint="done" maxlength="6"
     data-kg="${esc(kgKey(sel, it))}" data-l="${esc(it.name)}" value="${cur || ''}" placeholder="${last ? last.kg : 'kg'}" ${mine ? '' : 'disabled'}
-    aria-label="Weight in kg for ${esc(it.name)}${last ? `, last time ${last.kg}` : ''}">${last ? `<small>last ${last.kg}</small>` : ''}</span>`;
+    aria-label="Weight in kg for ${esc(it.name)}${last ? `, last time ${last.kg}` : ''}">${hasTrend(who, crew(), it)
+    ? `<button class="r-trend" data-act="trend" data-s="${esc(slug(it.name))}" aria-expanded="${trendOpen.has(slug(it.name))}" aria-label="Weight trend for ${esc(it.name)}">${last ? `last ${last.kg}` : 'trend'} ${trendOpen.has(slug(it.name)) ? '▴' : '▾'}</button>`
+    : last ? `<small>last ${last.kg}</small>` : ''}</span>`;
 }
 
 function bonusBlock(who, mine) {
@@ -407,7 +446,7 @@ function crewTab(me, people, who) {
       ${me.role !== 'guest' ? '' : `<div class="heads small">${Object.entries(HEADS).map(([h, n]) => {
         const taken = guests().some(g => g.head === h && g.id !== me.id);
         return `<label class="${taken ? 'taken' : ''}"><input type="radio" name="head" value="${h}" ${h === me.head ? 'checked' : ''} ${taken ? 'disabled' : ''}><img src="heads/${h}.jpg" alt=""><span>${n}</span></label>`; }).join('')}</div>`}
-      ${swatches(me.color)}
+      ${swatches(me.color, me.id)}
       <button class="btn">Save</button>
     </form>
   </details>
@@ -467,7 +506,10 @@ $app.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset.kg && !viewing) {
     const raw = t.value.trim().replace(',', '.'), kg = raw ? Math.round(+raw * 100) / 100 : 0;
-    if (!(kg >= 0 && kg < 1000)) { t.value = ''; toast('Weight must be a number in kg'); return; }
+    if (!(kg >= 0 && kg < 1000) || (kg === 0 && +raw !== 0)) {
+      t.value = S.me()?.checks?.[t.dataset.kg]?.v || '';   // put back what's saved, not a blank that looks saved
+      toast('Weight must be 0.01 to 999.99 kg'); return;
+    }
     S.set({ [t.dataset.kg]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
   } else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
   else if (t.dataset.act === 'session') write({ [`${sel}|session`]: { v: t.value } }, `${sel} → ${plan.sessions[t.value]?.title || 'Rest'}`);
@@ -495,6 +537,7 @@ $app.addEventListener('click', async e => {
     write(entries, `✓ all of ${st.s.title} (${sel})`);
   }
   else if (act === 'muscle') { mm.muscle = b.dataset.m; if (b.tagName === 'BUTTON') mm.view = MUSCLES[mm.muscle].view; render(); }
+  else if (act === 'trend') { const s = b.dataset.s; trendOpen.has(s) ? trendOpen.delete(s) : trendOpen.add(s); render(); }
   else if (act === 'mfilter') { mm.filter = b.dataset.f; render(); }
   else if (act === 'mview') { mm.view = b.dataset.v; render(); }
   else if (act === 'asmember' && MEMBERS[b.dataset.id]) { err = ''; joinMode = b.dataset.id; render(); $app.querySelector('input[name=pin]')?.focus(); }

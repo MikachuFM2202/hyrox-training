@@ -13,13 +13,15 @@ assert.deepEqual(merge(m, phone), m, 'idempotent');
 assert.equal(merge(undefined, phone), phone);
 console.log('merge ok');
 
-import { lastKg } from './store.js';
+import { lastKg, kgHistory } from './store.js';
 const log = { '2026-10-06|kg:lat-pulldown': { v: 30 }, '2026-10-13|kg:lat-pulldown': { v: 32.5 }, '2026-10-10|kg:lat-pulldown': { v: 0 },
   '2026-10-08|kg:lat-pulldown-light': { v: 10 }, '2026-10-20|kg:lat-pulldown': { v: 35 } };
 assert.deepEqual(lastKg(log, '2026-10-20', 'lat-pulldown'), { date: '2026-10-13', kg: 32.5 }, 'latest earlier day, cleared days skipped');
 assert.equal(lastKg(log, '2026-10-06', 'lat-pulldown'), null, 'nothing before the first log');
 assert.deepEqual(lastKg(log, '2026-10-09', 'lat-pulldown'), { date: '2026-10-06', kg: 30 }, 'other exercise with same prefix ignored');
 assert.equal(lastKg({ '2026-10-01|kg:x': { v: '<img onerror=alert(1)>' } }, '2026-10-02', 'x'), null, 'non-numbers never come back');
+assert.deepEqual(kgHistory(log, 'lat-pulldown', '2026-10-13').map(p => p.kg), [30, 32.5], 'history: oldest first, up to the day, no cleared entries');
+assert.deepEqual(kgHistory({ '2026-10-01|kg:x': { v: 'bad' }, '2026-10-02|kg:x': { v: Infinity } }, 'x', '2026-12-31'), [], 'history drops non-numbers');
 console.log('kg ok');
 
 import { groupsOf } from './muscles.js';

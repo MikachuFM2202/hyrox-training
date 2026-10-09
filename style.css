@@ -229,6 +229,19 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .rows .r-kg input::placeholder { color: #6a6a6a; }
 .r-kg small { font: 9px var(--mono); color: var(--mute); }
 .r-kg.up small { color: var(--ok); }
+.r-trend { background: none; border: 0; padding: 2px 0; font: 9px var(--mono); color: var(--mute); white-space: nowrap; min-height: 24px; }
+.r-kg.up .r-trend { color: var(--ok); }
+.rows li { flex-wrap: wrap; }
+.trend { flex-basis: 100%; padding: 0 0 12px 40px; }
+.trend svg { width: 100%; max-width: 420px; height: auto; display: block; overflow: visible; }
+.t-grid line { stroke: #262626; stroke-width: 1; }
+.t-grid text, .trend .end { font: 9px var(--mono); fill: var(--mute); }
+.trend .end { fill: var(--text); font-weight: 700; }
+.trend polyline { fill: none; stroke: var(--c); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.trend circle { fill: var(--c); stroke: var(--panel); stroke-width: 2; }
+.t-legend { display: flex; gap: 12px; font: 10px var(--mono); color: var(--mute); margin-bottom: 4px; }
+.t-legend span::before { content: ''; display: inline-block; width: 10px; height: 2px; background: var(--c); vertical-align: middle; margin-right: 5px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .r-demo:active, .r-skip:active { transform: scale(.85); }
 .rows li.done .r-name { color: var(--mute); text-decoration: line-through; text-decoration-color: #555; }
 .rows li.skip { opacity: .55; }
@@ -367,4 +380,13 @@ details[open] > :not(summary) { animation: rise .3s var(--ease) both; }
 @media (min-width: 700px) {
   .day-panel, .card { padding: 20px; }
   .tile { min-height: 76px; } .tile .t-num { font-size: 24px; }
+}
+
+/* Small phones: give the exercise name room next to the kg box, video and skip buttons. */
+@media (max-width: 360px) {
+  .rows label { gap: 8px; }
+  .rows input { width: 24px; height: 24px; }
+  .r-demo, .r-skip { width: 32px; }
+  .rows .r-kg input { width: 48px; }
+  .trend { padding-left: 0; }
 }

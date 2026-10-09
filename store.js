@@ -51,6 +51,16 @@ export function lastKg(checks = {}, date, slug) {
   return best;
 }
 
+/** Every weight logged for an exercise up to and including `upto`, oldest first. */
+export function kgHistory(checks = {}, slug, upto) {
+  const out = [];
+  for (const [k, c] of Object.entries(checks)) {
+    const d = k.slice(0, 10);
+    if (typeof c.v === 'number' && isFinite(c.v) && c.v > 0 && k.slice(10) === `|kg:${slug}` && d <= upto) out.push({ date: d, kg: c.v });
+  }
+  return out.sort((a, b) => a.date < b.date ? -1 : 1);
+}
+
 async function gh(path, opts = {}) {
   const r = await fetch(`https://api.github.com/repos/${REPO}${path ? '/' + path : ''}`, {
     cache: 'no-store', ...opts,
