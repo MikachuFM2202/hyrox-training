@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791481266762,
- "seen": 1791517198348,
+ "seen": 1791525687004,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -15,6 +15,10 @@
   "2026-10-10|shoulder-press-machine": {
    "v": 0,
    "t": 1791481362259
+  },
+  "2026-10-10|hanging-leg-raises": {
+   "v": 0,
+   "t": 1791517937736
   }
  }
 }
