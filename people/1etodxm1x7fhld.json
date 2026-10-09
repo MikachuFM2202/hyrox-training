@@ -4,8 +4,8 @@
  "head": "arnold",
  "role": "guest",
  "id": "1etodxm1x7fhld",
- "removed": false,
- "u": 1791447670782,
+ "removed": true,
+ "u": 1791556726815,
  "seen": 1791481248812,
  "checks": {
   "2026-10-11|rowing-machine": {
