@@ -108,8 +108,14 @@ const typing = () => document.activeElement?.matches?.('#app input[type=text], #
 let lastScroll = 0, lastTouch = 0, held = 0;
 addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
 addEventListener('pointerdown', () => { lastTouch = performance.now(); }, { passive: true });   // taps always render at once
+// Swapping the DOM between a finger going down and coming up eats the tap (e.g. a weight saving on blur
+// while the finger lands on the tick box). Hold renders while a pointer is down; the click still runs first.
+let pointerDown = 0, afterTap = false;
+addEventListener('pointerdown', () => { pointerDown = performance.now(); }, { capture: true, passive: true });
+for (const ev of ['pointerup', 'pointercancel']) addEventListener(ev, () => { pointerDown = 0; if (afterTap) { afterTap = false; setTimeout(render); } }, { capture: true, passive: true });
 
 function render() {
+  if (pointerDown && performance.now() - pointerDown < 1500) { afterTap = true; clearTimeout(held); held = setTimeout(render, 1600); return; }   // a lost pointerup can't freeze the page
   if (lastScroll > lastTouch && performance.now() - lastScroll < 250) { clearTimeout(held); held = setTimeout(render, 300); return; }
   if (!plan) { $app.innerHTML = '<div class="loading"><span>HYROX</span></div>'; return; }
   // Don't yank a half-typed bonus exercise out from under the user; render when they leave the field.
@@ -225,8 +231,9 @@ function main() {
   const me = S.me(), today = todayIso();
   sel ||= today;
   calMonth ||= sel.slice(0, 7);
+  if (viewing && (!S.people[viewing] || S.people[viewing].removed)) viewing = null;   // they left: back to my own page, editable again
   const v = viewing && S.people[viewing];
-  const who = v && !v.removed ? v : me, mine = who.id === me.id;
+  const who = v || me, mine = who.id === me.id;
   const people = crew(), live = people.filter(online);
   const fresh = seenOnline ? live.filter(p => !seenOnline.has(p.id) && p.id !== me.id) : [];
   seenOnline = new Set(live.map(p => p.id));
@@ -575,10 +582,11 @@ $app.addEventListener('submit', async e => {
     const head = f.get('head');
     if (!HEADS[head] || guests().length >= MAX_GUESTS || guests().some(g => g.head === head)) { err = 'That legend was just taken. Pick another.'; render(); return; }
     err = ''; intro = true;
-    S.join({ name: HEADS[head], color: f.get('color'), head, role: 'guest' });
+    S.join({ name: HEADS[head], color: f.get('color') || COLORS[1], head, role: 'guest' });
   } else if (form === 'profile') {
     const head = f.get('head');
-    S.setProfile(head && HEADS[head] ? { head, name: HEADS[head], color: f.get('color') } : { color: f.get('color') });
+    const color = f.get('color') || S.me().color;   // a retired colour has no swatch to tick; keep it rather than saving none
+    S.setProfile(head && HEADS[head] ? { head, name: HEADS[head], color } : { color });
     toast('Profile saved');
   } else if (form === 'bonus') {
     document.activeElement?.blur();
@@ -594,11 +602,12 @@ addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = 
 // Stay live while the page is open: pull everyone's ticks every 15 s, say "I'm here" every few minutes.
 const tick = () => { if (!document.hidden && S.hasToken()) { S.poll(); S.heartbeat(); } };
 setInterval(tick, 15e3);
-setInterval(() => { if (!document.hidden) render(); }, 60e3);   // "seen 3 min ago" and online dots age even without new data
 let lastDay = todayIso();
+const newDay = () => { if (todayIso() !== lastDay) { lastDay = sel = todayIso(); calMonth = sel.slice(0, 7); } };   // past midnight: jump to today
+setInterval(() => { if (!document.hidden) { newDay(); render(); } }, 60e3);   // "seen 3 min ago" and online dots age even without new data
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) return void S.save();
-  if (todayIso() !== lastDay) { lastDay = sel = todayIso(); calMonth = sel.slice(0, 7); }  // reopened on a new day
+  newDay();
   tick();
 });
 addEventListener('online', tick);
