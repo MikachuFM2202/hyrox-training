@@ -6,7 +6,8 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 - **Day checklist:** sections with "Pick N" targets. Each row shows the exercise, the muscles it works, sets and reps, and a demo video link, with tick (✅) and skip (✕) buttons. Above the rows: an "X left · next" counter, a 5-minute warm-up, Mark all complete, and confetti when the session is done.
 - **Rules from the plan:** "Skip section" (core sore), swapping any day's session (no legs this week, extra session on a rest day), and a Bonus section for work outside the plan.
 - **Calendar:** a month view with gym and optional days, % done per day, 💪 on completed days, and the race and wedding dates marked.
-- **Muscle map:** front/back body with a day filter (All/Tue/Thu/Sat/Sun). Tap a muscle to see which exercises hit it. Orange = primary, blue = secondary, green = core/rehab, dark = rest. It is built from each exercise's `muscles` text in `plan.json` (`muscles.js`).
+- **Weight log:** every rep-based exercise has a kg box. It shows your last weight for that exercise (green when you beat it), and under the exercise name everyone else's latest weight in their colour (▲ when it's heavier than yours), so Mika and Aidan can compare.
+- **Muscle map:** front/back body with a day filter (All/Tue/Thu/Sat/Sun). Tap a muscle to see which exercises hit it. Orange = primary, blue = secondary, green = core/rehab, dark = rest. It is built from each exercise's `muscles` text in `plan.json` (`muscles.js`). Muscle shapes are traced from [innerbody.com's muscular system map](https://www.innerbody.com/image/musfov.html).
 - **Phone first:** a bottom tab bar with Today, Calendar, Muscles and Crew.
 - **Crew:** the top-right corner shows how many people are online and a dot for each person. Tap a dot to see that person's checklist (read only). Everyone's ticks show as coloured dots on each exercise.
 - **Install:** the site is a PWA. On Android or Chrome use "Install app". On iPhone, use Safari: Share → Add to Home Screen.
@@ -15,7 +16,7 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 
 1. Enter the site password.
 2. Paste the access key, or tap "Preview without syncing" to try the site without saving to GitHub.
-3. Pick **Mika** (needs the Mika PIN), or **Guest**. A guest picks a bodybuilder head and a colour.
+3. Pick **Mika** or **Aidan** (each needs their own PIN), or **Guest**. A guest picks a bodybuilder head and a colour. Mika and Aidan follow the same plan.
 
 There are at most 5 guests, which keeps polling and GitHub API use small. Mika can free a guest's spot from the Crew tab (✕), and a guest can use "Leave crew". When someone comes online, their head pops into the top-right corner.
 

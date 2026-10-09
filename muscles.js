@@ -12,7 +12,8 @@ export const MUSCLES = {
   forearms:   { name: 'Forearms',   sub: 'Flexors & extensors',             view: 'front' },
   abs:        { name: 'Abs',        sub: 'Rectus abdominis & deep core',    view: 'front' },
   obliques:   { name: 'Obliques',   sub: 'Internal & external obliques',    view: 'front' },
-  quads:      { name: 'Quads',      sub: 'Quadriceps, VMO & hip flexors',   view: 'front' },
+  hipflexors: { name: 'Hip Flexors', sub: 'Iliopsoas, sartorius & TFL',    view: 'front' },
+  quads:      { name: 'Quads',      sub: 'Quadriceps & VMO',                view: 'front' },
   hamstrings: { name: 'Hamstrings', sub: 'Biceps femoris & co.',            view: 'back' },
   glutes:     { name: 'Glutes',     sub: 'Gluteus max, med & min',          view: 'back' },
   adductors:  { name: 'Adductors',  sub: 'Inner thigh',                     view: 'front' },
@@ -26,7 +27,7 @@ const WORDS = [
   [/pec|chest/i, 'chest'], [/trap|rhomboid/i, 'traps'], [/lat|teres|back/i, 'lats'],
   [/tricep/i, 'triceps'], [/forearm/i, 'forearms'], [/bicep|brachialis|arms/i, 'biceps'],
   [/oblique/i, 'obliques'], [/abs|abdomin|core/i, 'abs'],
-  [/quad|vmo|hip flexor|knee stabil/i, 'quads'], [/hamstring/i, 'hamstrings'],
+  [/hip flexor/i, 'hipflexors'], [/quad|vmo|knee stabil/i, 'quads'], [/hamstring/i, 'hamstrings'],
   [/glute|outer thigh/i, 'glutes'], [/adductor|inner thigh/i, 'adductors'], [/calf|calves|achilles/i, 'calves'],
 ];
 export function groupsOf(muscles = '') {
@@ -54,30 +55,32 @@ export function analyse(plan, filter) {
   return { hits, tone };
 }
 
-// Left half of the figure (viewer's left). The right half is the same shape mirrored.
-const BODY = 'M100,54 L92,56 L76,64 C60,66 52,78 53,94 L51,146 L47,196 L52,214 L62,202 L68,150 L72,112 L74,176 L76,186 C71,222 72,258 78,288 C74,320 76,350 81,376 L79,398 L97,399 L97,372 C99,340 99,310 97,288 C100,260 100,230 100,200 Z';
+// Shapes traced from innerbody.com's front/back muscular system maps (innerbody.com/image/musfov.html),
+// in that image's 1400x1916 pixel space. Left half of the figure (viewer's left); the right half is mirrored.
+const BODY = 'M700,250 L656,256 L652,332 C612,342 566,348 536,362 C506,376 492,410 493,460 L490,600 L486,700 L470,820 L452,935 L420,960 L405,1030 L430,1110 L470,1100 L500,1020 L505,940 L522,830 L540,720 L548,600 L550,505 L578,482 L580,600 L566,750 L548,830 L530,900 L525,1000 L540,1150 L562,1290 L560,1400 L568,1520 L585,1680 L588,1760 L565,1830 L600,1852 L680,1848 L652,1760 L648,1650 L668,1500 L662,1320 L670,1150 L688,950 L700,932 Z';
 const PATHS = {
   front: {
-    traps: 'M92,57 L77,66 L91,67 Z',
-    shoulders: 'M77,67 C63,68 55,77 56,91 C56,99 59,104 63,106 L73,89 L80,74 Z',
-    chest: 'M98,72 L81,72 C74,77 71,89 73,100 C81,108 92,108 98,104 Z',
-    biceps: 'M59,106 C55,118 55,132 58,142 L68,142 C72,130 72,117 69,106 Z',
-    forearms: 'M57,146 C53,160 51,178 53,193 L60,193 C65,178 67,160 68,146 Z',
-    abs: 'M88,109 L99,109 L99,176 L90,176 C86,160 86,125 88,109 Z',
-    obliques: 'M86,110 L75,105 C71,125 73,150 79,172 L88,176 C84,156 84,128 86,110 Z',
-    quads: 'M80,190 C74,214 74,250 80,278 L94,278 C98,250 98,216 95,193 Z',
-    adductors: 'M96,194 L99,198 L99,248 C97,250 95,246 95,238 C96,222 97,208 96,194 Z',
-    calves: 'M81,292 C77,318 79,348 84,370 L92,370 C96,348 96,318 94,292 Z',
+    traps: 'M655,295 L650,338 L572,352 C604,336 632,318 655,295 Z',
+    shoulders: 'M574,356 C540,352 506,370 497,410 C492,446 500,480 515,500 C530,470 546,440 560,412 L578,388 Z',
+    chest: 'M695,365 L640,358 C606,360 582,374 574,394 L566,430 C578,470 600,520 640,545 C670,550 690,536 695,526 Z',
+    biceps: 'M520,482 C505,530 505,610 515,690 L545,690 C552,620 552,540 548,482 Z',
+    forearms: 'M498,702 C480,760 470,840 470,925 L500,925 C515,860 535,780 545,710 Z',
+    abs: 'M698,540 L656,545 C646,610 646,720 656,820 C670,850 688,862 698,862 Z',
+    obliques: 'M648,552 C622,544 600,534 582,526 C576,600 571,700 576,770 C600,800 628,818 650,828 C641,720 640,620 648,552 Z',
+    hipflexors: 'M596,846 C615,880 648,908 686,922 L672,962 C640,956 610,934 588,902 Z',
+    quads: 'M562,880 C542,950 536,1060 548,1170 C560,1240 585,1275 610,1280 L650,1275 C664,1200 666,1090 652,968 C626,950 600,920 584,900 Z',
+    adductors: 'M688,928 L676,966 C658,1000 652,1060 662,1165 C674,1090 684,1000 688,928 Z',
+    calves: 'M640,1350 C668,1400 676,1480 668,1560 C661,1620 652,1648 646,1660 C630,1580 628,1450 640,1350 Z',
   },
   back: {
-    traps: 'M99,56 L88,62 L75,71 L86,78 L99,106 Z',
-    reardelts: 'M75,70 C63,72 56,82 58,94 L70,91 L79,78 Z',
-    lats: 'M98,108 L85,82 C77,92 73,110 75,128 C83,142 92,150 98,156 Z',
-    triceps: 'M59,100 C55,114 55,130 58,140 L68,140 C70,126 70,112 68,100 Z',
-    forearms: 'M57,144 C53,158 51,176 53,192 L60,192 C65,176 67,158 68,144 Z',
-    glutes: 'M99,180 L84,176 C76,186 76,204 82,214 C90,220 97,218 99,214 Z',
-    hamstrings: 'M81,220 C77,240 78,262 82,280 L96,280 C98,262 98,240 98,222 Z',
-    calves: 'M81,292 C75,310 77,334 82,350 C86,356 92,356 94,350 C98,334 98,310 94,292 Z',
+    traps: 'M698,250 L660,266 C640,310 600,336 560,350 L592,376 C620,392 640,420 652,452 C666,520 684,580 698,616 Z',
+    reardelts: 'M586,366 C546,356 506,370 497,410 C492,450 500,480 512,496 C530,466 556,432 592,402 Z',
+    lats: 'M592,442 C576,470 576,520 582,580 C586,640 590,700 600,750 C630,762 660,742 690,722 L672,642 C656,560 642,482 616,452 Z',
+    triceps: 'M505,472 C495,540 495,620 505,700 L545,700 C552,620 550,530 546,472 Z',
+    forearms: 'M500,712 C482,770 472,850 472,925 L502,925 C515,860 532,780 545,716 Z',
+    glutes: 'M690,830 C670,800 630,780 590,790 C560,806 545,850 545,900 C548,950 565,990 600,1000 C640,1000 670,985 688,960 Z',
+    hamstrings: 'M566,1004 C556,1080 560,1180 585,1270 L615,1290 L650,1280 C665,1200 675,1100 678,1004 C640,1014 600,1014 566,1004 Z',
+    calves: 'M590,1320 C566,1370 560,1450 570,1530 C580,1580 600,1600 620,1600 C640,1600 660,1580 668,1530 C675,1450 668,1370 640,1320 Z M612,1604 L628,1604 L624,1760 L614,1760 Z',
   },
 };
 
@@ -102,15 +105,15 @@ export function muscleMap(plan, { view, filter, muscle }) {
     <div class="mm-body">
       <div class="mm-figure">
         <div class="seg small">${['front', 'back'].map(v => `<button class="${v === view ? 'on' : ''}" data-act="mview" data-v="${v}">${v[0].toUpperCase() + v.slice(1)}</button>`).join('')}</div>
-        <svg viewBox="40 0 120 410" class="body" aria-label="${view} body view">
+        <svg viewBox="390 70 620 1790" class="body" aria-label="${view} body view">
           <defs>
             <radialGradient id="mg-pri" cx="40%" cy="35%"><stop offset="0" stop-color="#ffb347"/><stop offset=".55" stop-color="#ff6b2b"/><stop offset="1" stop-color="#c2271c"/></radialGradient>
             <radialGradient id="mg-sec" cx="40%" cy="35%"><stop offset="0" stop-color="#9fd0ff"/><stop offset="1" stop-color="#2f6fd6"/></radialGradient>
             <radialGradient id="mg-core" cx="40%" cy="35%"><stop offset="0" stop-color="#8ff0b6"/><stop offset="1" stop-color="#1e9e57"/></radialGradient>
             <radialGradient id="mg-skin" cx="50%" cy="30%"><stop offset="0" stop-color="#2a2a2a"/><stop offset="1" stop-color="#151515"/></radialGradient>
           </defs>
-          <g class="sil"><ellipse cx="100" cy="31" rx="17" ry="21"/><path d="${BODY}"/><path d="${BODY}" transform="matrix(-1 0 0 1 200 0)"/></g>
-          <g>${half}</g><g transform="matrix(-1 0 0 1 200 0)">${half}</g>
+          <g class="sil"><ellipse cx="700" cy="176" rx="74" ry="92"/><path d="${BODY}"/><path d="${BODY}" transform="matrix(-1 0 0 1 1400 0)"/></g>
+          <g>${half}</g><g transform="matrix(-1 0 0 1 1400 0)">${half}</g>
         </svg>
         <div class="legend mm-legend"><span class="t-pri">Primary</span><span class="t-sec">Secondary</span><span class="t-core">Core / rehab</span><span class="t-off">Rest</span></div>
       </div>

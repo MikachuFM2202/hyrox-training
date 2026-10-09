@@ -5,7 +5,12 @@ const COLORS = ['#ff6b2b', '#ffb020', '#2ecc71', '#4da6ff', '#b07cff', '#ff4d6d'
 // Guest heads: freely licensed Wikimedia Commons photos, credits in README.md.
 const HEADS = { arnold: 'Arnold', ronnie: 'Ronnie', lou: 'Lou', cbum: 'CBum', zane: 'Zane', cutler: 'Cutler' };
 const MAX_GUESTS = 5;   // keeps polling + GitHub API use small enough to stay stable
-const OWNER = { id: 'mika', name: 'Mika', head: 'mika', role: 'owner' };
+// Named crew: a fixed id each, so all of one person's devices share one file. Same plan for both.
+const MEMBERS = {
+  mika:  { id: 'mika',  name: 'Mika',  head: 'mika',  role: 'owner',  color: '#ff6b2b', pin: '31d8edb99534fd4800651db4d241d86e0380fa7376718b88590c2d772b41d5f4' },
+  aidan: { id: 'aidan', name: 'Aidan', head: 'aidan', role: 'member', color: '#4da6ff', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
+};
+const memberProfile = id => { const { pin, ...m } = MEMBERS[id]; return { ...m, color: S.people[id]?.color || m.color }; };
 const DAY = 864e5, ONLINE = 6 * 60e3;
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const $app = document.getElementById('app');
@@ -20,7 +25,6 @@ let seenOnline = null;   // who was online at the last render, to pop in newcome
 
 // Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
 const PASS_HASH = '64d27cba265dd65d63ef0b8cb90436d3d4c5bbeb9c59b4ea0309ac4f26bd78e8';
-const MIKA_PIN_HASH = '31d8edb99534fd4800651db4d241d86e0380fa7376718b88590c2d772b41d5f4';   // same caveat: keeps guests honest, not attackers
 let unlocked = S.ls.get('pass', '') === PASS_HASH;
 let preview = S.ls.get('preview', false);   // look around before an access key exists; ticks stay on this device and sync once a key is added
 const sha256 = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -48,11 +52,12 @@ const fmt = (s, o = { day: 'numeric', month: 'short' }) => {
 // ---- people ---------------------------------------------------------------
 const crew = () => Object.values(S.people)
   .filter(p => typeof p?.id === 'string' && typeof p.name === 'string' && p.name && p.role && !p.removed)
-  .sort((a, b) => (b.id === S.meId) - (a.id === S.meId) || (b.role === 'owner') - (a.role === 'owner') || a.name.localeCompare(b.name));
-const guests = () => crew().filter(p => p.role !== 'owner');
+  .sort((a, b) => (b.id === S.meId) - (a.id === S.meId) || rank(a) - rank(b) || a.name.localeCompare(b.name));
+function rank(p) { return { owner: 0, member: 1 }[p.role] ?? 2; }
+const guests = () => crew().filter(p => p.role === 'guest');
 const online = p => Date.now() - (p.seen || 0) < ONLINE;
 const ago = t => { const m = Math.round((Date.now() - t) / 60e3); return !t ? 'never' : m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
-const avatar = (p, cls = '') => `<span class="av ${cls} ${p.head === 'mika' ? 'owner' : ''}" style="--c:${col(p.color)}">${
+const avatar = (p, cls = '') => `<span class="av ${cls} ${MEMBERS[p.head] ? 'named' : ''}" style="--c:${col(p.color)}">${
   HEADS[p.head] ? `<img src="heads/${p.head}.jpg" alt="" decoding="async">` : `<b>${esc((p.name || '?')[0].toUpperCase())}</b>`}</span>`;
 
 // ---- plan + progress ------------------------------------------------------
@@ -65,6 +70,8 @@ function sessionId(p, date) {
   return o === 'rest' || plan.sessions[o] ? o : plan.schedule[dow(date)];
 }
 const itemKey = (date, it) => `${date}|${slug(it.name)}`;
+const kgKey = (date, it) => `${date}|kg:${slug(it.name)}`;
+const lifts = it => /×\s*\d+$/.test(it.sets || '');   // rep-based sets get a weight box; timed ones (plank, stretches, rowing) don't
 const secKey = (date, sec) => `${date}|sec:${slug(sec.name)}`;
 const bonuses = (p, date) => Object.entries(p?.checks || {})
   .filter(([k, c]) => k.startsWith(`${date}|bonus:`) && c.v && typeof c.name === 'string').map(([k, c]) => ({ k, ...c }));
@@ -162,21 +169,21 @@ function gate() {
 
 function join() {
   const gs = guests(), full = gs.length >= MAX_GUESTS;
-  if (joinMode === 'mika') return `<section class="gate">${brand()}
+  if (MEMBERS[joinMode]) { const m = memberProfile(joinMode); return `<section class="gate">${brand()}
     <button class="link back" data-act="joinback">‹ Back</button>
-    ${avatar({ ...OWNER, color: S.people.mika?.color || COLORS[0] }, 'xl')}
-    <h1>Mika’s<br><span class="grad">PIN</span></h1>
-    <form data-form="mika">
-      <input name="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="PIN" autocomplete="off" required aria-label="Mika's PIN">
+    ${avatar(m, 'xl')}
+    <h1>${m.name}’s<br><span class="grad">PIN</span></h1>
+    <form data-form="member">
+      <input name="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="PIN" autocomplete="off" required aria-label="${m.name}'s PIN">
       <button class="btn">Enter</button>
     </form>
     <p class="err" role="alert">${esc(err)}</p>
-  </section>`;
+  </section>`; }
   if (joinMode !== 'guest') return `<section class="gate">${brand()}
     <h1>Who’s<br><span class="grad">training?</span></h1>
     <div class="pick2">
-      <button class="pick-card mika" data-act="asmika">${avatar({ ...OWNER, color: S.people.mika?.color || COLORS[0] }, 'xl')}<b>Mika</b><small>Enter as Mika</small></button>
-      <button class="pick-card" data-act="asguest"><span class="av xl guest-ic">+</span><b>Guest</b><small>${gs.length}/${MAX_GUESTS} spots taken</small></button>
+      ${Object.keys(MEMBERS).map(id => { const m = memberProfile(id); return `<button class="pick-card member" style="--c:${col(m.color)}" data-act="asmember" data-id="${id}">${avatar(m, 'xl')}<b>${m.name}</b><small>Enter as ${m.name}</small></button>`; }).join('')}
+      <button class="pick-card guest" data-act="asguest"><span class="av xl guest-ic">+</span><b>Guest</b><small>${gs.length}/${MAX_GUESTS} spots taken</small></button>
     </div>
   </section>`;
 
@@ -315,10 +322,32 @@ function row(who, mine, people, k, it, sectionFull) {
       <span class="r-main"><span class="r-name">${esc(it.name)}</span>
         <span class="r-meta">${v === 2 ? '<b class="skipped">Skipped</b>' : `<b>${esc(it.sets || '')}</b>`}${it.muscles ? ` · ${esc(it.muscles)}` : ''}</span>
         ${it.note ? `<span class="r-note">${esc(it.note)}</span>` : ''}
+        ${kgVs(who, people, k, it)}
         ${others.length ? `<span class="who">${others.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</span></label>
+    ${kgBox(who, mine, k, it)}
     ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video${it.clip ? ', ' + esc(it.clip) : ''}: ${esc(it.name)}">▶${it.clip ? `<small>${esc(it.clip)}</small>` : ''}</a>` : ''}
     ${mine ? `<button class="r-skip" data-act="skip" data-k="${esc(k)}" data-l="${esc(it.name)}" aria-label="${v === 2 ? 'Undo skip' : 'Skip'} ${esc(it.name)}">${v === 2 ? '↺' : '✕'}</button>` : ''}
   </li>`;
+}
+
+// Other people's files are untrusted: only finite numbers reach the markup.
+const num = x => typeof x === 'number' && isFinite(x) ? x : 0;
+/** Everyone else's weight for this exercise: on this day if logged, else their most recent before it. */
+function kgVs(who, people, k, it) {
+  if (k !== itemKey(sel, it) || !lifts(it)) return '';
+  const mine = num(val(who, kgKey(sel, it))) || S.lastKg(who.checks, sel, slug(it.name))?.kg || 0;
+  const vs = people.filter(p => p.id !== who.id).map(p => [p, S.lastKg(p.checks, addDays(sel, 1), slug(it.name))]).filter(([, l]) => l);
+  if (!vs.length) return '';
+  return `<span class="r-vs">${vs.map(([p, l]) => `<span style="--c:${col(p.color)}" title="${esc(p.name)}">${avatar(p, 'xs')}<b>${mine && l.kg > mine ? '▲' : ''}${l.kg}</b>kg${l.date !== sel ? `<small>${fmt(l.date, { day: 'numeric', month: 'short' })}</small>` : ''}</span>`).join('')}</span>`;
+}
+
+function kgBox(who, mine, k, it) {
+  if (k !== itemKey(sel, it) || !lifts(it)) return '';   // warm-up rows share row() but aren't lifts
+  const cur = num(val(who, kgKey(sel, it))), last = S.lastKg(who.checks, sel, slug(it.name));
+  if (!mine && !cur) return '';
+  return `<span class="r-kg ${cur && last && cur > last.kg ? 'up' : ''}"><input type="text" inputmode="decimal" enterkeyhint="done" maxlength="6"
+    data-kg="${esc(kgKey(sel, it))}" data-l="${esc(it.name)}" value="${cur || ''}" placeholder="${last ? last.kg : 'kg'}" ${mine ? '' : 'disabled'}
+    aria-label="Weight in kg for ${esc(it.name)}${last ? `, last time ${last.kg}` : ''}">${last ? `<small>last ${last.kg}</small>` : ''}</span>`;
 }
 
 function bonusBlock(who, mine) {
@@ -363,10 +392,10 @@ function crewTab(me, people, who) {
     ${people.map(p => `<div class="member ${p.id === who.id ? 'sel' : ''}" style="--c:${col(p.color)}">
       <button class="m-open" data-act="view" data-id="${esc(p.id)}">
         <span class="dot ${online(p) ? 'on' : ''}" style="--c:${col(p.color)}">${avatar(p)}</span>
-        <span class="m-name">${esc(p.name)}${p.id === me.id ? ' <small>(you)</small>' : ''}<small class="sub">${p.role === 'owner' ? 'Owner · ' : ''}${online(p) ? 'online now' : 'seen ' + ago(p.seen)}</small></span>
+        <span class="m-name">${esc(p.name)}${p.id === me.id ? ' <small>(you)</small>' : ''}<small class="sub">${p.role === 'owner' ? 'Owner · ' : p.role === 'member' ? 'Crew · ' : ''}${online(p) ? 'online now' : 'seen ' + ago(p.seen)}</small></span>
         <span class="m-pct"><b>${weekPct(p, monday(todayIso()))}%</b><small>this week</small></span>
       </button>
-      ${owner && p.role !== 'owner' ? `<button class="r-skip" data-act="kick" data-id="${esc(p.id)}" aria-label="Free ${esc(p.name)}'s spot">✕</button>` : ''}
+      ${owner && p.role === 'guest' ? `<button class="r-skip" data-act="kick" data-id="${esc(p.id)}" aria-label="Free ${esc(p.name)}'s spot">✕</button>` : ''}
     </div>`).join('')}
   </section>
   <details class="card reveal rules" data-keep="rules"><summary><h3>Injury rules & goals</h3></summary>
@@ -375,7 +404,7 @@ function crewTab(me, people, who) {
   </details>
   <details class="card reveal" data-keep="profile"><summary><h3>Your profile</h3></summary>
     <form data-form="profile" class="profile">
-      ${owner ? '' : `<div class="heads small">${Object.entries(HEADS).map(([h, n]) => {
+      ${me.role !== 'guest' ? '' : `<div class="heads small">${Object.entries(HEADS).map(([h, n]) => {
         const taken = guests().some(g => g.head === h && g.id !== me.id);
         return `<label class="${taken ? 'taken' : ''}"><input type="radio" name="head" value="${h}" ${h === me.head ? 'checked' : ''} ${taken ? 'disabled' : ''}><img src="heads/${h}.jpg" alt=""><span>${n}</span></label>`; }).join('')}</div>`}
       ${swatches(me.color)}
@@ -386,7 +415,7 @@ function crewTab(me, people, who) {
     <p class="sync ${st.state}">${!S.hasToken() ? 'Preview · not synced' : st.state === 'error' ? '⚠ ' + esc(st.error) : st.state === 'saving' ? 'Saving…' : st.last ? 'Synced ' + ago(st.last) : 'Connecting…'}</p>
     ${installEvt ? '<button class="btn wide" data-act="install">Install app</button>' : /iphone|ipad/i.test(navigator.userAgent) && !navigator.standalone ? '<p class="hint">Install: Safari → Share → Add to Home Screen</p>' : ''}
     <button class="btn-ghost wide" data-act="switch">Switch person</button>
-    ${owner ? '' : '<button class="btn-ghost wide" data-act="leave">Leave crew (frees your spot)</button>'}
+    ${me.role !== 'guest' ? '' : '<button class="btn-ghost wide" data-act="leave">Leave crew (frees your spot)</button>'}
     ${S.hasToken() ? '<button class="link" data-act="signout">Forget access key on this phone</button>' : ''}
   </section>`;
 }
@@ -436,7 +465,11 @@ const showDay = () => { const d = document.getElementById('day'); if (d && d.get
 
 $app.addEventListener('change', e => {
   const t = e.target;
-  if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
+  if (t.dataset.kg && !viewing) {
+    const raw = t.value.trim().replace(',', '.'), kg = raw ? Math.round(+raw * 100) / 100 : 0;
+    if (!(kg >= 0 && kg < 1000)) { t.value = ''; toast('Weight must be a number in kg'); return; }
+    S.set({ [t.dataset.kg]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
+  } else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
   else if (t.dataset.act === 'session') write({ [`${sel}|session`]: { v: t.value } }, `${sel} → ${plan.sessions[t.value]?.title || 'Rest'}`);
 });
 
@@ -464,7 +497,7 @@ $app.addEventListener('click', async e => {
   else if (act === 'muscle') { mm.muscle = b.dataset.m; if (b.tagName === 'BUTTON') mm.view = MUSCLES[mm.muscle].view; render(); }
   else if (act === 'mfilter') { mm.filter = b.dataset.f; render(); }
   else if (act === 'mview') { mm.view = b.dataset.v; render(); }
-  else if (act === 'asmika') { err = ''; joinMode = 'mika'; render(); $app.querySelector('input[name=pin]')?.focus(); }
+  else if (act === 'asmember' && MEMBERS[b.dataset.id]) { err = ''; joinMode = b.dataset.id; render(); $app.querySelector('input[name=pin]')?.focus(); }
   else if (act === 'asguest') { joinMode = 'guest'; err = ''; render(); }
   else if (act === 'joinback') { joinMode = ''; err = ''; render(); }
   else if (act === 'claim') { const p = S.people[b.dataset.id]; err = ''; intro = true; S.join({ id: p.id, name: p.name, color: p.color, head: p.head, role: 'guest' }); }
@@ -477,7 +510,7 @@ $app.addEventListener('click', async e => {
 });
 
 // SVG muscles are role=button; give them the keyboard behaviour real buttons have.
-$app.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
+$app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.dataset.kg) e.target.blur(); if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
 
 $app.addEventListener('submit', async e => {
   e.preventDefault();
@@ -490,10 +523,11 @@ $app.addEventListener('submit', async e => {
     const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = 'Checking…';
     try { err = ''; await S.connect(f.get('k')); } catch (x) { err = x.message; }
     render();
-  } else if (form === 'mika') {
-    if (await sha256(f.get('pin')) !== MIKA_PIN_HASH) { err = 'Wrong PIN'; render(); return; }
+  } else if (form === 'member') {
+    const id = joinMode;
+    if (!MEMBERS[id] || await sha256(f.get('pin')) !== MEMBERS[id].pin) { err = 'Wrong PIN'; render(); return; }
     err = ''; joinMode = ''; intro = true;
-    S.join({ ...OWNER, color: S.people.mika?.color || COLORS[0] });
+    S.join(memberProfile(id));
   } else if (form === 'guest') {
     const head = f.get('head');
     if (!HEADS[head] || guests().length >= MAX_GUESTS || guests().some(g => g.head === head)) { err = 'That legend was just taken. Pick another.'; render(); return; }

@@ -13,9 +13,19 @@ assert.deepEqual(merge(m, phone), m, 'idempotent');
 assert.equal(merge(undefined, phone), phone);
 console.log('merge ok');
 
+import { lastKg } from './store.js';
+const log = { '2026-10-06|kg:lat-pulldown': { v: 30 }, '2026-10-13|kg:lat-pulldown': { v: 32.5 }, '2026-10-10|kg:lat-pulldown': { v: 0 },
+  '2026-10-08|kg:lat-pulldown-light': { v: 10 }, '2026-10-20|kg:lat-pulldown': { v: 35 } };
+assert.deepEqual(lastKg(log, '2026-10-20', 'lat-pulldown'), { date: '2026-10-13', kg: 32.5 }, 'latest earlier day, cleared days skipped');
+assert.equal(lastKg(log, '2026-10-06', 'lat-pulldown'), null, 'nothing before the first log');
+assert.deepEqual(lastKg(log, '2026-10-09', 'lat-pulldown'), { date: '2026-10-06', kg: 30 }, 'other exercise with same prefix ignored');
+assert.equal(lastKg({ '2026-10-01|kg:x': { v: '<img onerror=alert(1)>' } }, '2026-10-02', 'x'), null, 'non-numbers never come back');
+console.log('kg ok');
+
 import { groupsOf } from './muscles.js';
 assert.deepEqual(groupsOf('Biceps, Brachialis, Forearms'), ['biceps', 'forearms'], 'Forearms is not Arms');
 assert.deepEqual(groupsOf('Medial + Rear Delt'), ['shoulders', 'reardelts']);
 assert.deepEqual(groupsOf('Lats, Rhomboids, Traps, Biceps'), ['lats', 'traps', 'biceps']);
 assert.deepEqual(groupsOf('Achilles Tendon, Calves'), ['calves']);
+assert.deepEqual(groupsOf('Lower Abs, Hip Flexors'), ['abs', 'hipflexors'], 'Hip flexors are their own group');
 console.log('muscles ok');

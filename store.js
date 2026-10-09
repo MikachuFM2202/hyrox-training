@@ -41,6 +41,16 @@ export function merge(a, b) {
   return { ...older, ...newer, seen: Math.max(a.seen || 0, b.seen || 0), checks };
 }
 
+/** Most recent weight logged for an exercise before `date`: checks keys look like `<date>|kg:<slug>`. */
+export function lastKg(checks = {}, date, slug) {
+  let best = null;
+  for (const [k, c] of Object.entries(checks)) {
+    const d = k.slice(0, 10);
+    if (typeof c.v === 'number' && isFinite(c.v) && c.v > 0 && k.slice(10) === `|kg:${slug}` && d < date && (!best || d > best.date)) best = { date: d, kg: c.v };
+  }
+  return best;
+}
+
 async function gh(path, opts = {}) {
   const r = await fetch(`https://api.github.com/repos/${REPO}${path ? '/' + path : ''}`, {
     cache: 'no-store', ...opts,
