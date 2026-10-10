@@ -75,9 +75,10 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .gate input:focus, .bonus-form input:focus { outline: none; border-color: var(--o2); }
 .err { color: #ff6b6b !important; min-height: 1.5em; }
 .back { display: block; padding: 8px 0; margin-top: 12px; text-decoration: none; }
-.pick2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 28px; }
+.pick2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 28px; }
 .pick-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 24px 10px 20px; background: linear-gradient(180deg, #171717, #0d0d0d); border: 1px solid var(--line); transition: transform .25s var(--spring), border-color .2s; animation: rise .6s var(--ease) both; }
 .pick-card:nth-child(2) { animation-delay: .08s; }
+.pick2 .pick-card.member { padding: 18px 4px 16px; min-width: 0; } .pick2 .pick-card.member .av.xl { --s: 64px; } .pick2 .pick-card.member b { font-size: 17px; }
 .pick-card:active { transform: scale(.96); }
 .pick-card.member { border-color: color-mix(in srgb, var(--c) 50%, transparent); background: linear-gradient(180deg, color-mix(in srgb, var(--c) 16%, transparent), #0d0d0d 70%); }
 .pick-card.guest { grid-column: 1 / -1; flex-direction: row; justify-content: center; padding: 14px; gap: 14px; animation-delay: .16s; }
@@ -109,7 +110,7 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
   margin: 0 calc(-1 * max(16px, env(safe-area-inset-left))); padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
   background: #070707; border-bottom: 1px solid var(--line); }
 .top::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; background: var(--grad); opacity: .6; }
-.crew-dots { display: flex; align-items: center; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 6px; margin: -6px; }
+.crew-dots { margin-left: auto; display: flex; align-items: center; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; padding: 6px; margin: -6px; }
 .crew-dots .count { color: var(--mute); font: 500 11px var(--mono); margin-right: 4px; white-space: nowrap; }
 .crew-dots .count i { font-style: normal; }
 .top .dot + .dot { margin-left: -12px; }   /* overlapping heads so 6 people fit on a phone */
@@ -194,6 +195,9 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 
 .warm { border: 1px solid var(--line); padding: 0 12px; margin: 12px 0 4px; }
 .warm summary { padding: 14px 0; cursor: pointer; font: 700 13px var(--head); font-stretch: 125%; text-transform: uppercase; }
+.sb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-bottom: 12px; }
+.sb-grid .btn-ghost { min-height: 48px; }
+.sb-grid .btn-ghost:last-child:nth-child(odd) { grid-column: 1 / -1; }
 .warm summary small { font: 12px var(--mono); color: var(--mute); margin-left: 8px; }
 
 .sec { margin-top: 18px; }
@@ -374,6 +378,13 @@ details[open] > :not(summary) { animation: rise .3s var(--ease) both; }
 @keyframes toast-in { from { opacity: 0; transform: translateY(-16px) scale(.9); } }
 @keyframes toast-out { to { opacity: 0; transform: translateY(-12px); } }
 @keyframes burst { 0% { opacity: 1; transform: translate(0, 0) rotate(0); } 30% { opacity: 1; transform: translate(calc(var(--x) * .6), var(--y)) rotate(calc(var(--r) * .4)); } 100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 60vh)) rotate(var(--r)); } }
+/* sync state, top right */
+.sync-ic { flex: none; position: relative; width: 36px; height: 36px; margin-right: -6px; border: 0; padding: 0; background: none; display: grid; place-items: center; color: var(--ok); }
+.sync-ic svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.sync-ic.busy { color: var(--o3); } .sync-ic.busy svg { animation: spin 1s linear infinite; }
+.sync-ic.err { color: var(--o1); } .sync-ic.off { color: var(--mute); }
+.sync-ic.err::after, .sync-ic.off::after { content: ''; position: absolute; right: 5px; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: currentColor; border: 2px solid #070707; }
+@keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
 
 /* bigger screens: same phone layout, a little roomier */

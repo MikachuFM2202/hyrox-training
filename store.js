@@ -21,7 +21,7 @@ export const uid = () => crypto.getRandomValues(new Uint32Array(2)).reduce((s, n
 
 let token = ls.get('token', '');
 export let meId = ls.get('me', '');
-export let people = ls.get('people', {});   // id -> doc, last known copy (paints instantly, works offline)
+export let people = Object.fromEntries(Object.entries(ls.get('people', {}) || {}).map(([id, d]) => [id, clean(d)]));   // id -> doc, last known copy (paints instantly, works offline)
 const shas = {};                            // id -> blob sha currently on the data branch
 const listeners = new Set();
 export const status = { state: 'idle', error: '', last: 0 };
@@ -60,6 +60,18 @@ export function kgHistory(checks = {}, slug, upto) {
   }
   return out.sort((a, b) => a.date < b.date ? -1 : 1);
 }
+
+// Other people's files are untrusted: one corrupt or hand-edited file must not blank the page (or stop sync) for the whole crew.
+export function clean(d) {
+  if (!d || typeof d !== 'object' || Array.isArray(d)) return null;
+  const checks = {};
+  for (const [k, c] of Object.entries(d.checks && typeof d.checks === 'object' ? d.checks : {})) if (c && typeof c === 'object') checks[k] = c;
+  return { ...d, checks };
+}
+const parse = text => { try { return clean(JSON.parse(text)); } catch { return null; } };
+
+// Two people saving at once both commit to the data branch; GitHub answers the loser with 409. Wait a random beat so the retries don't collide again.
+const backoff = n => new Promise(r => setTimeout(r, (300 + Math.random() * 700) * (n + 1)));
 
 async function gh(path, opts = {}) {
   const r = await fetch(`https://api.github.com/repos/${REPO}${path ? '/' + path : ''}`, {
@@ -106,7 +118,7 @@ export function poll() {
       for (const f of list.filter(f => f.name.endsWith('.json'))) {
         const id = f.name.slice(0, -5);
         if (shas[id] === f.sha) continue;
-        const doc = JSON.parse(unb64((await gh(`git/blobs/${f.sha}`)).content));
+        const doc = parse(unb64((await gh(`git/blobs/${f.sha}`)).content));
         shas[id] = f.sha;
         const next = id === meId ? merge(people[id], doc) : doc;  // keep my unsynced ticks
         if (JSON.stringify(next) !== JSON.stringify(people[id])) { people[id] = next; changed = true; }
@@ -140,7 +152,7 @@ function update(fn, msg) {
 export function join(profile) {
   meId = profile.id || uid(); ls.set('me', meId);
   const now = Date.now();
-  people[meId] = merge(people[meId], { ...profile, id: meId, removed: false, u: now, seen: now, checks: {} });
+  people[meId] = merge(people[meId], { ...profile, id: meId, removed: false, joined: people[meId]?.joined || now, u: now, seen: now, checks: {} });
   update(d => d, `${profile.name} joined the crew`);
 }
 export const setProfile = fields => update(d => ({ ...d, ...fields, u: Date.now() }), `${people[meId].name} updated profile`);
@@ -161,13 +173,13 @@ export async function remove(id) {
   for (let attempt = 0; ; attempt++) {
     try {
       const cur = await gh(`${path}?ref=${BRANCH}&_=${Date.now()}`);
-      const doc = merge(JSON.parse(unb64(cur.content)), people[id]);
+      const doc = merge(parse(unb64(cur.content)), people[id]);
       const r = await gh(path, { method: 'PUT', body: JSON.stringify({ message: `${doc.name} left the crew`, branch: BRANCH, sha: cur.sha, content: b64(JSON.stringify(doc, null, 1)) }) });
       shas[id] = r.content.sha; people[id] = doc; ls.set('people', people);
       return;
     } catch (e) {
       if (e.status === 404) return;                        // never synced: nothing to mark
-      if (attempt < 3 && e.status === 409) continue;
+      if (attempt < 4 && e.status === 409) { await backoff(attempt); continue; }
       setStatus('error', errText(e)); return;
     }
   }
@@ -198,11 +210,12 @@ export function save() {
           break;
         } catch (e) {
           // 409/422: my other device wrote first (or I don't know the sha yet). Re-read, merge, retry.
-          if (attempt >= 3 || ![409, 422].includes(e.status)) throw e;
+          if (attempt >= 4 || ![409, 422].includes(e.status)) throw e;
+          await backoff(attempt);
           try {
             const cur = await gh(`${path}?ref=${BRANCH}&_=${Date.now()}`);
             shas[meId] = cur.sha;
-            people[meId] = merge(people[meId], JSON.parse(unb64(cur.content)));
+            people[meId] = merge(people[meId], parse(unb64(cur.content)));
           } catch (e2) { if (e2.status !== 404) throw e2; delete shas[meId]; }
         }
       }

@@ -9,8 +9,12 @@ const MAX_GUESTS = 5;   // keeps polling + GitHub API use small enough to stay s
 const MEMBERS = {
   mika:  { id: 'mika',  name: 'Mika',  head: 'mika',  role: 'owner',  color: '#ff6b2b', pin: '31d8edb99534fd4800651db4d241d86e0380fa7376718b88590c2d772b41d5f4' },
   aidan: { id: 'aidan', name: 'Aidan', head: 'aidan', role: 'member', color: '#4da6ff', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
+  barath: { id: 'barath', name: 'Barath', head: 'barath', role: 'member', color: '#b07cff', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
 };
 const memberProfile = id => { const { pin, ...m } = MEMBERS[id]; return { ...m, color: S.people[id]?.color || m.color }; };
+// Arnold soundboard: sounds/<file>.m4a, each under 3 s. Playback is also cut at 3 s in case a longer clip slips in.
+const SOUNDS = [['do-it', 'Do it!'], ['belong', 'You belong to me'], ['cookie', 'Put that cookie down'], ['stop-it', 'Stop it'], ['problemo', 'No problemo'],
+  ['mick', 'Mick!'], ['roar', 'Roar'], ['augh', 'Aaugh aaugh'], ['eaugh', 'Eaugh']];
 const DAY = 864e5, ONLINE = 6 * 60e3;
 const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const $app = document.getElementById('app');
@@ -21,6 +25,7 @@ const safeUrl = u => /^https:\/\//.test(u || '') ? u : '';
 let plan = null, sel = '', calMonth = null, viewing = null, screen = '', err = '', installEvt = null;
 let tab = 'today', joinMode = '', intro = true, justSet = '', deferred = false, lastHtml = '', tabChanged = false;
 let mm = { view: 'front', filter: 'all', muscle: 'chest' };
+let clip = null;   // the soundboard clip playing now; a new tap cuts it off
 let trendOpen = new Set();   // exercise slugs whose weight chart is expanded
 let seenOnline = null;   // who was online at the last render, to pop in newcomers
 
@@ -68,7 +73,7 @@ const val = (p, k) => p?.checks?.[k]?.v || 0;
 /** Session id for a person on a date: their day swap if they made one, else the weekly schedule. */
 function sessionId(p, date) {
   const o = p?.checks?.[`${date}|session`]?.v;
-  return o === 'rest' || plan.sessions[o] ? o : plan.schedule[dow(date)];
+  return o === 'rest' || Object.hasOwn(plan.sessions, o) ? o : plan.schedule[dow(date)];
 }
 const itemKey = (date, it) => `${date}|${slug(it.name)}`;
 const kgKey = (date, it) => `${date}|kg:${slug(it.name)}`;
@@ -246,10 +251,19 @@ function main() {
       <span class="count"><b>${live.length}</b><i> online</i></span>
       ${people.map(p => `<button class="dot ${online(p) ? 'on' : ''} ${p.id === who.id ? 'sel' : ''} ${fresh.includes(p) ? 'pop-in' : ''}" style="--c:${col(p.color)}" data-act="view" data-id="${esc(p.id)}" title="${esc(p.name)}${p.id === me.id ? ' (you)' : ''} · ${online(p) ? 'online' : 'offline'}" aria-label="${esc(p.name)}">${avatar(p)}</button>`).join('')}
     </div>
+    ${syncIcon()}
   </header>
   <div class="view ${tabChanged ? 'tab-in' : ''}">${body}</div>
   <nav class="tabs" aria-label="Sections">${TABS.map(([id, label]) =>
     `<button class="${tab === id ? 'on' : ''}" data-act="tab" data-t="${id}" aria-current="${tab === id ? 'page' : 'false'}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id]}</svg><span>${label}</span></button>`).join('')}</nav>`;
+}
+
+const SYNC_SVG = '<path d="M20 12a8 8 0 0 1-14.5 4.7M4 12a8 8 0 0 1 14.5-4.7"/><path d="M19 3v4.5h-4.5M5 21v-4.5h4.5"/>';
+/** Top-right sync state: green synced, spinning while saving, red on error, grey in preview. Tap to sync now. */
+function syncIcon() {
+  const st = S.status, k = !S.hasToken() ? 'off' : st.state === 'error' ? 'err' : st.state === 'saving' ? 'busy' : st.last ? 'ok' : 'busy';
+  const label = { off: 'Preview: not synced. Tap to add a key', err: `Sync error: ${st.error}. Tap to retry`, busy: 'Syncing…', ok: `Synced ${ago(st.last)}. Tap to sync now` }[k];
+  return `<button class="sync-ic ${k}" data-act="sync" aria-label="${esc(label)}" title="${esc(label)}"><svg viewBox="0 0 24 24" aria-hidden="true">${SYNC_SVG}</svg></button>`;
 }
 
 function banners(me, who, mine) {
@@ -284,6 +298,9 @@ function todayTab(me, who, mine, people, today) {
       </button>`;
     }).join('')}</div>
   </nav>
+  <details class="warm sb reveal" data-keep="sb"><summary>Arnold soundboard <small>tap to pump</small></summary>
+    <div class="sb-grid">${SOUNDS.map(([f, t]) => `<button class="btn-ghost" data-act="sound" data-f="${f}">${esc(t)}</button>`).join('')}</div>
+  </details>
   <main class="day-panel reveal" id="day">${dayPanel(who, mine, people)}</main>`;
 }
 
@@ -554,6 +571,14 @@ $app.addEventListener('click', async e => {
   else if (act === 'kick') { const p = S.people[b.dataset.id]; if (p) { if (viewing === p.id) viewing = null; S.remove(p.id); toast(`${p.name}'s spot is free`); } }
   else if (act === 'switch') { viewing = null; joinMode = ''; tab = 'today'; await S.switchPerson(); }
   else if (act === 'leave') { const id = S.meId; viewing = null; joinMode = ''; tab = 'today'; await S.switchPerson(); await S.remove(id); }
+  else if (act === 'sync') { if (!S.hasToken()) { preview = false; S.ls.set('preview', false); err = ''; render(); } else { S.poll(); toast(S.status.state === 'error' ? 'Retrying sync…' : 'Syncing…'); } }
+  else if (act === 'sound') {
+    clip?.pause();
+    const a = clip = new Audio(`sounds/${b.dataset.f}.m4a`);
+    a.onerror = () => toast('Clip failed to load');
+    a.play().catch(() => {});
+    setTimeout(() => a.pause(), 3000);
+  }
   else if (act === 'install') { installEvt.prompt(); installEvt = null; render(); }
   else if (act === 'signout') { viewing = null; preview = false; S.ls.set('preview', false); S.signOut(); }
   else if (act === 'preview' || act === 'addkey') { preview = act === 'preview'; S.ls.set('preview', preview); err = ''; render(); }
@@ -596,6 +621,19 @@ $app.addEventListener('submit', async e => {
 });
 $app.addEventListener('focusout', () => setTimeout(() => { if (deferred && !typing()) { deferred = false; render(); } }));
 
+// Two guests joining at the same moment can each see 4/5 and both get in. Once the files sync, the later joiner steps back out.
+let bumping = false;
+async function overflow() {
+  const me = S.me();
+  if (bumping || !S.hasToken() || me?.role !== 'guest' || me.removed) return;
+  const order = guests().sort((a, b) => (a.joined || 0) - (b.joined || 0) || (a.id < b.id ? -1 : 1));
+  if (order.findIndex(g => g.id === me.id) < MAX_GUESTS) return;
+  bumping = true; viewing = null; joinMode = 'guest'; tab = 'today';
+  const id = me.id;
+  await S.switchPerson(); await S.remove(id);
+  err = 'Crew filled up just before you. Ask Mika to free a spot.'; bumping = false; render();
+}
+S.onChange(overflow);
 S.onChange(() => { if (screen !== 'pass' && (screen !== 'gate' || S.hasToken())) render(); });  // never wipe a half-typed password or key
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (screen === 'main') render(); });
 

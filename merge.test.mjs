@@ -31,3 +31,9 @@ assert.deepEqual(groupsOf('Lats, Rhomboids, Traps, Biceps'), ['lats', 'traps', '
 assert.deepEqual(groupsOf('Achilles Tendon, Calves'), ['calves']);
 assert.deepEqual(groupsOf('Lower Abs, Hip Flexors'), ['abs', 'hipflexors'], 'Hip flexors are their own group');
 console.log('muscles ok');
+
+import { clean } from './store.js';
+assert.equal(clean(null), null); assert.equal(clean([1]), null); assert.equal(clean('x'), null);
+assert.deepEqual(clean({ id: 'g', checks: null }).checks, {}, 'null checks become empty');
+assert.deepEqual(clean({ id: 'g', checks: { a: null, b: 5, c: { v: 1, t: 1 } } }).checks, { c: { v: 1, t: 1 } }, 'non-object entries dropped');
+console.log('clean ok');
