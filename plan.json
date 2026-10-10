@@ -1223,7 +1223,10 @@
     "Glute machine",
     "T-bar row"
    ],
-   "src": "Club page description"
+   "src": "Club page description",
+   "sqft": 5000,
+   "size": "M",
+   "sizeSrc": "5,000 sq ft per club page"
   },
   {
    "id": "sg-0029",
@@ -1254,7 +1257,10 @@
     "Tyre flip",
     "Glute machine"
    ],
-   "src": "Club equipment list"
+   "src": "Club equipment list",
+   "sqft": 10000,
+   "size": "L",
+   "sizeSrc": "~10,000 sq ft per reviews"
   },
   {
    "id": "sg-0114",
@@ -1264,7 +1270,9 @@
     "HYROX kit",
     "Glute machine"
    ],
-   "src": "Club equipment list"
+   "src": "Club equipment list",
+   "size": "L",
+   "sizeSrc": "“Biggest gym in the west” per club page"
   },
   {
    "id": "sg-0024",
@@ -1284,7 +1292,10 @@
     "SkiErg",
     "Glute machine"
    ],
-   "src": "Club equipment list"
+   "src": "Club equipment list",
+   "sqft": 4500,
+   "size": "M",
+   "sizeSrc": "4,500 sq ft per club page"
   },
   {
    "id": "sg-0036",

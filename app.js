@@ -484,30 +484,64 @@ function calTab(who) {
   </section>`;
 }
 
-// Anytime Fitness clubs with kit most clubs don't have (plan.clubs). "Been here" is a per-person check `club:<id>`, synced like ticks.
-const clubKey = c => `club:${c.id}`, noteKey = c => `clubnote:${c.id}`;
+// Anytime Fitness clubs with kit most clubs don't have (plan.clubs). Per-person checks, synced like ticks:
+// `club:<id>` been here, `fav:<id>` favourite, `clubnote:<id>` remark, `clubsize:<id>` size vote, `<date>|crowd:<id>` 6–8 pm headcount.
+const clubKey = c => `club:${c.id}`, noteKey = c => `clubnote:${c.id}`, favKey = c => `fav:${c.id}`, sizeKey = c => `clubsize:${c.id}`;
 const note = (p, c) => { const v = p?.checks?.[noteKey(c)]?.v; return typeof v === 'string' ? v : ''; };   // synced files are untrusted
+const SIZES = { S: 'Small', M: 'Medium', L: 'Large' };   // small < 3,000 sq ft, medium 3,000–5,999, large 6,000+ (a typical club is 2,000–4,000)
+const PEAK_DAYS = 90;   // headcounts older than this drop out of the average
+const mapUrl = c => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Anytime Fitness ${c.name}, ${c.addr}, Singapore`)}`;
+const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
+/** Size: the club's own figure if known, else the crew's most common vote. */
+function clubSize(c, people) {
+  if (c.size) return { s: c.size, src: c.sizeSrc };
+  const votes = people.map(p => p.checks?.[sizeKey(c)]?.v).filter(v => Object.hasOwn(SIZES, v));
+  if (!votes.length) return null;
+  const n = k => votes.filter(v => v === k).length, s = Object.keys(SIZES).sort((a, b) => n(b) - n(a))[0];
+  return { s, src: `crew vote (${votes.length})` };
+}
+/** Average 6–8 pm headcount across everyone's logs from the last PEAK_DAYS days. */
+function peak(c, people) {
+  const from = addDays(todayIso(), -PEAK_DAYS), xs = [];
+  for (const p of people) for (const [k, e] of Object.entries(p.checks || {}))
+    if (k.slice(10) === `|crowd:${c.id}` && k.slice(0, 10) >= from && Number.isInteger(e.v) && e.v > 0 && e.v < 500) xs.push(e.v);
+  return xs.length ? { avg: Math.round(xs.reduce((a, b) => a + b, 0) / xs.length), n: xs.length } : null;
+}
 function clubsTab(me, who, people) {
   const been = c => people.filter(p => val(p, clubKey(c)) === 1);
   const kits = [...new Set(plan.clubs.flatMap(c => c.kit))].sort();
-  const list = plan.clubs.filter(c => clubFilter === 'all' ? true : clubFilter === 'todo' ? !val(who, clubKey(c)) : clubFilter === 'done' ? val(who, clubKey(c)) === 1 : c.kit.includes(clubFilter));
-  const mine = who.id === me.id, n = plan.clubs.filter(c => val(who, clubKey(c)) === 1).length;
+  const fav = c => val(who, favKey(c)) === 1;
+  const list = plan.clubs.filter(c => clubFilter === 'all' ? true : clubFilter === 'fav' ? fav(c) : clubFilter === 'todo' ? !val(who, clubKey(c)) : clubFilter === 'done' ? val(who, clubKey(c)) === 1
+    : Object.hasOwn(SIZES, clubFilter) ? clubSize(c, people)?.s === clubFilter : c.kit.includes(clubFilter))
+    .sort((a, b) => fav(b) - fav(a));   // favourites first; otherwise plan order
+  const mine = who.id === me.id, n = plan.clubs.filter(c => val(who, clubKey(c)) === 1).length, today = todayIso();
   return `${banners(me, who, mine)}<section class="card reveal">
     <div class="kicker">Anytime Fitness · Singapore</div>
     <h2>Special <span class="grad">clubs</span></h2>
-    <p class="note">Clubs with kit most Anytime Fitness gyms don't have. ${esc(who.name)} has been to <b>${n}</b> of ${plan.clubs.length}. Equipment changes: check with the club before a special trip.</p>
-    <div class="c-filters">${[['all', 'All'], ['todo', 'Not been'], ['done', 'Been']].map(([f, t]) =>
+    <p class="note">Clubs with kit most Anytime Fitness gyms don't have. ${esc(who.name)} has been to <b>${n}</b> of ${plan.clubs.length}. Equipment changes: check with the club before a special trip. Peak crowd is the crew's own 6–8 pm headcounts.</p>
+    <div class="c-filters">${[['all', 'All'], ['fav', '★ Favs'], ['todo', 'Not been'], ['done', 'Been']].map(([f, t]) =>
       `<button class="btn-ghost sm ${clubFilter === f ? 'on' : ''}" data-act="cfilter" data-f="${f}">${t}</button>`).join('')}
-      <select data-act="ckit" aria-label="Filter by equipment"><option value="all">Any equipment</option>${kits.map(k => `<option ${clubFilter === k ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select></div>
-    <ul class="clubs">${list.map(c => { const ps = been(c), on = val(who, clubKey(c)) === 1; return `<li class="club ${on ? 'visited' : ''}">
-      <h3>${esc(c.name)}${c.home ? '<small>HOME GYM</small>' : ''}</h3>
-      <a class="addr" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Anytime Fitness ' + c.addr)}" target="_blank" rel="noopener">${esc(c.addr)}</a>
+      <select data-act="ckit" aria-label="Filter by size or equipment"><option value="all">Any size or equipment</option>
+        <optgroup label="Size">${Object.entries(SIZES).map(([k, t]) => `<option value="${k}" ${clubFilter === k ? 'selected' : ''}>${t}</option>`).join('')}</optgroup>
+        <optgroup label="Equipment">${kits.map(k => `<option ${clubFilter === k ? 'selected' : ''}>${esc(k)}</option>`).join('')}</optgroup></select></div>
+    <ul class="clubs">${list.map(c => {
+      const ps = been(c), on = val(who, clubKey(c)) === 1, f = fav(c), sz = clubSize(c, people), pk = peak(c, people);
+      const myVote = me.checks?.[sizeKey(c)]?.v, crowdK = `${today}|crowd:${c.id}`, myCrowd = num(val(me, crowdK));
+      return `<li class="club ${on ? 'visited' : ''} ${f ? 'fav' : ''}">
+      <h3>${mine ? `<button class="star ${f ? 'on' : ''}" data-act="fav" data-k="${esc(favKey(c))}" data-l="${esc(c.name)}" aria-pressed="${f}" aria-label="${f ? 'Remove' : 'Add'} ${esc(c.name)} ${f ? 'from' : 'to'} favourites">${f ? '★' : '☆'}</button>` : f ? '<span class="star on">★</span>' : ''}${esc(c.name)}${c.home ? '<small>HOME GYM</small>' : ''}</h3>
+      <div class="addr"><a class="pin" href="${mapUrl(c)}" target="_blank" rel="noopener" aria-label="Open ${esc(c.name)} in Google Maps">${PIN}</a><a href="${mapUrl(c)}" target="_blank" rel="noopener">${esc(c.addr)}</a></div>
       <div class="been">${mine ? `<button class="visit ${on ? 'on' : ''}" data-act="club" data-k="${esc(clubKey(c))}" data-l="${esc(c.name)}" aria-pressed="${on}">${on ? '✓ Been' : 'Been here?'}</button>` : `<span class="visit ${on ? 'on' : ''}">${on ? '✓ Been' : 'Not yet'}</span>`}
         ${ps.length ? `<span class="who">${ps.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</div>
+      <div class="c-stats"><span class="sz ${sz ? 'sz-' + sz.s : ''}" title="${sz ? esc(sz.src) : 'Size unknown'}">${sz ? `${SIZES[sz.s]}${c.sqft ? ` · ${c.sqft.toLocaleString('en-GB')} sq ft` : ''}` : 'Size ?'}</span>
+        <span class="pk">${pk ? `≈ <b>${pk.avg}</b> people at 6–8 pm <small>${pk.n} log${pk.n > 1 ? 's' : ''}</small>` : '6–8 pm crowd: no counts yet'}</span></div>
       <div class="kit">${c.kit.map(k => `<span class="${clubFilter === k ? 'hot' : ''}">${esc(k)}</span>`).join('') || '<span>Standard kit</span>'}</div>
-      ${c.src ? `<div class="src">${esc(c.src)}</div>` : ''}
+      ${c.src ? `<div class="src">${esc(c.src)}${sz ? ` · size: ${esc(sz.src)}` : ''}</div>` : ''}
       ${people.filter(p => note(p, c) && !(mine && p.id === me.id)).map(p => `<p class="remark">${avatar(p, 'xs')}<span><b>${esc(p.name)}</b> ${esc(note(p, c))}</span></p>`).join('')}
-      ${mine ? `<input type="text" class="remark-in" data-cnote="${esc(noteKey(c))}" data-l="${esc(c.name)}" value="${esc(note(me, c))}" maxlength="140" enterkeyhint="done" placeholder="Add a remark (e.g. ice bath closed Mondays)" aria-label="Your remark on ${esc(c.name)}">` : ''}
+      ${mine ? `<details class="c-more" data-keep="club-${esc(c.id)}"><summary>Add remark, crowd count${c.size ? '' : ', size'}</summary>
+        <input type="text" class="remark-in" data-cnote="${esc(noteKey(c))}" data-l="${esc(c.name)}" value="${esc(note(me, c))}" maxlength="140" enterkeyhint="done" placeholder="Remark (e.g. ice bath closed Mondays)" aria-label="Your remark on ${esc(c.name)}">
+        <label class="crowd-in"><span>People here now, 6–8 pm</span><input type="text" inputmode="numeric" maxlength="3" enterkeyhint="done" data-crowd="${esc(crowdK)}" data-l="${esc(c.name)}" value="${myCrowd || ''}" placeholder="count" aria-label="Headcount at ${esc(c.name)} between 6 and 8 pm today"></label>
+        ${c.size ? '' : `<div class="size-vote"><span>Size</span>${Object.entries(SIZES).map(([k, t]) => `<button class="btn-ghost sm ${myVote === k ? 'on' : ''}" data-act="csize" data-k="${esc(sizeKey(c))}" data-v="${k}" data-l="${esc(c.name)}">${t}</button>`).join('')}</div>`}
+      </details>` : ''}
     </li>`; }).join('') || '<li class="note">No clubs match.</li>'}</ul>
   </section>`;
 }
@@ -601,6 +635,13 @@ $app.addEventListener('change', e => {
     S.set({ [t.dataset.kg]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
   } else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
   else if (t.dataset.act === 'goal' && !viewing && S.me()?.role !== 'owner') { if (!t.value || isIso(t.value)) { S.setProfile({ goal: t.value }); toast(t.value ? `Goal set: ${fmt(t.value, { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Goal cleared'); } }
+  else if (t.dataset.crowd && !viewing) {
+    const raw = t.value.trim(), n = raw ? Number(raw) : 0;
+    if (!Number.isInteger(n) || n < 0 || n > 499) { t.value = val(S.me(), t.dataset.crowd) || ''; toast('Headcount must be a whole number, 1 to 499'); return; }
+    const h = new Date().getHours();
+    S.set({ [t.dataset.crowd]: { v: n } }, `👥 ${n || 'cleared'} at ${t.dataset.l}`);
+    toast(!n ? 'Headcount cleared' : h === 18 || h === 19 ? `Headcount ${n} saved` : `Saved ${n}. Counts are meant for 6–8 pm`);
+  }
   else if (t.dataset.cnote && !viewing) { const v = t.value.trim().slice(0, 140); S.set({ [t.dataset.cnote]: { v } }, `${v ? '✎ remark on' : 'cleared remark on'} ${t.dataset.l}`); toast(v ? 'Remark saved' : 'Remark cleared'); }
   else if (t.dataset.act === 'ckit') { clubFilter = t.value; render(); }
   else if (t.dataset.act === 'session') write({ [`${sel}|session`]: { v: t.value } }, `${sel} → ${plan.sessions[t.value]?.title || 'Rest'}`);
@@ -632,6 +673,8 @@ $app.addEventListener('click', async e => {
   else if (act === 'alt') { e.preventDefault(); const s = b.dataset.s; altOpen.has(s) ? altOpen.delete(s) : altOpen.add(s); render(); }
   else if (act === 'useAlt' && !viewing) { S.set({ [k]: { v: b.dataset.v } }, `⇄ ${b.dataset.l} (${sel})`); toast(b.dataset.v ? `Swapped to ${b.dataset.l}` : 'Back to the plan exercise'); }
   else if (act === 'club' && !viewing) { const v = val(S.me(), k) ? 0 : 1; S.set({ [k]: { v } }, `${v ? '📍 visited' : 'unvisited'} ${b.dataset.l}`); }
+  else if (act === 'fav' && !viewing) { const v = val(S.me(), k) ? 0 : 1; S.set({ [k]: { v } }, `${v ? '★' : '☆'} ${b.dataset.l}`); }
+  else if (act === 'csize' && !viewing) { const v = S.me()?.checks?.[k]?.v === b.dataset.v ? '' : b.dataset.v; S.set({ [k]: { v } }, `size ${v || 'vote cleared'}: ${b.dataset.l}`); }
   else if (act === 'cfilter') { clubFilter = b.dataset.f; render(); }
   else if (act === 'trend') { const s = b.dataset.s; trendOpen.has(s) ? trendOpen.delete(s) : trendOpen.add(s); render(); }
   else if (act === 'mfilter') { mm.filter = b.dataset.f; render(); }
@@ -657,7 +700,7 @@ $app.addEventListener('click', async e => {
 });
 
 // SVG muscles are role=button; give them the keyboard behaviour real buttons have.
-$app.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.dataset.kg || e.target.dataset.cnote)) e.target.blur(); if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
+$app.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.dataset.kg || e.target.dataset.cnote || e.target.dataset.crowd)) e.target.blur(); if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
 
 $app.addEventListener('submit', async e => {
   e.preventDefault();
