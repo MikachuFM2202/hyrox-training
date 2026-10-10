@@ -686,5 +686,714 @@
     }
    ]
   }
- }
+ },
+ "alts": {
+  "Machine Chest Press": [
+   "Dumbbell Bench Press",
+   "Dumbbell Floor Press"
+  ],
+  "Incline Chest Press": [
+   "Incline Dumbbell Press",
+   "Incline Barbell Bench Press"
+  ],
+  "Cable Chest Fly": [
+   "Dumbbell Chest Fly",
+   "Incline Dumbbell Fly"
+  ],
+  "Chest Fly Machine": [
+   "Dumbbell Chest Fly",
+   "Incline Dumbbell Fly"
+  ],
+  "Lat Pulldown": [
+   "Dumbbell Pullover",
+   "Single-Arm Dumbbell Row"
+  ],
+  "Seated Cable Row": [
+   "Single-Arm Dumbbell Row",
+   "Chest-Supported Dumbbell Row"
+  ],
+  "Reverse Fly Machine": [
+   "Bent-Over Dumbbell Reverse Fly",
+   "Prone Incline Dumbbell Reverse Fly"
+  ],
+  "Reverse Fly": [
+   "Bent-Over Dumbbell Reverse Fly",
+   "Prone Incline Dumbbell Reverse Fly"
+  ],
+  "Bicep Curl (Dumbbell)": [
+   "Barbell Curl",
+   "Incline Dumbbell Curl"
+  ],
+  "Tricep Pushdown (Cable)": [
+   "Dumbbell Skull Crusher",
+   "Dumbbell Tricep Kickback"
+  ],
+  "Hammer Curl": [
+   "Cross-Body Hammer Curl",
+   "Zottman Curl"
+  ],
+  "Overhead Tricep Extension": [
+   "Seated Dumbbell Overhead Extension",
+   "EZ-Bar Skull Crusher"
+  ],
+  "Shoulder Press (Machine)": [
+   "Seated Dumbbell Shoulder Press",
+   "Arnold Press"
+  ],
+  "Dumbbell Front Raise": [
+   "Plate Front Raise",
+   "Barbell Front Raise"
+  ],
+  "Lateral Raise Machine": [
+   "Dumbbell Lateral Raise",
+   "Leaning Single-Arm Lateral Raise"
+  ],
+  "Dumbbell Lateral Raise": [
+   "Leaning Single-Arm Lateral Raise",
+   "Seated Dumbbell Lateral Raise"
+  ],
+  "Deltoid Machine": [
+   "Dumbbell Lateral Raise",
+   "Bent-Over Dumbbell Reverse Fly"
+  ],
+  "Cable Straight Arm Pulldown": [
+   "Dumbbell Pullover",
+   "Barbell Pullover"
+  ],
+  "Incline Dumbbell Row": [
+   "Single-Arm Dumbbell Row",
+   "Barbell Bent-Over Row"
+  ],
+  "Hanging Leg Raises": [
+   "Lying Leg Raise",
+   "Reverse Crunch"
+  ],
+  "Dead Bug": [
+   "Dumbbell Dead Bug",
+   "Bird Dog"
+  ],
+  "Plank": [
+   "Dumbbell Plank Pull-Through",
+   "Side Plank"
+  ],
+  "Seated Knee Tucks": [
+   "Reverse Crunch",
+   "Lying Leg Raise"
+  ],
+  "Bicycle Crunches": [
+   "Dumbbell Crunch",
+   "Dumbbell Side Bend"
+  ],
+  "Cable Crunch": [
+   "Dumbbell Crunch",
+   "Weighted Plate Sit-Up"
+  ],
+  "Abdominal Crunch Machine": [
+   "Dumbbell Crunch",
+   "Weighted Plate Sit-Up"
+  ],
+  "Russian Twist": [
+   "Dumbbell Side Bend",
+   "Dumbbell Woodchop"
+  ],
+  "Mountain Climbers": [
+   "Plank Shoulder Taps",
+   "Dumbbell Plank Pull-Through"
+  ],
+  "Ab Wheel Rollout": [
+   "Barbell Rollout",
+   "Plank Walkout"
+  ],
+  "Leg Curl (Hamstring Machine)": [
+   "Dumbbell Romanian Deadlift",
+   "Lying Dumbbell Hamstring Curl"
+  ],
+  "Leg Extension": [
+   "Dumbbell Wall Sit",
+   "Low Box Step-Up"
+  ],
+  "Seated Leg Extension": [
+   "Dumbbell Wall Sit",
+   "Low Box Step-Up"
+  ],
+  "Adductor Machine (Inner)": [
+   "Copenhagen Plank (knees bent)",
+   "Side-Lying Hip Adduction"
+  ],
+  "Abductor Machine (Outer)": [
+   "Side-Lying Hip Abduction",
+   "Clamshell"
+  ],
+  "Eccentric Heel Drop": [
+   "Seated Dumbbell Calf Raise"
+  ],
+  "Pendulum Squat": [
+   "Dumbbell Glute Bridge",
+   "Goblet Box Squat (high box)"
+  ],
+  "Glute Bridge": [
+   "Dumbbell Glute Bridge",
+   "Single-Leg Glute Bridge"
+  ]
+ },
+ "altInfo": {
+  "Arnold Press": {
+   "muscles": "Deltoids (all heads), Triceps",
+   "link": "https://youtu.be/6Z15_WdXmVw",
+   "clip": "1:25"
+  },
+  "Barbell Bent-Over Row": {
+   "muscles": "Lats, Rhomboids, Rear Delt, Biceps",
+   "link": "https://youtu.be/6FZHJGzMFEc",
+   "clip": "0:15"
+  },
+  "Barbell Curl": {
+   "muscles": "Biceps, Brachialis, Forearms",
+   "link": "https://youtu.be/dDI8ClxRS04",
+   "clip": "0:45"
+  },
+  "Barbell Front Raise": {
+   "muscles": "Anterior Delt, Upper Pecs",
+   "link": "https://youtu.be/sxeY7kMYhLc",
+   "clip": "1:06"
+  },
+  "Barbell Pullover": {
+   "muscles": "Lats, Teres Major, Pecs",
+   "link": "https://youtu.be/7Oe6NoChaKo",
+   "clip": "0:39"
+  },
+  "Barbell Rollout": {
+   "muscles": "Abs, Lats",
+   "link": "https://youtu.be/O-d6HC9gLcw",
+   "clip": "1:11"
+  },
+  "Bent-Over Dumbbell Reverse Fly": {
+   "muscles": "Rear Delt, Rhomboids, Traps",
+   "link": "https://youtu.be/evXOlgLTPCw",
+   "clip": "0:35"
+  },
+  "Bird Dog": {
+   "muscles": "Deep Core, Glutes, Lower Back",
+   "link": "https://youtu.be/QABW99qPiNM",
+   "clip": "1:19"
+  },
+  "Chest-Supported Dumbbell Row": {
+   "muscles": "Lats, Rhomboids, Rear Delt, Biceps",
+   "link": "https://youtu.be/nl2MnK1i504",
+   "clip": "0:43"
+  },
+  "Clamshell": {
+   "muscles": "Outer Thigh, Glutes",
+   "link": "https://youtu.be/EG5_gXcfozw",
+   "clip": "1:07"
+  },
+  "Copenhagen Plank (knees bent)": {
+   "muscles": "Inner Thigh, Adductors, Obliques",
+   "link": "https://youtu.be/1NNqUQvMYGc",
+   "clip": "0:21",
+   "note": "Short lever: knees bent on the bench"
+  },
+  "Cross-Body Hammer Curl": {
+   "muscles": "Brachialis, Biceps, Forearms",
+   "link": "https://youtu.be/On2eca-C00E",
+   "clip": "0:43"
+  },
+  "Dumbbell Bench Press": {
+   "muscles": "Pecs, Anterior Delt, Triceps",
+   "link": "https://youtu.be/KjYak5vZO9s",
+   "clip": "1:10"
+  },
+  "Dumbbell Chest Fly": {
+   "muscles": "Pecs, Anterior Delt",
+   "link": "https://youtu.be/UKwkChzThig",
+   "clip": "0:55"
+  },
+  "Dumbbell Crunch": {
+   "muscles": "Rectus Abdominis",
+   "link": "https://youtu.be/_nzyLUvtgvs",
+   "clip": "1:18"
+  },
+  "Dumbbell Dead Bug": {
+   "muscles": "Deep Core, Transverse Abdominis",
+   "link": "https://youtu.be/oSExv5Iiu80",
+   "clip": "0:25"
+  },
+  "Dumbbell Floor Press": {
+   "muscles": "Pecs, Triceps, Anterior Delt",
+   "link": "https://youtu.be/lNdi7VEf2Ew",
+   "clip": "1:21"
+  },
+  "Dumbbell Glute Bridge": {
+   "muscles": "Glutes, Hamstrings",
+   "link": "https://youtu.be/cruqsnAyU6A",
+   "clip": "0:23"
+  },
+  "Dumbbell Lateral Raise": {
+   "muscles": "Medial Delt, Supraspinatus",
+   "link": "https://youtu.be/XPPfnSEATJA",
+   "clip": "0:19"
+  },
+  "Dumbbell Plank Pull-Through": {
+   "muscles": "Full Core, Obliques, Shoulders",
+   "link": "https://youtu.be/DrNMoMm6rg8",
+   "clip": "0:14"
+  },
+  "Dumbbell Pullover": {
+   "muscles": "Lats, Teres Major, Pecs",
+   "link": "https://youtu.be/FK4rHfWKEac",
+   "clip": "1:00"
+  },
+  "Dumbbell Romanian Deadlift": {
+   "muscles": "Hamstrings, Glutes",
+   "link": "https://youtu.be/hQgFixeXdZo",
+   "clip": "1:19",
+   "note": "Soft knees, hinge at the hips"
+  },
+  "Dumbbell Side Bend": {
+   "muscles": "Obliques",
+   "link": "https://youtu.be/ARAWlmlgPbg",
+   "clip": "0:33"
+  },
+  "Dumbbell Skull Crusher": {
+   "muscles": "Triceps (all 3 heads)",
+   "link": "https://youtu.be/ir5PsbniVSc",
+   "clip": "1:28"
+  },
+  "Dumbbell Tricep Kickback": {
+   "muscles": "Triceps",
+   "link": "https://youtu.be/6SS6K3lAwZ8",
+   "clip": "1:30"
+  },
+  "Dumbbell Wall Sit": {
+   "muscles": "Quadriceps",
+   "link": "https://youtu.be/EJndMbpO0cM",
+   "clip": "0:56",
+   "note": "Shallow sit, stop before any knee pain"
+  },
+  "Dumbbell Woodchop": {
+   "muscles": "Obliques, Core, Shoulders",
+   "link": "https://youtu.be/Rf-2l8Z40dg",
+   "clip": "0:51"
+  },
+  "EZ-Bar Skull Crusher": {
+   "muscles": "Triceps Long Head",
+   "link": "https://youtu.be/jR7Y5YcugYc",
+   "clip": "1:02"
+  },
+  "Goblet Box Squat (high box)": {
+   "muscles": "Quads, Glutes",
+   "link": "https://youtu.be/uzjfcTvgpoc",
+   "clip": "0:16",
+   "note": "High box, partial range: no deep squat"
+  },
+  "Incline Barbell Bench Press": {
+   "muscles": "Upper Pecs, Anterior Delt, Triceps",
+   "link": "https://youtu.be/2jFFCy8JBU8",
+   "clip": "0:16"
+  },
+  "Incline Dumbbell Curl": {
+   "muscles": "Biceps (long head), Forearms",
+   "link": "https://youtu.be/FM7725AeXPA",
+   "clip": "0:37"
+  },
+  "Incline Dumbbell Fly": {
+   "muscles": "Upper Pecs, Anterior Delt",
+   "link": "https://youtu.be/vE9KK77nddw",
+   "clip": "1:25"
+  },
+  "Incline Dumbbell Press": {
+   "muscles": "Upper Pecs, Anterior Delt, Triceps",
+   "link": "https://youtu.be/6tW4LUaOxlE",
+   "clip": "0:36"
+  },
+  "Leaning Single-Arm Lateral Raise": {
+   "muscles": "Medial Delt",
+   "link": "https://youtu.be/Qc3v4fAdv9c",
+   "clip": "0:26"
+  },
+  "Low Box Step-Up": {
+   "muscles": "Quads (VMO), Glutes",
+   "link": "https://youtu.be/tQ5EhfnETls",
+   "clip": "0:15",
+   "note": "Low box only, slow, pain-free"
+  },
+  "Lying Dumbbell Hamstring Curl": {
+   "muscles": "Hamstrings",
+   "link": "https://youtu.be/ZHlBSI6JPsA",
+   "clip": "1:25"
+  },
+  "Lying Leg Raise": {
+   "muscles": "Lower Abs, Hip Flexors",
+   "link": "https://youtu.be/Wp4BlxcFTkE",
+   "clip": "0:42"
+  },
+  "Plank Shoulder Taps": {
+   "muscles": "Core, Shoulders",
+   "link": "https://youtu.be/8rgurWd-PB8",
+   "clip": "0:19"
+  },
+  "Plank Walkout": {
+   "muscles": "Abs, Shoulders",
+   "link": "https://youtu.be/iBWmnXM3w5I",
+   "clip": "0:28"
+  },
+  "Plate Front Raise": {
+   "muscles": "Anterior Delt, Upper Pecs",
+   "link": "https://youtu.be/hikbChhbeLI",
+   "clip": "0:36"
+  },
+  "Prone Incline Dumbbell Reverse Fly": {
+   "muscles": "Rear Delt, Rhomboids, Traps",
+   "link": "https://youtu.be/BCrk5C52ZSI",
+   "clip": "0:27"
+  },
+  "Reverse Crunch": {
+   "muscles": "Lower Abs, Hip Flexors",
+   "link": "https://youtu.be/gAyTBB4lm3I",
+   "clip": "1:14"
+  },
+  "Seated Dumbbell Calf Raise": {
+   "muscles": "Calves (soleus), Achilles",
+   "link": "https://youtu.be/eLgvgBxlldA",
+   "clip": "1:28",
+   "note": "Light and slow; heel drops are still the rehab"
+  },
+  "Seated Dumbbell Lateral Raise": {
+   "muscles": "Medial Delt",
+   "link": "https://youtu.be/TiG5Un0pLdA",
+   "clip": "0:14"
+  },
+  "Seated Dumbbell Overhead Extension": {
+   "muscles": "Triceps Long Head",
+   "link": "https://youtu.be/zX-H5d_YYmI",
+   "clip": "0:15"
+  },
+  "Seated Dumbbell Shoulder Press": {
+   "muscles": "Deltoids, Triceps",
+   "link": "https://youtu.be/HzIiNhHhhtA",
+   "clip": "0:13"
+  },
+  "Side Plank": {
+   "muscles": "Obliques, Core",
+   "link": "https://youtu.be/N_s9em1xTqU",
+   "clip": "1:11"
+  },
+  "Side-Lying Hip Abduction": {
+   "muscles": "Outer Thigh, Glutes",
+   "link": "https://youtu.be/g9FtnmsIYgI",
+   "clip": "0:40"
+  },
+  "Side-Lying Hip Adduction": {
+   "muscles": "Inner Thigh, Adductors",
+   "link": "https://youtu.be/lhwT35sshrI",
+   "clip": "0:40"
+  },
+  "Single-Arm Dumbbell Row": {
+   "muscles": "Lats, Rhomboids, Biceps",
+   "link": "https://youtu.be/DMo3HJoawrU",
+   "clip": "0:14"
+  },
+  "Single-Leg Glute Bridge": {
+   "muscles": "Glutes, Hamstrings",
+   "link": "https://youtu.be/fDxl-0uZMJo",
+   "clip": "1:12"
+  },
+  "Weighted Plate Sit-Up": {
+   "muscles": "Rectus Abdominis, Hip Flexors",
+   "link": "https://youtu.be/AUvF2CiUyKg",
+   "clip": "0:22"
+  },
+  "Zottman Curl": {
+   "muscles": "Biceps, Brachialis, Forearms",
+   "link": "https://youtu.be/wrjEdVZrkhk",
+   "clip": "0:15"
+  }
+ },
+ "clubs": [
+  {
+   "id": "sg-0034",
+   "name": "Kinex Mall (Paya Lebar)",
+   "addr": "#02-04, 11 Tanjong Katong Road, Kinex Mall",
+   "kit": [],
+   "src": "Mika’s home gym: standard kit",
+   "home": true
+  },
+  {
+   "id": "sg-0203",
+   "name": "Dhoby Ghaut",
+   "addr": "1 Selegie Road, #03-02, Singapore 188306",
+   "kit": [
+    "Punching bag",
+    "Rope pull machine",
+    "Ice bath"
+   ],
+   "src": "Crew visit"
+  },
+  {
+   "id": "sg-0011",
+   "name": "Pasir Ris E!Hub",
+   "addr": "E!Hub @ Downtown East, 1 Pasir Ris Close, #05-105",
+   "kit": [
+    "Punching bag",
+    "Sled",
+    "Curved treadmill",
+    "Air bike",
+    "Lifting platform",
+    "Specialty bars"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0107",
+   "name": "Buona Vista",
+   "addr": "11 Biopolis Way, #01-04/05/06/07 Helios",
+   "kit": [
+    "Punching bag",
+    "Air bike",
+    "Lifting platform",
+    "Glute machine",
+    "Specialty bars"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0190",
+   "name": "Cineleisure Orchard",
+   "addr": "8 Grange Road, Singapore 239695",
+   "kit": [
+    "SkiErg",
+    "Glute machine",
+    "T-bar row"
+   ],
+   "src": "Club page description"
+  },
+  {
+   "id": "sg-0029",
+   "name": "Greenwich",
+   "addr": "1 Seletar Road #02-05/06 Greenwich V Singapore",
+   "kit": [
+    "Air bike",
+    "Glute machine",
+    "T-bar row"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0067",
+   "name": "Boon Keng",
+   "addr": "294A/B Lavender Street Singapore 338807",
+   "kit": [
+    "Lifting platform",
+    "Sandbells"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0142",
+   "name": "City Hall",
+   "addr": "1 Raffles Link #B1-47 CityLink Mall",
+   "kit": [
+    "Tyre flip",
+    "Glute machine"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0114",
+   "name": "d'Arena Jurong",
+   "addr": "D’Arena, 511 Upper Jurong Road, Blk E #05",
+   "kit": [
+    "HYROX kit",
+    "Glute machine"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0024",
+   "name": "Geylang",
+   "addr": "653 Geylang Rd.",
+   "kit": [
+    "SkiErg",
+    "Watt bike"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0184",
+   "name": "MacPherson Mall",
+   "addr": "401 MacPherson Rd, Singapore 368125",
+   "kit": [
+    "SkiErg",
+    "Glute machine"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0036",
+   "name": "Pasir Panjang",
+   "addr": "44 Pasir Panjang Road Blocks A & B #01",
+   "kit": [
+    "Curved treadmill",
+    "Queenax rig"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0051",
+   "name": "Punggol Oasis",
+   "addr": "681 Punggol Drive, Oasis Terraces, #01-16",
+   "kit": [
+    "Punching bag",
+    "Sled"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0025",
+   "name": "Tampines East Tampines Mart",
+   "addr": "9 Tampines Street 32 #02-01 Tampines Mart",
+   "kit": [
+    "Watt bike",
+    "Lifting platform"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0145",
+   "name": "Upper Changi",
+   "addr": "Unit #02-12/13/14 Komo Shoppes 963C Upper Changi Rd N. Singapore 506790",
+   "kit": [
+    "Punching bag",
+    "Glute machine"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0129",
+   "name": "Wheelock Place",
+   "addr": "501 Orchard Road #05-13/14",
+   "kit": [
+    "Air bike",
+    "Lifting platform"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0008",
+   "name": "Ang Mo Kio",
+   "addr": "Broadway Plaza, 4190 Ang Mo Kio Avenue 6 #01-02",
+   "kit": [
+    "Curved treadmill"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0119",
+   "name": "Bishan",
+   "addr": "Blk 505, Bishan Street 11 #01-438",
+   "kit": [
+    "Glute machine"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0165",
+   "name": "Bukit Merah",
+   "addr": "131 Jalan Bukit Merah, #01-1589/1591, Singapore 160131",
+   "kit": [
+    "Air bike"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0032",
+   "name": "Bukit Timah",
+   "addr": "Bukit Timah Shopping Centre #B1-01, 170 Upper Bukit Timah Road",
+   "kit": [
+    "ViPR"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0033",
+   "name": "Choa Chu Kang",
+   "addr": "Choa Chu Kang",
+   "kit": [
+    "Lifting platform"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0083",
+   "name": "Choa Chu Kang Centre",
+   "addr": "309 Choa Chu Kang Avenue 4 #03-01",
+   "kit": [
+    "Lifting platform"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0057",
+   "name": "CSC Bukit Batok",
+   "addr": "91, Bukit Batok West Ave 2, Block C, #05-01",
+   "kit": [
+    "ViPR"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0093",
+   "name": "Geylang Bahru",
+   "addr": "1 Geylang Bahru Ln, #01-03 Kolam Ayer Community Club",
+   "kit": [
+    "Air bike"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0004",
+   "name": "Hwi Yoh",
+   "addr": "23 Serangoon North Ave 4, #01-01",
+   "kit": [
+    "Air bike"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0002",
+   "name": "Marine Parade",
+   "addr": "Blk 86 Marine Parade Central #01-670",
+   "kit": [
+    "Punching bag"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0047",
+   "name": "Potong Pasir",
+   "addr": "No. 15 Tai Thong Crescent",
+   "kit": [
+    "Lifting platform"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0126",
+   "name": "Raffles Place",
+   "addr": "22 Malacca Street Singapore 048980",
+   "kit": [
+    "Sandbells"
+   ],
+   "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0005",
+   "name": "Valley Point",
+   "addr": "Valley Point Shopping Centre 491 River Valley Road, #02-02",
+   "kit": [
+    "Punching bag"
+   ],
+   "src": "Club equipment list"
+  }
+ ]
 }

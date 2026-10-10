@@ -10,7 +10,9 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 - **Muscle map:** front/back body with a day filter (All/Tue/Thu/Sat/Sun). Tap a muscle to see which exercises hit it. Orange = primary, blue = secondary, green = core/rehab, dark = rest. It is built from each exercise's `muscles` text in `plan.json` (`muscles.js`). Muscle shapes are traced from [innerbody.com's muscular system map](https://www.innerbody.com/image/musfov.html).
 - **Arnold soundboard:** a fold-out panel on the Today tab with 9 short Arnold clips (`sounds/*.m4a`, each under 3 s).
 - **Sync icon:** top right. Green = synced (tap to sync now), spinning = saving, red dot = error (tap to retry), grey dot = preview, not syncing (tap to add a key).
-- **Phone first:** a bottom tab bar with Today, Calendar, Muscles and Crew.
+- **Free-weight alternatives:** every gym exercise has a "Can't do it?" list of dumbbell/barbell swaps that hit the same muscles and stay knee- and Achilles-safe (`alts` + `altInfo` in `plan.json`, each with a demo video). Picking one is saved per day as `<date>|alt:<slug>`; the tick stays on the plan item, and weights log under the alternative's own name.
+- **Clubs:** Anytime Fitness Singapore clubs with uncommon kit (sled, SkiErg, punching bags, ice bath…), with a "Been here" marker per person (`club:<id>`). The list comes from each club's equipment section on the old anytimefitness.sg pages (Wayback Machine, 2026 captures), plus Dhoby Ghaut from a crew visit. The new anytimefitness.com pages don't list equipment.
+- **Phone first:** a bottom tab bar with Today, Calendar, Muscles, Clubs and Crew.
 - **Crew:** the top-right corner shows how many people are online and a dot for each person. Tap a dot to see that person's checklist (read only). Everyone's ticks show as coloured dots on each exercise.
 - **Install:** the site is a PWA. On Android or Chrome use "Install app". On iPhone, use Safari: Share → Add to Home Screen.
 

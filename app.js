@@ -27,6 +27,8 @@ let tab = 'today', joinMode = '', intro = true, justSet = '', deferred = false, 
 let mm = { view: 'front', filter: 'all', muscle: 'chest' };
 let clip = null;   // the soundboard clip playing now; a new tap cuts it off
 let trendOpen = new Set();   // exercise slugs whose weight chart is expanded
+let altOpen = new Set();   // exercise slugs whose free-weight alternatives are listed
+let clubFilter = 'all';
 let seenOnline = null;   // who was online at the last render, to pop in newcomers
 
 // Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
@@ -77,6 +79,14 @@ function sessionId(p, date) {
 }
 const itemKey = (date, it) => `${date}|${slug(it.name)}`;
 const kgKey = (date, it) => `${date}|kg:${slug(it.name)}`;
+// Free-weight alternatives (plan.alts): same muscles, knee- and Achilles-safe. "(light)" variants share the base list.
+const altsFor = it => plan.alts?.[it.name] || plan.alts?.[it.name.replace(/\s*\((very )?light( only)?\)/i, '')] || [];
+const altKey = (date, it) => `${date}|alt:${slug(it.name)}`;
+/** What a person actually does for a plan item on a date: the item, or the alternative they swapped in. Ticks stay on the item's key. */
+function shown(p, date, it) {
+  const a = p?.checks?.[altKey(date, it)]?.v;
+  return typeof a === 'string' && altsFor(it).includes(a) ? { ...plan.altInfo[a], name: a, sets: it.sets, from: it.name } : it;   // synced files are untrusted: only known alternatives
+}
 const lifts = it => /×\s*\d+$/.test(it.sets || '');   // rep-based sets get a weight box; timed ones (plank, stretches, rowing) don't
 const secKey = (date, sec) => `${date}|sec:${slug(sec.name)}`;
 const bonuses = (p, date) => Object.entries(p?.checks || {})
@@ -95,7 +105,7 @@ function dayStats(p, date) {
   for (const sec of s.sections) {
     const st = secStats(p, date, sec);
     pick += sec.pick; resolved += st.resolved;
-    if (!next && st.resolved < sec.pick) next = sec.items.find(it => !val(p, itemKey(date, it)))?.name || '';
+    if (!next && st.resolved < sec.pick) { const it = sec.items.find(it => !val(p, itemKey(date, it))); next = it ? shown(p, date, it).name : ''; }
   }
   return { sid, s, pick, resolved, left: pick - resolved, next, pct: pick ? Math.round(100 * resolved / pick) : 0 };
 }
@@ -228,9 +238,10 @@ const ICONS = {
   today: '<path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3"/>',
   cal: '<rect x="4" y="5" width="16" height="15" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/>',
   map: '<circle cx="12" cy="5" r="2.5"/><path d="M7 10h10M12 10v6M9 21l3-5 3 5M7 10l-2 5M17 10l2 5"/>',
+  clubs: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
   crew: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
 };
-const TABS = [['today', 'Today'], ['cal', 'Calendar'], ['map', 'Muscles'], ['crew', 'Crew']];
+const TABS = [['today', 'Today'], ['cal', 'Calendar'], ['map', 'Muscles'], ['clubs', 'Clubs'], ['crew', 'Crew']];
 
 function main() {
   const me = S.me(), today = todayIso();
@@ -244,7 +255,7 @@ function main() {
   seenOnline = new Set(live.map(p => p.id));
   if (fresh.length) toast(fresh.length === 1 ? `${fresh[0].name} is online` : `${fresh.slice(0, -1).map(p => p.name).join(', ')} & ${fresh.at(-1).name} are online`, fresh[0]);
 
-  const body = tab === 'cal' ? calTab(who) : tab === 'map' ? muscleMap(plan, mm) : tab === 'crew' ? crewTab(me, people, who) : todayTab(me, who, mine, people, today);
+  const body = tab === 'cal' ? calTab(who) : tab === 'map' ? muscleMap(plan, mm) : tab === 'clubs' ? clubsTab(me, who, people) : tab === 'crew' ? crewTab(me, people, who) : todayTab(me, who, mine, people, today);
   return `<header class="top">
     ${brand()}
     <div class="crew-dots" aria-label="${live.length} online">
@@ -353,28 +364,41 @@ function dayPanel(who, mine, people) {
     ${bonusBlock(who, mine)}`;
 }
 
-function row(who, mine, people, k, it, sectionFull) {
-  const v = val(who, k), link = safeUrl(it.link);
+function row(who, mine, people, k, base, sectionFull) {
+  const wu = k.includes('|wu:'), it = wu ? base : shown(who, sel, base), alts = wu ? [] : altsFor(base);
+  const v = val(who, k), link = safeUrl(it.link), open = alts.length && altOpen.has(slug(base.name));
   const others = people.filter(p => p.id !== who.id && val(p, k) === 1);
   return `<li class="${v === 1 ? 'done' : v === 2 ? 'skip' : sectionFull ? 'dim' : ''} ${k === justSet ? 'pop' : ''}">
     <label><input type="checkbox" data-k="${esc(k)}" data-l="${esc(it.name)}" ${v === 1 ? 'checked' : ''} ${mine ? '' : 'disabled'}>
       <span class="r-main"><span class="r-name">${esc(it.name)}</span>
         <span class="r-meta">${v === 2 ? '<b class="skipped">Skipped</b>' : `<b>${esc(it.sets || '')}</b>`}${it.muscles ? ` · ${esc(it.muscles)}` : ''}</span>
-        ${it.note ? `<span class="r-note">${esc(it.note)}</span>` : ''}
+        ${it.from ? `<span class="r-note">Swapped in for ${esc(it.from)}</span>` : ''}${it.note ? `<span class="r-note">${esc(it.note)}</span>` : ''}
+        ${alts.length ? `<button class="r-alt" data-act="alt" data-s="${esc(slug(base.name))}" aria-expanded="${!!open}">⇄ ${open ? 'Hide options' : `Can’t do it? <small>${alts.length} free-weight option${alts.length > 1 ? 's' : ''}</small>`}</button>` : ''}
         ${kgVs(who, people, k, it)}
         ${others.length ? `<span class="who">${others.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</span></label>
     ${kgBox(who, mine, k, it)}
     ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video${it.clip ? ', ' + esc(it.clip) : ''}: ${esc(it.name)}">▶${it.clip ? `<small>${esc(it.clip)}</small>` : ''}</a>` : ''}
     ${mine ? `<button class="r-skip" data-act="skip" data-k="${esc(k)}" data-l="${esc(it.name)}" aria-label="${v === 2 ? 'Undo skip' : 'Skip'} ${esc(it.name)}">${v === 2 ? '↺' : '✕'}</button>` : ''}
-    ${k === itemKey(sel, it) && trendOpen.has(slug(it.name)) ? trendChart(who, people, it) : ''}
+    ${!wu && trendOpen.has(slug(it.name)) ? trendChart(who, people, it) : ''}
+    ${open ? altList(who, mine, base, it) : ''}
   </li>`;
+}
+
+/** The swap panel under a row: the plan item plus its free-weight alternatives, each with its demo video. */
+function altList(who, mine, base, cur) {
+  return `<ul class="alts">${[base.name, ...altsFor(base)].map(n => {
+    const a = n === base.name ? base : plan.altInfo[n], on = n === cur.name, link = safeUrl(a.link);
+    return `<li class="${on ? 'on' : ''}"><span class="a-main"><b>${esc(n)}</b><small>${n === base.name ? 'Plan · ' : ''}${esc(a.muscles || '')}</small>${a.note && n !== base.name ? `<small class="r-note">${esc(a.note)}</small>` : ''}</span>
+      ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video: ${esc(n)}">▶${a.clip ? `<small>${esc(a.clip)}</small>` : ''}</a>` : ''}
+      ${mine ? (on ? '<span class="a-use">Doing</span>' : `<button class="btn-ghost sm" data-act="useAlt" data-k="${esc(altKey(sel, base))}" data-v="${n === base.name ? '' : esc(n)}" data-l="${esc(n)}">Use</button>`) : on ? '<span class="a-use">Doing</span>' : ''}</li>`;
+  }).join('')}</ul>`;
 }
 
 // Other people's files are untrusted: only finite numbers reach the markup.
 const num = x => typeof x === 'number' && isFinite(x) ? x : 0;
 /** Everyone else's weight for this exercise: on this day if logged, else their most recent before it. */
 function kgVs(who, people, k, it) {
-  if (k !== itemKey(sel, it) || !lifts(it)) return '';
+  if (k.includes('|wu:') || !lifts(it)) return '';
   const mine = num(val(who, kgKey(sel, it))) || S.lastKg(who.checks, sel, slug(it.name))?.kg || 0;
   const vs = people.filter(p => p.id !== who.id).map(p => [p, S.lastKg(p.checks, addDays(sel, 1), slug(it.name))]).filter(([, l]) => l);
   if (!vs.length) return '';
@@ -415,7 +439,7 @@ function trendChart(who, people, it) {
 }
 
 function kgBox(who, mine, k, it) {
-  if (k !== itemKey(sel, it) || !lifts(it)) return '';   // warm-up rows share row() but aren't lifts
+  if (k.includes('|wu:') || !lifts(it)) return '';   // warm-up rows share row() but aren't lifts
   const cur = num(val(who, kgKey(sel, it))), last = S.lastKg(who.checks, sel, slug(it.name));
   if (!mine && !cur && !hasTrend(who, crew(), it)) return '';
   return `<span class="r-kg ${cur && last && cur > last.kg ? 'up' : ''}"><input type="text" inputmode="decimal" enterkeyhint="done" maxlength="6"
@@ -457,6 +481,31 @@ function calTab(who) {
       }).join('')}</div>
     <div class="legend"><span class="gym">Gym</span><span class="opt">Optional</span><span class="done">Done</span><span class="race">Race / goal</span></div>
     <p class="cal-sum"><b>${doneDays}</b> of ${gymDays.length} gym days done this month</p>
+  </section>`;
+}
+
+// Anytime Fitness clubs with kit most clubs don't have (plan.clubs). "Been here" is a per-person check `club:<id>`, synced like ticks.
+const clubKey = c => `club:${c.id}`;
+function clubsTab(me, who, people) {
+  const been = c => people.filter(p => val(p, clubKey(c)) === 1);
+  const kits = [...new Set(plan.clubs.flatMap(c => c.kit))].sort();
+  const list = plan.clubs.filter(c => clubFilter === 'all' ? true : clubFilter === 'todo' ? !val(who, clubKey(c)) : clubFilter === 'done' ? val(who, clubKey(c)) === 1 : c.kit.includes(clubFilter));
+  const mine = who.id === me.id, n = plan.clubs.filter(c => val(who, clubKey(c)) === 1).length;
+  return `${banners(me, who, mine)}<section class="card reveal">
+    <div class="kicker">Anytime Fitness · Singapore</div>
+    <h2>Special <span class="grad">clubs</span></h2>
+    <p class="note">Clubs with kit most Anytime Fitness gyms don't have. ${esc(who.name)} has been to <b>${n}</b> of ${plan.clubs.length}. Equipment changes: check with the club before a special trip.</p>
+    <div class="c-filters">${[['all', 'All'], ['todo', 'Not been'], ['done', 'Been']].map(([f, t]) =>
+      `<button class="btn-ghost sm ${clubFilter === f ? 'on' : ''}" data-act="cfilter" data-f="${f}">${t}</button>`).join('')}
+      <select data-act="ckit" aria-label="Filter by equipment"><option value="all">Any equipment</option>${kits.map(k => `<option ${clubFilter === k ? 'selected' : ''}>${esc(k)}</option>`).join('')}</select></div>
+    <ul class="clubs">${list.map(c => { const ps = been(c), on = val(who, clubKey(c)) === 1; return `<li class="club ${on ? 'visited' : ''}">
+      <h3>${esc(c.name)}${c.home ? '<small>HOME GYM</small>' : ''}</h3>
+      <a class="addr" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Anytime Fitness ' + c.addr)}" target="_blank" rel="noopener">${esc(c.addr)}</a>
+      <div class="been">${mine ? `<button class="visit ${on ? 'on' : ''}" data-act="club" data-k="${esc(clubKey(c))}" data-l="${esc(c.name)}" aria-pressed="${on}">${on ? '✓ Been' : 'Been here?'}</button>` : `<span class="visit ${on ? 'on' : ''}">${on ? '✓ Been' : 'Not yet'}</span>`}
+        ${ps.length ? `<span class="who">${ps.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</div>
+      <div class="kit">${c.kit.map(k => `<span class="${clubFilter === k ? 'hot' : ''}">${esc(k)}</span>`).join('') || '<span>Standard kit</span>'}</div>
+      ${c.src ? `<div class="src">${esc(c.src)}</div>` : ''}
+    </li>`; }).join('') || '<li class="note">No clubs match.</li>'}</ul>
   </section>`;
 }
 
@@ -549,6 +598,7 @@ $app.addEventListener('change', e => {
     S.set({ [t.dataset.kg]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
   } else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
   else if (t.dataset.act === 'goal' && !viewing && S.me()?.role !== 'owner') { if (!t.value || isIso(t.value)) { S.setProfile({ goal: t.value }); toast(t.value ? `Goal set: ${fmt(t.value, { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Goal cleared'); } }
+  else if (t.dataset.act === 'ckit') { clubFilter = t.value; render(); }
   else if (t.dataset.act === 'session') write({ [`${sel}|session`]: { v: t.value } }, `${sel} → ${plan.sessions[t.value]?.title || 'Rest'}`);
 });
 
@@ -575,6 +625,10 @@ $app.addEventListener('click', async e => {
     write(entries, `✓ all of ${st.s.title} (${sel})`);
   }
   else if (act === 'muscle') { mm.muscle = b.dataset.m; if (b.tagName === 'BUTTON') mm.view = MUSCLES[mm.muscle].view; render(); }
+  else if (act === 'alt') { e.preventDefault(); const s = b.dataset.s; altOpen.has(s) ? altOpen.delete(s) : altOpen.add(s); render(); }
+  else if (act === 'useAlt' && !viewing) { S.set({ [k]: { v: b.dataset.v } }, `⇄ ${b.dataset.l} (${sel})`); toast(b.dataset.v ? `Swapped to ${b.dataset.l}` : 'Back to the plan exercise'); }
+  else if (act === 'club' && !viewing) { const v = val(S.me(), k) ? 0 : 1; S.set({ [k]: { v } }, `${v ? '📍 visited' : 'unvisited'} ${b.dataset.l}`); }
+  else if (act === 'cfilter') { clubFilter = b.dataset.f; render(); }
   else if (act === 'trend') { const s = b.dataset.s; trendOpen.has(s) ? trendOpen.delete(s) : trendOpen.add(s); render(); }
   else if (act === 'mfilter') { mm.filter = b.dataset.f; render(); }
   else if (act === 'mview') { mm.view = b.dataset.v; render(); }
