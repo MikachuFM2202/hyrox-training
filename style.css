@@ -145,6 +145,9 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .counts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 10px; }
 .count-tile { background: linear-gradient(160deg, #141414, #0b0b0b); padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .count-tile b { font: 800 clamp(28px, 8vw, 48px)/1 var(--mono); background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.goal-tile { position: relative; cursor: pointer; }
+.goal-tile input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; cursor: pointer; }
+.goal-tile:active { background: #1c1c1c; }
 .count-tile span { font: 700 10px var(--head); font-stretch: 125%; text-transform: uppercase; letter-spacing: .03em; }
 .bar { display: block; height: 6px; background: #222; margin-top: 8px; overflow: hidden; }
 .bar i { display: block; height: 100%; background: var(--grad); transform: scaleX(var(--w, 0)); transform-origin: left; transition: transform .8s var(--ease); }

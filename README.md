@@ -2,10 +2,10 @@
 
 A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITEC). It is a static site on GitHub Pages with no build step and no server.
 
-- **This week:** a Mon–Sun strip shows each day's session (Tue Push/Pull, Thu Legs, Sat Push/Pull, Sun optional recovery) and progress. It sits under countdowns to HYROX KL and to the wedding.
+- **This week:** a Mon–Sun strip shows each day's session (Tue Push/Pull, Thu Legs, Sat Push/Pull, Sun optional recovery) and progress. It sits under countdowns to HYROX KL and to a personal goal date (Mika's is fixed; everyone else taps the Goal tile to pick a day from a calendar).
 - **Day checklist:** sections with "Pick N" targets. Each row shows the exercise, the muscles it works, sets and reps, and a demo video link, with tick (✅) and skip (✕) buttons. Above the rows: an "X left · next" counter, a 5-minute warm-up, Mark all complete, and confetti when the session is done.
 - **Rules from the plan:** "Skip section" (core sore), swapping any day's session (no legs this week, extra session on a rest day), and a Bonus section for work outside the plan.
-- **Calendar:** a month view with gym and optional days, % done per day, 💪 on completed days, and the race and wedding dates marked.
+- **Calendar:** a month view with gym and optional days, % done per day, 💪 on completed days, and the race and goal dates marked.
 - **Weight log:** every rep-based exercise has a kg box. It shows your last weight for that exercise (green when you beat it), and under the exercise name everyone else's latest weight in their colour (▲ when it's heavier than yours), so the crew can compare. Tap "last …" under the kg box for a weight-over-time chart with one line per person.
 - **Muscle map:** front/back body with a day filter (All/Tue/Thu/Sat/Sun). Tap a muscle to see which exercises hit it. Orange = primary, blue = secondary, green = core/rehab, dark = rest. It is built from each exercise's `muscles` text in `plan.json` (`muscles.js`). Muscle shapes are traced from [innerbody.com's muscular system map](https://www.innerbody.com/image/musfov.html).
 - **Arnold soundboard:** a fold-out panel on the Today tab with 9 short Arnold clips (`sounds/*.m4a`, each under 3 s).

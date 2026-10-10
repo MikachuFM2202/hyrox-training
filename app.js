@@ -276,7 +276,9 @@ function todayTab(me, who, mine, people, today) {
   return `<section class="hero reveal">
     <div class="glow" aria-hidden="true"></div>
     <div class="kicker">${esc(plan.race.season)} · ${fmt(plan.race.date)}–${fmt(plan.race.end)} · ${esc(plan.race.venue)}</div>
-    <div class="counts">${plan.countdowns.map(c => { const n = Math.max(0, daysTo(c.date)); return `<div class="count-tile">
+    <div class="counts">${plan.countdowns.map(c => {
+      if (c.goal) return goalTile(who, mine, c);
+      const n = Math.max(0, daysTo(c.date)); return `<div class="count-tile">
       <b data-count="${n}">${n}</b><span>days · ${esc(c.label)}</span></div>`; }).join('')}
       <div class="count-tile"><b data-count="${wk}">${wk}</b><span>% this week</span>${bar('wk', wk)}</div>
     </div>
@@ -302,6 +304,16 @@ function todayTab(me, who, mine, people, today) {
     <div class="sb-grid">${SOUNDS.map(([f, t]) => `<button class="btn-ghost" data-act="sound" data-f="${f}">${esc(t)}</button>`).join('')}</div>
   </details>
   <main class="day-panel reveal" id="day">${dayPanel(who, mine, people)}</main>`;
+}
+
+// Goal countdown: Mika's is fixed to the plan date; everyone else picks their own day (synced in their file as `goal`).
+const isIso = s => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(fromIso(s));
+const goalDate = (p, c) => p?.role === 'owner' ? c.date : isIso(p?.goal) ? p.goal : '';
+function goalTile(who, mine, c) {
+  const d = goalDate(who, c), n = d ? Math.max(0, daysTo(d)) : 0, edit = mine && who.role !== 'owner';
+  const text = d ? `<b data-count="${n}">${n}</b><span>days · ${esc(c.label)}${edit ? ' ✎' : ''}</span>` : `<b>–</b><span>${edit ? 'Tap to set goal' : esc(c.label)}</span>`;
+  return edit ? `<label class="count-tile goal-tile">${text}<input type="date" data-act="goal" min="${todayIso()}" value="${d}" aria-label="Pick your goal date"></label>`
+    : `<div class="count-tile">${text}</div>`;
 }
 
 function dayPanel(who, mine, people) {
@@ -439,11 +451,11 @@ function calTab(who) {
     <div class="cal-grid">${DOW.map(d => `<span class="cal-dow">${d[0]}</span>`).join('')}
       ${cells.map(d => {
         const st = stats[d], other = d.slice(0, 7) !== calMonth;
-        const mark = d >= plan.race.date && d <= plan.race.end ? 'race' : plan.countdowns.some(c => c.date === d) ? 'event' : '';
+        const mark = d >= plan.race.date && d <= plan.race.end ? 'race' : plan.countdowns.some(c => (c.goal ? goalDate(who, c) : c.date) === d) ? 'event' : '';
         return `<button class="cal-cell ${other ? 'other' : ''} ${!st ? 'rest' : st.s.optional ? 'opt' : 'gym'} ${st?.pct === 100 ? 'done' : ''} ${d === today ? 'today' : ''} ${d === sel ? 'sel' : ''} ${mark}" data-act="sel" data-date="${d}" aria-label="${fmt(d)}${st ? ', ' + st.pct + '%' : ''}">
           <span>${fromIso(d).getDate()}</span>${st?.pct === 100 ? '<i>💪</i>' : st?.pct ? `<small>${st.pct}%</small>` : ''}</button>`;
       }).join('')}</div>
-    <div class="legend"><span class="gym">Gym</span><span class="opt">Optional</span><span class="done">Done</span><span class="race">Race / wedding</span></div>
+    <div class="legend"><span class="gym">Gym</span><span class="opt">Optional</span><span class="done">Done</span><span class="race">Race / goal</span></div>
     <p class="cal-sum"><b>${doneDays}</b> of ${gymDays.length} gym days done this month</p>
   </section>`;
 }
@@ -536,11 +548,13 @@ $app.addEventListener('change', e => {
     }
     S.set({ [t.dataset.kg]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
   } else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
+  else if (t.dataset.act === 'goal' && !viewing && S.me()?.role !== 'owner') { if (!t.value || isIso(t.value)) { S.setProfile({ goal: t.value }); toast(t.value ? `Goal set: ${fmt(t.value, { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Goal cleared'); } }
   else if (t.dataset.act === 'session') write({ [`${sel}|session`]: { v: t.value } }, `${sel} → ${plan.sessions[t.value]?.title || 'Rest'}`);
 });
 
 $app.addEventListener('click', async e => {
   const b = e.target.closest('[data-act]');
+  if (b?.dataset.act === 'goal') { try { b.showPicker(); } catch {} return; }
   if (!b || b.tagName === 'SELECT') return;
   const act = b.dataset.act, k = b.dataset.k;
   if (act === 'tab') goTab(b.dataset.t);

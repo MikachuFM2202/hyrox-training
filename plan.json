@@ -13,8 +13,9 @@
    "date": "2026-12-11"
   },
   {
-   "label": "Wedding",
-   "date": "2027-04-12"
+   "label": "Goal",
+   "date": "2027-04-12",
+   "goal": true
   }
  ],
  "goals": [
