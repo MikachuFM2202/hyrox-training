@@ -296,6 +296,14 @@ span.star { min-width: 0; margin: 0; }
 .club .kit { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .club .kit span { font: 600 11px var(--mono); padding: 4px 8px; background: #1a1a1a; border: 1px solid #2c2c2c; }
 .club .kit span.hot { border-color: var(--o2); color: var(--o3); }
+.club .kit span.crew { border-style: dashed; border-color: #555; }
+.kit-edit { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.kit-edit > span { flex-basis: 100%; font-size: 13px; color: var(--mute); }
+.kit-edit > span small { font-size: 11px; color: #777; margin-left: 4px; }
+.kit-edit .on { border-color: var(--ok); color: var(--ok); }
+.kit-edit .off { color: #777; text-decoration: line-through; }
+.kit-add { flex: 1 1 100%; min-height: 40px; padding: 8px 10px; background: #141414; border: 1px solid #333; color: var(--text); }
+.kit-add:focus { outline: none; border-color: var(--o2); }
 .club .src { grid-column: 1 / -1; font-size: 11px; color: #777; }
 .club .been { grid-row: 1 / span 2; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .club .been .who { display: flex; gap: 2px; }
