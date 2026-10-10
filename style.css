@@ -127,11 +127,14 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .dot.pop-in { animation: pop-in .7s var(--spring) both; }
 
 /* bottom tab bar */
-.tabs { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
+.tabs { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
   background: #0a0a0a; border-top: 1px solid var(--line); }
 .tabs button { position: relative; background: none; border: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--mute); font: 700 10px var(--head); font-stretch: 125%; text-transform: uppercase; letter-spacing: .04em; transition: color .2s; }
 .tabs svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s var(--spring); }
 .tabs button.on { color: var(--text); }
+.tabs span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tabs button { font-stretch: 100%; letter-spacing: .02em; }   /* five tabs: full-width "CALENDAR" pushed CREW off a 320px screen */
+@media (max-width: 340px) { .tabs button { font-size: 9px; letter-spacing: 0; } }
 .tabs button.on svg { stroke: var(--o2); transform: translateY(-2px); }
 .tabs svg.fill { fill: currentColor; stroke: none; }
 .tabs button.on svg.fill { fill: #6e38d5; stroke: none; }   /* Anytime Fitness purple */

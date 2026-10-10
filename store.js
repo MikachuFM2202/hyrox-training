@@ -117,6 +117,7 @@ export function poll() {
       let changed = false;
       for (const f of list.filter(f => f.name.endsWith('.json'))) {
         const id = f.name.slice(0, -5);
+        if (!/^[a-z0-9]+$/.test(id)) continue;   // ids are uid() or a member name; anything else (e.g. "__proto__") would corrupt `people`
         if (shas[id] === f.sha) continue;
         const doc = parse(unb64((await gh(`git/blobs/${f.sha}`)).content));
         shas[id] = f.sha;

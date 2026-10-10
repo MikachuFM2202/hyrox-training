@@ -61,12 +61,12 @@ const fmt = (s, o = { day: 'numeric', month: 'short' }) => {
 const crew = () => Object.values(S.people)
   .filter(p => typeof p?.id === 'string' && typeof p.name === 'string' && p.name && p.role && !p.removed)
   .sort((a, b) => (b.id === S.meId) - (a.id === S.meId) || rank(a) - rank(b) || a.name.localeCompare(b.name));
-function rank(p) { return { owner: 0, member: 1 }[p.role] ?? 2; }
+function rank(p) { return p.role === 'owner' ? 0 : p.role === 'member' ? 1 : 2; }   // role comes from untrusted files
 const guests = () => crew().filter(p => p.role === 'guest');
 const online = p => Date.now() - (p.seen || 0) < ONLINE;
 const ago = t => { const m = Math.round((Date.now() - t) / 60e3); return !t ? 'never' : m < 1 ? 'just now' : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
-const avatar = (p, cls = '') => `<span class="av ${cls} ${MEMBERS[p.head] ? 'named' : ''}" style="--c:${col(p.color)}">${
-  HEADS[p.head] ? `<img src="heads/${p.head}.jpg" alt="" decoding="async">` : `<b>${esc((p.name || '?')[0].toUpperCase())}</b>`}</span>`;
+const avatar = (p, cls = '') => `<span class="av ${cls} ${Object.hasOwn(MEMBERS, p.head) ? 'named' : ''}" style="--c:${col(p.color)}">${
+  Object.hasOwn(HEADS, p.head) ? `<img src="heads/${p.head}.jpg" alt="" decoding="async">` : `<b>${esc((p.name || '?')[0].toUpperCase())}</b>`}</span>`;
 
 // ---- plan + progress ------------------------------------------------------
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
