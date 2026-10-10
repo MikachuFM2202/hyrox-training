@@ -28,7 +28,7 @@ let mm = { view: 'front', filter: 'all', muscle: 'chest' };
 let clip = null;   // the soundboard clip playing now; a new tap cuts it off
 let trendOpen = new Set();   // exercise slugs whose weight chart is expanded
 let altOpen = new Set();   // exercise slugs whose free-weight alternatives are listed
-let clubFilter = 'all', clubQ = '';   // Clubs tab: chip/dropdown filter and the search box
+let clubFilter = 'all', clubQ = '', openClubs = new Set();   // openClubs: clubs whose Edit panel is open (only those get built)   // Clubs tab: chip/dropdown filter and the search box
 let seenOnline = null;   // who was online at the last render, to pop in newcomers
 
 // Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
@@ -493,7 +493,8 @@ const note = (p, c) => { const v = p?.checks?.[noteKey(c)]?.v; return typeof v =
 const SIZES = { S: 'Small', M: 'Medium', L: 'Large' };   // small < 3,000 sq ft, medium 3,000–5,999, large 6,000+ (a typical club is 2,000–4,000)
 const PEAK_DAYS = 90;   // headcounts older than this drop out of the average
 const mapUrl = c => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Anytime Fitness ${c.name}, ${c.addr}, Singapore`)}`;
-const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>';
+const PIN_DEF = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="pin-ic" viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></symbol></svg>';
+const PIN = '<svg aria-hidden="true"><use href="#pin-ic"/></svg>';   // one shared symbol instead of 181 copies of the path
 /** Size: the club's own figure if known, else the crew's most common vote. */
 function clubSize(c, people) {
   if (c.size) return { s: c.size, src: c.sizeSrc };
@@ -545,7 +546,7 @@ function clubsTab(me, who, people) {
     .sort((a, b) => fav(b) - fav(a));   // favourites first; otherwise plan order
   const mine = who.id === me.id, n = plan.clubs.filter(c => val(who, clubKey(c)) === 1).length, today = todayIso(), peak = peaks(people);
   return `${banners(me, who, mine)}<section class="card reveal">
-    <div class="kicker">Anytime Fitness · Singapore</div>
+    ${PIN_DEF}<div class="kicker">Anytime Fitness · Singapore</div>
     <h2>Anytime <span class="grad">clubs</span></h2>
     <p class="note">Every Anytime Fitness club in Singapore. Special kit is listed where known: check with the club before a special trip. ${esc(who.name)} has been to <b>${n}</b> of ${plan.clubs.length}. Peak crowd is the crew's own 6–8 pm headcounts.</p>
     <input type="search" class="c-search" data-act="csearch" value="${esc(clubQ)}" placeholder="Search clubs, areas, postcodes or kit" aria-label="Search clubs" enterkeyhint="search" autocomplete="off">
@@ -567,13 +568,13 @@ function clubsTab(me, who, people) {
       <div class="kit">${kitOf(c).filter(k => k.on).map(k => `<span class="${clubFilter === k.name ? 'hot' : ''} ${k.crew ? 'crew' : ''}" ${k.by ? `title="${k.crew ? 'Added' : 'Confirmed'} by ${esc(k.by)}"` : ''}>${esc(k.name)}</span>`).join('') || '<span>Standard kit</span>'}</div>
       ${c.src || kitOf(c).some(k => k.by) ? `<div class="src">${esc(c.src || 'Crew')}${sz ? ` · size: ${esc(sz.src)}` : ''}${kitOf(c).some(k => k.by) ? ` · kit edited by ${esc([...new Set(kitOf(c).filter(k => k.by).map(k => k.by))].join(', '))}` : ''}</div>` : ''}
       ${people.filter(p => note(p, c) && !(mine && p.id === me.id)).map(p => `<p class="remark">${avatar(p, 'xs')}<span><b>${esc(p.name)}</b> ${esc(note(p, c))}</span></p>`).join('')}
-      ${mine ? `<details class="c-more" data-keep="club-${esc(c.id)}"><summary>Edit club: equipment, remark, crowd${c.size ? '' : ', size'}</summary>
-        <div class="kit-edit"><span>Equipment <small>tap to mark here / not here</small></span>
+      ${mine ? `<details class="c-more" data-club="${esc(c.id)}" ${openClubs.has(c.id) ? 'open' : ''}><summary>Edit club: equipment, remark, crowd${c.size ? '' : ', size'}</summary>
+        ${openClubs.has(c.id) ? `<div class="kit-edit"><span>Equipment <small>tap to mark here / not here</small></span>
           ${kitOf(c).map(k => `<button class="btn-ghost sm ${k.on ? 'on' : 'off'}" data-act="kit" data-k="kit:${esc(c.id)}:${esc(k.sl)}" data-v="${k.on ? 2 : 1}" data-n="${esc(k.name)}" data-l="${esc(c.name)}" aria-pressed="${k.on}">${k.on ? '✓' : '✕'} ${esc(k.name)}</button>`).join('')}
           <input type="text" class="kit-add" data-kitadd="${esc(c.id)}" data-l="${esc(c.name)}" list="kit-ideas" maxlength="30" enterkeyhint="done" placeholder="+ Add equipment (e.g. Sauna)" aria-label="Add equipment at ${esc(c.name)}"></div>
         <input type="text" class="remark-in" data-cnote="${esc(noteKey(c))}" data-l="${esc(c.name)}" value="${esc(note(me, c))}" maxlength="140" enterkeyhint="done" placeholder="Remark (e.g. ice bath closed Mondays)" aria-label="Your remark on ${esc(c.name)}">
         <label class="crowd-in"><span>People here now, 6–8 pm</span><input type="text" inputmode="numeric" maxlength="3" enterkeyhint="done" data-crowd="${esc(crowdK)}" data-l="${esc(c.name)}" value="${myCrowd || ''}" placeholder="count" aria-label="Headcount at ${esc(c.name)} between 6 and 8 pm today"></label>
-        ${c.size ? '' : `<div class="size-vote"><span>Size</span>${Object.entries(SIZES).map(([k, t]) => `<button class="btn-ghost sm ${myVote === k ? 'on' : ''}" data-act="csize" data-k="${esc(sizeKey(c))}" data-v="${k}" data-l="${esc(c.name)}">${t}</button>`).join('')}</div>`}
+        ${c.size ? '' : `<div class="size-vote"><span>Size</span>${Object.entries(SIZES).map(([k, t]) => `<button class="btn-ghost sm ${myVote === k ? 'on' : ''}" data-act="csize" data-k="${esc(sizeKey(c))}" data-v="${k}" data-l="${esc(c.name)}">${t}</button>`).join('')}</div>`}` : ''}
       </details>` : ''}
     </li>`; }).join('')}<li class="note c-none" ${list.some(c => clubHit(c, kit(c))) ? 'hidden' : ''}>No clubs match.</li></ul>
     <datalist id="kit-ideas">${[...new Set([...kitNames, ...KIT_IDEAS])].sort().map(k => `<option value="${esc(k)}">`).join('')}</datalist>
@@ -657,6 +658,14 @@ function write(entries, label, key) {
 }
 const goTab = t => { if (t !== tab) { tab = t; tabChanged = true; } render(); scrollTo({ top: 0, behavior: 'instant' }); };
 const showDay = () => { const d = document.getElementById('day'); if (d && d.getBoundingClientRect().top > innerHeight * .6) d.scrollIntoView({ behavior: calm.matches ? 'auto' : 'smooth', block: 'start' }); };
+
+// Edit panels are built only while open: track which are open, render when one opens or closes.
+$app.addEventListener('toggle', e => {
+  const id = e.target.dataset?.club;
+  if (!id || e.target.open === openClubs.has(id)) return;
+  e.target.open ? openClubs.add(id) : openClubs.delete(id);
+  render();
+}, true);
 
 $app.addEventListener('input', e => {
   if (e.target.dataset.act !== 'csearch') return;

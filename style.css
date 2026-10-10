@@ -271,7 +271,8 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .c-filters select { flex: 1; min-width: 150px; min-height: 32px; background: var(--panel2); border: 1px solid #444; color: var(--text); padding: 4px 8px; font-size: 16px; }
 .c-filters .on { background: var(--o2); color: #000; border-color: var(--o2); }
 .clubs { list-style: none; margin: 0; padding: 0; }
-.club { padding: 14px 0; border-bottom: 1px solid #1c1c1c; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: start; }
+.club { content-visibility: auto; contain-intrinsic-size: auto 150px;   /* 181 cards: skip layout for the ones off screen */
+  padding: 14px 0; border-bottom: 1px solid #1c1c1c; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: start; }
 .club h3 { font-size: 15px; line-height: 1.25; }
 .club h3 small { font: 600 10px var(--mono); color: var(--o3); margin-left: 6px; letter-spacing: .06em; }
 .club .addr { grid-column: 1; display: flex; align-items: flex-start; gap: 4px; font-size: 12px; }
