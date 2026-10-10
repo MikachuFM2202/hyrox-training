@@ -26,7 +26,7 @@
  "rules": [
   "Achilles: eccentric heel drops every leg day (3 × 15, slow). No running until cleared. No heavy calf raises.",
   "Knees: leg extension light only. No deep squats, lunges, heavy leg press, jump squats or hip thrusts.",
-  "Core sore: skip core for the week and add an extra arm exercise. Very sore: skip it entirely.",
+  "Core is optional every session. Sore: skip it and add an extra arm exercise under Bonus.",
   "No legs this week: swap Thursday to the Saturday session (Push + Pull + Arms + Core)."
  ],
  "schedule": [
@@ -177,7 +177,7 @@
     },
     {
      "name": "Core",
-     "pick": 3,
+     "pick": 0,
      "items": [
       {
        "name": "Hanging Leg Raises",
@@ -325,7 +325,7 @@
     },
     {
      "name": "Core",
-     "pick": 3,
+     "pick": 0,
      "items": [
       {
        "name": "Hanging Leg Raises",
@@ -454,7 +454,7 @@
     },
     {
      "name": "Core",
-     "pick": 3,
+     "pick": 0,
      "items": [
       {
        "name": "Hanging Leg Raises",
@@ -681,6 +681,64 @@
        "sets": "3 × 20",
        "link": "https://youtu.be/wkD8rjkodUI?t=51",
        "clip": "0:41"
+      }
+     ]
+    }
+   ]
+  },
+  "E": {
+   "title": "Cardio · 30 min",
+   "short": "Cardio",
+   "sections": [
+    {
+     "name": "Cardio · 30 min",
+     "pick": 1,
+     "note": "Low impact only: no running (Achilles). Steady pace you can still talk at.",
+     "items": [
+      {
+       "name": "Stationary Bike",
+       "sets": "30 min steady",
+       "muscles": "Lower Body Cardio",
+       "link": "https://youtu.be/rlOOqDgDU3U?t=29",
+       "clip": "1:29"
+      },
+      {
+       "name": "Rowing Machine",
+       "sets": "30 min steady",
+       "muscles": "Full Body Cardio",
+       "link": "https://youtu.be/4zWu1yuJ0_g?t=83",
+       "clip": "0:31"
+      },
+      {
+       "name": "Elliptical",
+       "sets": "30 min steady",
+       "muscles": "Full Body Cardio",
+       "link": "https://youtu.be/j38LNpTLwzY",
+       "clip": "1:47"
+      },
+      {
+       "name": "Bike + Row + Elliptical",
+       "sets": "3 × 10 min",
+       "muscles": "Full Body Cardio",
+       "note": "10 min on each, no rest between"
+      }
+     ]
+    },
+    {
+     "name": "Cool-down",
+     "pick": 0,
+     "items": [
+      {
+       "name": "Calf Stretch (wall)",
+       "sets": "45 sec / side",
+       "link": "https://youtu.be/trC42QD0wQI?t=18",
+       "clip": "0:59"
+      },
+      {
+       "name": "Achilles & Calf Stretch (gentle)",
+       "sets": "60 sec / side",
+       "link": "https://youtu.be/xuwxkSInkYk",
+       "clip": "0:59"
       }
      ]
     }

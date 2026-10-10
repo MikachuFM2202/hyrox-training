@@ -352,7 +352,7 @@ function dayPanel(who, mine, people) {
       <ul class="rows">${plan.warmup.items.map(it => row(who, mine, people, `${sel}|wu:${slug(it.name)}`, it, false)).join('')}</ul>
     </details>
     ${st.s.sections.map(sec => {
-      const ss = secStats(who, sel, sec), full = ss.resolved >= sec.pick;
+      const ss = secStats(who, sel, sec), full = sec.pick > 0 && ss.resolved >= sec.pick;   // optional sections (pick 0) never grey out
       return `<section class="sec ${ss.skipped ? 'skipped' : ''} ${sec.pick && full && !ss.skipped ? 'full' : ''}">
         <header><h3>${esc(sec.name)}</h3>
           <span class="pick">${sec.pick ? `Pick ${sec.pick} · <b>${ss.resolved}/${sec.pick}</b>` : 'Optional'}</span>
@@ -485,7 +485,8 @@ function calTab(who) {
 }
 
 // Anytime Fitness clubs with kit most clubs don't have (plan.clubs). "Been here" is a per-person check `club:<id>`, synced like ticks.
-const clubKey = c => `club:${c.id}`;
+const clubKey = c => `club:${c.id}`, noteKey = c => `clubnote:${c.id}`;
+const note = (p, c) => { const v = p?.checks?.[noteKey(c)]?.v; return typeof v === 'string' ? v : ''; };   // synced files are untrusted
 function clubsTab(me, who, people) {
   const been = c => people.filter(p => val(p, clubKey(c)) === 1);
   const kits = [...new Set(plan.clubs.flatMap(c => c.kit))].sort();
@@ -505,6 +506,8 @@ function clubsTab(me, who, people) {
         ${ps.length ? `<span class="who">${ps.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</div>
       <div class="kit">${c.kit.map(k => `<span class="${clubFilter === k ? 'hot' : ''}">${esc(k)}</span>`).join('') || '<span>Standard kit</span>'}</div>
       ${c.src ? `<div class="src">${esc(c.src)}</div>` : ''}
+      ${people.filter(p => note(p, c) && !(mine && p.id === me.id)).map(p => `<p class="remark">${avatar(p, 'xs')}<span><b>${esc(p.name)}</b> ${esc(note(p, c))}</span></p>`).join('')}
+      ${mine ? `<input type="text" class="remark-in" data-cnote="${esc(noteKey(c))}" data-l="${esc(c.name)}" value="${esc(note(me, c))}" maxlength="140" enterkeyhint="done" placeholder="Add a remark (e.g. ice bath closed Mondays)" aria-label="Your remark on ${esc(c.name)}">` : ''}
     </li>`; }).join('') || '<li class="note">No clubs match.</li>'}</ul>
   </section>`;
 }
@@ -598,6 +601,7 @@ $app.addEventListener('change', e => {
     S.set({ [t.dataset.kg]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
   } else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
   else if (t.dataset.act === 'goal' && !viewing && S.me()?.role !== 'owner') { if (!t.value || isIso(t.value)) { S.setProfile({ goal: t.value }); toast(t.value ? `Goal set: ${fmt(t.value, { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Goal cleared'); } }
+  else if (t.dataset.cnote && !viewing) { const v = t.value.trim().slice(0, 140); S.set({ [t.dataset.cnote]: { v } }, `${v ? '✎ remark on' : 'cleared remark on'} ${t.dataset.l}`); toast(v ? 'Remark saved' : 'Remark cleared'); }
   else if (t.dataset.act === 'ckit') { clubFilter = t.value; render(); }
   else if (t.dataset.act === 'session') write({ [`${sel}|session`]: { v: t.value } }, `${sel} → ${plan.sessions[t.value]?.title || 'Rest'}`);
 });
@@ -653,7 +657,7 @@ $app.addEventListener('click', async e => {
 });
 
 // SVG muscles are role=button; give them the keyboard behaviour real buttons have.
-$app.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.dataset.kg) e.target.blur(); if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
+$app.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.dataset.kg || e.target.dataset.cnote)) e.target.blur(); if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
 
 $app.addEventListener('submit', async e => {
   e.preventDefault();

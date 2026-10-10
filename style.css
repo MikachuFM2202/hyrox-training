@@ -274,6 +274,11 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .club .src { grid-column: 1 / -1; font-size: 11px; color: #777; }
 .club .been { grid-row: 1 / span 2; grid-column: 2; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .club .been .who { display: flex; gap: 2px; }
+.club .remark { grid-column: 1 / -1; display: flex; gap: 6px; align-items: flex-start; margin: 2px 0 0; font-size: 13px; color: #ccc; }
+.club .remark .av { margin-top: 2px; }
+.club .remark b { color: var(--text); }
+.club .remark-in { grid-column: 1 / -1; width: 100%; min-height: 40px; margin-top: 6px; padding: 8px 10px; background: #141414; border: 1px solid #333; color: var(--text); }
+.club .remark-in:focus { outline: none; border-color: var(--o2); }
 .club.visited h3::before { content: '✓ '; color: var(--ok); }
 .visit { min-height: 36px; padding: 6px 10px; background: var(--panel2); border: 1px solid #3a3a3a; font: 700 10px var(--head); font-stretch: 125%; text-transform: uppercase; color: var(--mute); white-space: nowrap; }
 .visit.on { background: var(--ok); border-color: var(--ok); color: #04210f; }
