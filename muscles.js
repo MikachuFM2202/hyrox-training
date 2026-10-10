@@ -95,7 +95,7 @@ export function muscleMap(plan, { view, filter, muscle }) {
   const tabs = [['all', 'All'], ...plan.schedule.map((id, i) => [id, DAYS[i]]).filter(([id]) => plan.sessions[id])];
   const h = hits[muscle] || { pri: [], sec: [] }, m = MUSCLES[muscle];
   const all = [...h.pri, ...h.sec];
-  const chip = (e, cls) => `<span class="chip ${cls}">${esc(e.name)}<small>${esc(e.sets)}${filter === 'all' ? ` · ${DAYS[plan.schedule.indexOf(e.session)] || ''}` : ''}</small></span>`;
+  const chip = (e, cls) => `<span class="chip ${cls}">${esc(e.name)}<small>${esc(e.sets)}${filter === 'all' && DAYS[plan.schedule.indexOf(e.session)] ? ` · ${DAYS[plan.schedule.indexOf(e.session)]}` : ''}</small></span>`;
 
   return `<section class="card mmap reveal" id="muscles">
     <header class="mm-head"><h3>Muscle map</h3>

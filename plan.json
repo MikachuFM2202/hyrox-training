@@ -1171,7 +1171,7 @@
   {
    "id": "sg-0034",
    "name": "Kinex Mall (Paya Lebar)",
-   "addr": "#02-04, 11 Tanjong Katong Road, Kinex Mall",
+   "addr": "#02-04, 11 Tanjong Katong Road, Kinex Mall, Singapore 437157",
    "kit": [],
    "src": "Mika’s home gym: standard kit",
    "home": true
@@ -1463,6 +1463,922 @@
     "Punching bag"
    ],
    "src": "Club equipment list"
+  },
+  {
+   "id": "sg-0150",
+   "name": "537 Bedok North",
+   "addr": "Apt Blk 537 Bedok North Street 3, #01-555, Singapore 460537",
+   "kit": []
+  },
+  {
+   "id": "sg-0064",
+   "name": "Admiralty",
+   "addr": "31 Woodlands Avenue 6, #05-01/02, Woodlands Galaxy Community Club, Singapore 738991",
+   "kit": []
+  },
+  {
+   "id": "sg-0110",
+   "name": "Alexis",
+   "addr": "354 Alexandra Road, Alexis, #01-01, Singapore 159948",
+   "kit": []
+  },
+  {
+   "id": "sg-0159",
+   "name": "Aljunied 119",
+   "addr": "Blk 119, #01-80/82/84, Aljunied Avenue 2, Singapore 380119",
+   "kit": []
+  },
+  {
+   "id": "sg-0174",
+   "name": "Ang Mo Kio 548",
+   "addr": "548 Ang Mo Kio Ave 10, Singapore 560548",
+   "kit": []
+  },
+  {
+   "id": "sg-0144",
+   "name": "Ang Mo Kio South",
+   "addr": "340 Ang Mo Kio Ave 1, Singapore 560340",
+   "kit": []
+  },
+  {
+   "id": "sg-0016",
+   "name": "Balestier",
+   "addr": "288 Balestier Road, Singapore 329731",
+   "kit": []
+  },
+  {
+   "id": "sg-0160",
+   "name": "Balmoral",
+   "addr": "32 Stevens Road #02-01 @Novotel Stevens, Singapore 258892",
+   "kit": []
+  },
+  {
+   "id": "sg-0189",
+   "name": "Bedok 200 North Avenue",
+   "addr": "200 Bedok North Ave 1, Singapore 469752",
+   "kit": []
+  },
+  {
+   "id": "sg-0121",
+   "name": "Bedok 85",
+   "addr": "BLK 88 BEDOK NORTH STREET 4 #01-163, Singapore 460088",
+   "kit": []
+  },
+  {
+   "id": "sg-0006",
+   "name": "Bedok Central",
+   "addr": "445 Bedok North Street 1, #03-01 Djitsun Mall Bedok, Singapore 469661",
+   "kit": []
+  },
+  {
+   "id": "sg-0073",
+   "name": "Bedok South CC",
+   "addr": "Bedok community center, 850, #02-22, New Upper Changi Road, Singapore 467352",
+   "kit": []
+  },
+  {
+   "id": "sg-0195",
+   "name": "Bishan 227",
+   "addr": "227, Bishan Street 23, #B1-79, Singapore 570227",
+   "kit": []
+  },
+  {
+   "id": "sg-0220",
+   "name": "Boon Keng MRT",
+   "addr": "Boon Keng Singapore 322101",
+   "kit": []
+  },
+  {
+   "id": "sg-0063",
+   "name": "Boon Lay",
+   "addr": "221 Boon Lay Place, #03-106, Boon Lay, Singapore 640221",
+   "kit": []
+  },
+  {
+   "id": "sg-0046",
+   "name": "Buangkok",
+   "addr": "Hougang Green Shopping Mall, 21 Hougang Street 51 #02-13A, Singapore 538719",
+   "kit": []
+  },
+  {
+   "id": "sg-0097",
+   "name": "Bugis",
+   "addr": "51 Middle Road #03-01 & #04-01 Singapore 188959",
+   "kit": []
+  },
+  {
+   "id": "sg-0140",
+   "name": "Bukit Batok (Le Quest)",
+   "addr": "4 Bukit Batok St 41 #01-96/99/100, Singapore 657991",
+   "kit": []
+  },
+  {
+   "id": "sg-0103",
+   "name": "Bukit Batok Connection",
+   "addr": "2 Bukit Batok Street 23, #01-03, Connection, Singapore 659554",
+   "kit": []
+  },
+  {
+   "id": "sg-0172",
+   "name": "Bukit Merah Central",
+   "addr": "161 Bukit Merah Central Singapore 150161",
+   "kit": []
+  },
+  {
+   "id": "sg-0092",
+   "name": "Bukit Panjang CC",
+   "addr": "Unit #03-01, Bukit Panjang Community Club, 8 Pending Road, Singapore 678295",
+   "kit": []
+  },
+  {
+   "id": "sg-0138",
+   "name": "Bukit Timah Central",
+   "addr": "559 Bukit Timah Rd, #B1-01 King’s Arcade, Singapore 269695",
+   "kit": []
+  },
+  {
+   "id": "sg-0068",
+   "name": "Cantonment Road",
+   "addr": "17 Cantonment Road, Singapore 089740",
+   "kit": []
+  },
+  {
+   "id": "sg-0085",
+   "name": "Cecil Street",
+   "addr": "139 Cecil St, #04-01, Singapore 069539",
+   "kit": []
+  },
+  {
+   "id": "sg-0125",
+   "name": "Chai Chee",
+   "addr": "750 Chai Chee Road, Singapore 469000",
+   "kit": []
+  },
+  {
+   "id": "sg-0130",
+   "name": "Changi City Point",
+   "addr": "#02-02C 5 Changi Business Park Central 1, Singapore 486038",
+   "kit": []
+  },
+  {
+   "id": "sg-0231",
+   "name": "Chinese Garden",
+   "addr": "348 Jurong East Avenue 1, #01-1259, Singapore:600348",
+   "kit": []
+  },
+  {
+   "id": "sg-0141",
+   "name": "Chong Pang",
+   "addr": "369 Sembawang Road, #01-03, Singapore 758382",
+   "kit": []
+  },
+  {
+   "id": "sg-0137",
+   "name": "City Square Mall",
+   "addr": "180 Kitchener Road, #06-04, City Square Mall, Singapore 208539",
+   "kit": []
+  },
+  {
+   "id": "sg-0196",
+   "name": "Clarke Quay",
+   "addr": "3A River Valley Rd, #02-05 Clarke Quay, Singapore 179020",
+   "kit": []
+  },
+  {
+   "id": "sg-0031",
+   "name": "Clementi 354",
+   "addr": "Blk 354, Clementi Ave 2, #01-183, Singapore 120354",
+   "kit": []
+  },
+  {
+   "id": "sg-0050",
+   "name": "Clementi City",
+   "addr": "3151 Commonwealth Avenue, West #03-01, Singapore 129581",
+   "kit": []
+  },
+  {
+   "id": "sg-0181",
+   "name": "Dakota",
+   "addr": "87 Jalan Satu #02-01, Singapore 390087",
+   "kit": []
+  },
+  {
+   "id": "sg-0111",
+   "name": "Depot Heights",
+   "addr": "108 Depot Rd #03-02, Singapore 100108",
+   "kit": []
+  },
+  {
+   "id": "sg-0207",
+   "name": "Dunearn",
+   "addr": "896 Dunearn Road, #01-23 Dunearn Village, Singapore 589472",
+   "kit": []
+  },
+  {
+   "id": "sg-0222",
+   "name": "East Coast Park",
+   "addr": "902 E Coast Park Service Rd, Singapore 449874",
+   "kit": []
+  },
+  {
+   "id": "sg-0060",
+   "name": "Eastpoint Mall",
+   "addr": "3 Simei Street 6, #03-25 to 26, Eastpoint Mall, Singapore 528833",
+   "kit": []
+  },
+  {
+   "id": "sg-0187",
+   "name": "Eastwood Centre",
+   "addr": "Eastwood Centre, 20 Eastwood Rd, Singapore 486442",
+   "kit": []
+  },
+  {
+   "id": "sg-0088",
+   "name": "Elias CC",
+   "addr": "93 Pasir Ris Drive 3 #01-05 Pasir Ris Elias Community Centre, Singapore 519498",
+   "kit": []
+  },
+  {
+   "id": "sg-0163",
+   "name": "Eunos CC",
+   "addr": "180 Bedok Reservoir Road #01-05 Singapore 479220",
+   "kit": []
+  },
+  {
+   "id": "sg-0104",
+   "name": "Gambas",
+   "addr": "Nordcom II, 2 Gambas Cres, Singapore 757044",
+   "kit": []
+  },
+  {
+   "id": "sg-0108",
+   "name": "Geylang Central",
+   "addr": "301 Geylang Road #04-01, Singapore 389344",
+   "kit": []
+  },
+  {
+   "id": "sg-0127",
+   "name": "Grantral Complex",
+   "addr": "601 MacPherson Road, #02-08, Grantral Mall, Grantral Complex, 368239",
+   "kit": []
+  },
+  {
+   "id": "sg-0090",
+   "name": "Guillemard",
+   "addr": "100 Guillemard Road, #01-08, Singapore 399718",
+   "kit": []
+  },
+  {
+   "id": "sg-0028",
+   "name": "HarbourFront",
+   "addr": "3 HarbourFront Place, Unit #01-01, Singapore 099254",
+   "kit": []
+  },
+  {
+   "id": "sg-0133",
+   "name": "Havelock Outram",
+   "addr": "405 Havelock Road #02-02 Furama RiverFront, Singapore 169633",
+   "kit": []
+  },
+  {
+   "id": "sg-0209",
+   "name": "Henderson CC",
+   "addr": "500 Bukit Merah View, Singapore 159682",
+   "kit": []
+  },
+  {
+   "id": "sg-0048",
+   "name": "HillV2",
+   "addr": "4 Hillview Rise #02-18/19 HillV2, Singapore 667979",
+   "kit": []
+  },
+  {
+   "id": "sg-0100",
+   "name": "Holland Village",
+   "addr": "31A Lorong Mambong, Singapore 277689",
+   "kit": []
+  },
+  {
+   "id": "sg-0148",
+   "name": "Hong Kah North CC",
+   "addr": "30 Bukit Batok Street 31, #04-04 Hong Kah North Community Club, Singapore 659440",
+   "kit": []
+  },
+  {
+   "id": "sg-0194",
+   "name": "Hougang 915",
+   "addr": "915 Hougang Street 91, #01-10, Singapore 530915",
+   "kit": []
+  },
+  {
+   "id": "sg-0081",
+   "name": "Hougang CC",
+   "addr": "Hougang Community Club, 35 Hougang Ave 3, Singapore 538840",
+   "kit": []
+  },
+  {
+   "id": "sg-0074",
+   "name": "Hougang Central",
+   "addr": "1187 Upper Serangoon Road #B1-01 The Midtown, Singapore 533971",
+   "kit": []
+  },
+  {
+   "id": "sg-0158",
+   "name": "Jalan Anak Bukit",
+   "addr": "5 Jalan Anak Bukit, Singapore 589601",
+   "kit": []
+  },
+  {
+   "id": "sg-0049",
+   "name": "Jalan Besar",
+   "addr": "Rehau Building, 1 King George's Avenue #01-00, Singapore 208557",
+   "kit": []
+  },
+  {
+   "id": "sg-0202",
+   "name": "Joo Chiat",
+   "addr": "123 Joo Chiat Road, Singapore 427412",
+   "kit": []
+  },
+  {
+   "id": "sg-0078",
+   "name": "Junction 9",
+   "addr": "Junction 9 Shopping Mall, 18 Yishun Avenue 9, #02-32/33, Singapore 768897",
+   "kit": []
+  },
+  {
+   "id": "sg-0136",
+   "name": "Jurong",
+   "addr": "442 Jurong West Ave 1 #01-746/ #01-748 Singapore 640442",
+   "kit": []
+  },
+  {
+   "id": "sg-0109",
+   "name": "Jurong East Central",
+   "addr": "134 Jurong Gateway, #01-311, Singapore 600134",
+   "kit": []
+  },
+  {
+   "id": "sg-0076",
+   "name": "Jurong Point",
+   "addr": "Jurong Point, 1 Jurong West Central 2, Singapore 648886",
+   "kit": []
+  },
+  {
+   "id": "sg-0128",
+   "name": "Jurong Summit",
+   "addr": "8 Jurong Townhall rd #02-00 JTC Summit, Singapore 609434",
+   "kit": []
+  },
+  {
+   "id": "sg-0014",
+   "name": "Jurong West",
+   "addr": "Nanyang Community Club Building, 60 Jurong West Street 91, #01-08, Singapore 649040",
+   "kit": []
+  },
+  {
+   "id": "sg-0183",
+   "name": "Kaki Bukit",
+   "addr": "1 Kaki Bukit Rd 1, Singapore 415934",
+   "kit": []
+  },
+  {
+   "id": "sg-0218",
+   "name": "Kallang",
+   "addr": "4 Jalan Ayer, Singapore 389142",
+   "kit": []
+  },
+  {
+   "id": "sg-0173",
+   "name": "Kallang Wave Mall",
+   "addr": "1 Stadium Pl Kallang Wave Mall Singapore 397628",
+   "kit": []
+  },
+  {
+   "id": "sg-0071",
+   "name": "Katong",
+   "addr": "174/176 East Coast Road, Singapore 428880",
+   "kit": []
+  },
+  {
+   "id": "sg-0131",
+   "name": "Kebun Baru CC",
+   "addr": "216 Ang Mo Kio Ave. 4, #02-04 Kebun Baru CC, Singapore 569897",
+   "kit": []
+  },
+  {
+   "id": "sg-0055",
+   "name": "Kembangan",
+   "addr": "18 Jalan Masjid #01-04, #B1-06 Kembangan, Singapore 418944",
+   "kit": []
+  },
+  {
+   "id": "sg-0149",
+   "name": "Kensington Square",
+   "addr": "2 Jalan Lokam #01-37, Singapore 537846",
+   "kit": []
+  },
+  {
+   "id": "sg-0091",
+   "name": "Keppel",
+   "addr": "1557 Keppel Rd, #01-03, Singapore 089066",
+   "kit": []
+  },
+  {
+   "id": "sg-0199",
+   "name": "Khoo Teck Puat Hospital",
+   "addr": "01-02 Yishun Community Hospital (YCH) 2 Yishun Central 2 Singapore 768024",
+   "kit": []
+  },
+  {
+   "id": "sg-0102",
+   "name": "Kim Seng Community Centre",
+   "addr": "570 Havelock Rd, Singapore 169640",
+   "kit": []
+  },
+  {
+   "id": "sg-0044",
+   "name": "Kovan",
+   "addr": "JForte Sportainment Centre Level 2 50 Hougang Ave 1, Singapore 538885",
+   "kit": []
+  },
+  {
+   "id": "sg-0175",
+   "name": "Labrador View",
+   "addr": "456, Alexandra Road #12-02, Singapore 119962",
+   "kit": []
+  },
+  {
+   "id": "sg-0229",
+   "name": "Lavender",
+   "addr": "53 Lavender Street (S) 338711",
+   "kit": []
+  },
+  {
+   "id": "sg-0168",
+   "name": "Lentor Modern",
+   "addr": "1 Lentor Central #B1-01/02 Lentor Modern Singapore 788887",
+   "kit": []
+  },
+  {
+   "id": "sg-0124",
+   "name": "Lower Peirce",
+   "addr": "16 Jalan Kuras, Singapore 577729",
+   "kit": []
+  },
+  {
+   "id": "sg-0079",
+   "name": "Loyang Point",
+   "addr": "258 Pasir Ris Street 21, #05-03/04/05 Loyang Point, Singapore 510258",
+   "kit": []
+  },
+  {
+   "id": "sg-0003",
+   "name": "MacPherson",
+   "addr": "MacPherson Community Club, 400 Paya Lebar Way, Singapore 379131",
+   "kit": []
+  },
+  {
+   "id": "sg-0115",
+   "name": "Marsiling CC",
+   "addr": "100 Admirality Road, Singapore 739980",
+   "kit": []
+  },
+  {
+   "id": "sg-0066",
+   "name": "Marsiling MRT",
+   "addr": "BLK 303 WOODLANDS STREET 31 #01-159/161 SINGAPORE 730303",
+   "kit": []
+  },
+  {
+   "id": "sg-0012",
+   "name": "Marymount CC",
+   "addr": "191 Sin Ming Avenue, #03-01, Singapore 575738",
+   "kit": []
+  },
+  {
+   "id": "sg-0234",
+   "name": "Mayflower",
+   "addr": "161 Ang Mo Kio Avenue 4 Singapore 560161",
+   "kit": []
+  },
+  {
+   "id": "sg-0171",
+   "name": "Mohamed Sultan",
+   "addr": "20 Martin Road Singapore 239070",
+   "kit": []
+  },
+  {
+   "id": "sg-0143",
+   "name": "Mountbatten",
+   "addr": "372 Tanjong Katong, Mountbatten, Singapore 437129",
+   "kit": []
+  },
+  {
+   "id": "sg-0155",
+   "name": "New Queensway",
+   "addr": "1 Queensway #03-51, Queensway Shopping Centre, Singapore 149053",
+   "kit": []
+  },
+  {
+   "id": "sg-0062",
+   "name": "New Tech Park",
+   "addr": "151 Lorong Chuan #01-12, Singapore 556741",
+   "kit": []
+  },
+  {
+   "id": "sg-0069",
+   "name": "New Upper Thomson",
+   "addr": "246S Upper Thomson Road, Singapore 574370",
+   "kit": []
+  },
+  {
+   "id": "sg-0010",
+   "name": "Nex",
+   "addr": "23 Serangoon Central, #04-73/74/75 Nex, Singapore 556083",
+   "kit": []
+  },
+  {
+   "id": "sg-0089",
+   "name": "Northshore Plaza",
+   "addr": "407 Northshore Drive, #01-20 to 25, Northshore Plaza I, Singapore 820407",
+   "kit": []
+  },
+  {
+   "id": "sg-0065",
+   "name": "Novena",
+   "addr": "101 Thomson Road #B1-15/16/17/34 United Square, Singapore 307645",
+   "kit": []
+  },
+  {
+   "id": "sg-0023",
+   "name": "NTU",
+   "addr": "110 Nanyang Cres, Singapore 636956",
+   "kit": []
+  },
+  {
+   "id": "sg-0230",
+   "name": "One North",
+   "addr": "Solaris @ One North 1 Fusionopolis Walk, #01-03 Singapore 138628",
+   "kit": []
+  },
+  {
+   "id": "sg-0120",
+   "name": "Orchard",
+   "addr": "277 Orchard Rd, #04-01 Orchardgateway, Singapore 238858",
+   "kit": []
+  },
+  {
+   "id": "sg-0208",
+   "name": "Parc Point",
+   "addr": "Blk 302, Tengah Park Avenue, #03-02, Singapore 690302",
+   "kit": []
+  },
+  {
+   "id": "sg-0117",
+   "name": "Pasir Ris",
+   "addr": "440 Pasir Ris Drive 6 S510440",
+   "kit": []
+  },
+  {
+   "id": "sg-0095",
+   "name": "Pioneer Mall",
+   "addr": "638 Jurong West Street 61 #03-1 Pioneer Mall, Singapore 640638",
+   "kit": []
+  },
+  {
+   "id": "sg-0096",
+   "name": "Punggol Digital District",
+   "addr": "Punggol Digital District",
+   "kit": [],
+   "soon": true
+  },
+  {
+   "id": "sg-0087",
+   "name": "Punggol Waterway",
+   "addr": "654A Punggol Dr., Waterway Sunrise 2, Singapore 821654",
+   "kit": []
+  },
+  {
+   "id": "sg-0180",
+   "name": "Red Hill",
+   "addr": "4 Leng Kee Road, Singapore 159088",
+   "kit": []
+  },
+  {
+   "id": "sg-0191",
+   "name": "Rochester",
+   "addr": "41 Rochester Drive, Singapore 138582",
+   "kit": []
+  },
+  {
+   "id": "sg-0018",
+   "name": "Sembawang",
+   "addr": "#02-14 Sembawang Shopping Centre, 604 Sembawang Road, Singapore 758459",
+   "kit": []
+  },
+  {
+   "id": "sg-0135",
+   "name": "Sengkang",
+   "addr": "Sengkang",
+   "kit": [],
+   "soon": true
+  },
+  {
+   "id": "sg-0030",
+   "name": "Sengkang Rivervale",
+   "addr": "11 Rivervale Crescent, Rivervale Mall, #02-01, Singapore 545082",
+   "kit": []
+  },
+  {
+   "id": "sg-0205",
+   "name": "Sentosa",
+   "addr": "Quayside Isle, 31 Ocean Way, Sentosa Cove, Singapore 098375",
+   "kit": []
+  },
+  {
+   "id": "sg-0052",
+   "name": "Serangoon Gardens",
+   "addr": "53 Serangoon Garden Way, Singapore 555949",
+   "kit": []
+  },
+  {
+   "id": "sg-0099",
+   "name": "Siglap Community Centre",
+   "addr": "#02-11 151 Bedok South Road, Singapore 460151",
+   "kit": []
+  },
+  {
+   "id": "sg-0188",
+   "name": "Simpang Bedok",
+   "addr": "430 Upper Changi Road, Singapore 487048",
+   "kit": []
+  },
+  {
+   "id": "sg-0213",
+   "name": "Sims Urban",
+   "addr": "Sembawang Community Club, 2125 Sembawang Road Singapore",
+   "kit": []
+  },
+  {
+   "id": "sg-0176",
+   "name": "Sims Urban Oasis",
+   "addr": "Sims Urban Oasis, 6 Sims Dr., Singapore 387388",
+   "kit": []
+  },
+  {
+   "id": "sg-0061",
+   "name": "SKH Campus",
+   "addr": "Sengkang Community Hospital, 1 Anchorvale Street #01-29, Singapore 544835",
+   "kit": []
+  },
+  {
+   "id": "sg-0075",
+   "name": "Stevens",
+   "addr": "383 Bukit Timah Road, Singapore 259727",
+   "kit": []
+  },
+  {
+   "id": "sg-0185",
+   "name": "Still Road",
+   "addr": "155 Still Rd, Boon Court, Singapore 423992",
+   "kit": []
+  },
+  {
+   "id": "sg-0152",
+   "name": "Sunshine Place",
+   "addr": "475 Choa Chu Kang Avenue 3, Sunshine Place, Singapore 680475",
+   "kit": []
+  },
+  {
+   "id": "sg-0206",
+   "name": "Suntec City",
+   "addr": "3 Temasek Boulevard, Suntec City, Singapore 038983",
+   "kit": []
+  },
+  {
+   "id": "sg-0228",
+   "name": "Tai Seng",
+   "addr": "3 Irving Road #01-20 & #01-21 Tai Seng Centre Singapore 369522",
+   "kit": []
+  },
+  {
+   "id": "sg-0020",
+   "name": "Taman Jurong",
+   "addr": "1 Yung Sheng Road, #01-02 Taman Jurong Community Club, Singapore 618495",
+   "kit": []
+  },
+  {
+   "id": "sg-0022",
+   "name": "Tampines",
+   "addr": "#03-361 Block 506 Tampines Central 1, Singapore 520506",
+   "kit": []
+  },
+  {
+   "id": "sg-0193",
+   "name": "Tampines 487",
+   "addr": "487B Tampines Street 45 #B1-123, Singapore 521487",
+   "kit": []
+  },
+  {
+   "id": "sg-0039",
+   "name": "Tampines Central",
+   "addr": "866A Tampines Street 83, #03-10, Tampines Central Community Complex, Singapore 521866",
+   "kit": []
+  },
+  {
+   "id": "sg-0151",
+   "name": "Tampines Grande",
+   "addr": "7 Tampines Grande, Singapore 528736",
+   "kit": []
+  },
+  {
+   "id": "sg-0201",
+   "name": "Tampines North",
+   "addr": "492B Tampines Avenue 9 #01-422, S(520492)",
+   "kit": []
+  },
+  {
+   "id": "sg-0045",
+   "name": "Tampines West",
+   "addr": "5 Tampines Avenue 3, #02-03, Tampines West Community Club, Singapore 529705",
+   "kit": []
+  },
+  {
+   "id": "sg-0007",
+   "name": "Tanjong Pagar",
+   "addr": "10 Anson Road, International Plaza, #03-41, Singapore 079903",
+   "kit": []
+  },
+  {
+   "id": "sg-0147",
+   "name": "Teck Whye",
+   "addr": "Blk 26 Teck Whye Lane, #01-180 & #01-182, Singapore 680026",
+   "kit": []
+  },
+  {
+   "id": "sg-0161",
+   "name": "Tekka Place",
+   "addr": "2 Serangoon Road #02-17 to #02-21 Tekka Place Singapore 218227",
+   "kit": []
+  },
+  {
+   "id": "sg-0027",
+   "name": "Telok Blangah",
+   "addr": "Blk 78B Telok Blangah Street 32 #02-15, Singapore 102078",
+   "kit": []
+  },
+  {
+   "id": "sg-0177",
+   "name": "Tengah",
+   "addr": "119 Plantation Cresent, Tengah Community Club, #02-01, Singapore 690119",
+   "kit": []
+  },
+  {
+   "id": "sg-0105",
+   "name": "Tengah",
+   "addr": "Tengah",
+   "kit": [],
+   "soon": true
+  },
+  {
+   "id": "sg-0219",
+   "name": "The Burghley",
+   "addr": "45 Burghley Drive Singapore 559022",
+   "kit": []
+  },
+  {
+   "id": "sg-0166",
+   "name": "The Concourse",
+   "addr": "The Concourse 300 Beach Road #02-01A/02 Singapore 199555",
+   "kit": []
+  },
+  {
+   "id": "sg-0204",
+   "name": "Thomson CC",
+   "addr": "194 Upper Thomson Rd, #02-01, Singapore 574339",
+   "kit": []
+  },
+  {
+   "id": "sg-0084",
+   "name": "Tiong Bahru Plaza",
+   "addr": "302 Tiong Bahru Road #01-128/129 Tiong Bahru Plaza, Singapore 168732",
+   "kit": []
+  },
+  {
+   "id": "sg-0017",
+   "name": "Toa Payoh",
+   "addr": "Blk 190 Lorong 6 Toa Payoh #03-512, Singapore 310190",
+   "kit": []
+  },
+  {
+   "id": "sg-0232",
+   "name": "Toa Payoh 622",
+   "addr": "622 Lorong 1 Toa Payoh, Singapore 319763",
+   "kit": []
+  },
+  {
+   "id": "sg-0042",
+   "name": "Upper Cross Street",
+   "addr": "531 Upper Cross Street #01-07, Hong Lim Complex, Singapore 050531",
+   "kit": []
+  },
+  {
+   "id": "sg-0146",
+   "name": "Upper Serangoon",
+   "addr": "780 Upper Serangoon Rd, Singapore 534626",
+   "kit": []
+  },
+  {
+   "id": "sg-0132",
+   "name": "VIIO @ BALESTIER",
+   "addr": "520 Balestier Rd, #03-01 to 04, Singapore 329853",
+   "kit": []
+  },
+  {
+   "id": "sg-0197",
+   "name": "Wave 9",
+   "addr": "Wave 9, 71 Woodlands Industrial Park E9, Singapore 757048",
+   "kit": []
+  },
+  {
+   "id": "sg-0013",
+   "name": "West Coast",
+   "addr": "West Coast Plaza 154 West Coast Road, Singapore 127371",
+   "kit": []
+  },
+  {
+   "id": "sg-0164",
+   "name": "White Sands Pasir Ris",
+   "addr": "1 Pasir Ris Central St 3, White Sands, #05-07D, Singapore 518457",
+   "kit": []
+  },
+  {
+   "id": "sg-0056",
+   "name": "Wisteria",
+   "addr": "Wisteria Mall, B1-26/27, 598 Yishun Ring Road, Singapore 668698",
+   "kit": []
+  },
+  {
+   "id": "sg-0072",
+   "name": "Woodgrove",
+   "addr": "30 Woodlands Avenue Woodgrove Drive #02-12/13 & #02-01-02/03/04 The Woodgrove, &, 739065",
+   "kit": []
+  },
+  {
+   "id": "sg-0001",
+   "name": "Woodlands",
+   "addr": "ACE The Place Community Club, 120 Woodlands Avenue 1, #02-01, Singapore 739069",
+   "kit": []
+  },
+  {
+   "id": "sg-0224",
+   "name": "Woodlands 11",
+   "addr": "11 Woodlands Cl, #01-02, Singapore 737853",
+   "kit": []
+  },
+  {
+   "id": "sg-0134",
+   "name": "Woodlands North",
+   "addr": "BLK 871 WOODLANDS STREET 81 #01-292, Singapore 730871",
+   "kit": []
+  },
+  {
+   "id": "sg-0101",
+   "name": "Woodleigh",
+   "addr": "Woodleigh",
+   "kit": [],
+   "soon": true
+  },
+  {
+   "id": "sg-0082",
+   "name": "Woods Square",
+   "addr": "No 8 Woodlands Square #02-12/13/14/15/16, SOLO 2, Singapore 737713",
+   "kit": []
+  },
+  {
+   "id": "sg-0070",
+   "name": "Yew Tee",
+   "addr": "20 Choa Chu Kang St 52 #03-01, Singapore 689286",
+   "kit": []
+  },
+  {
+   "id": "sg-0200",
+   "name": "Yew Tee 614",
+   "addr": "Blk 614, Choa Chu Kang Street 62, #01-233, Singapore 680614",
+   "kit": []
+  },
+  {
+   "id": "sg-0156",
+   "name": "Yishun East",
+   "addr": "461 Yishun Ave 6, Singapore 760461",
+   "kit": []
+  },
+  {
+   "id": "sg-0192",
+   "name": "Yishun Win 5",
+   "addr": "Win 5. 15 Yishun Industrial Street 1, Singapore 768091",
+   "kit": []
   }
  ]
 }

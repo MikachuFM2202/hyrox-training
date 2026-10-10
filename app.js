@@ -28,7 +28,7 @@ let mm = { view: 'front', filter: 'all', muscle: 'chest' };
 let clip = null;   // the soundboard clip playing now; a new tap cuts it off
 let trendOpen = new Set();   // exercise slugs whose weight chart is expanded
 let altOpen = new Set();   // exercise slugs whose free-weight alternatives are listed
-let clubFilter = 'all';
+let clubFilter = 'all', clubQ = '';   // Clubs tab: chip/dropdown filter and the search box
 let seenOnline = null;   // who was online at the last render, to pop in newcomers
 
 // Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
@@ -117,7 +117,7 @@ function weekPct(p, mon) {
 const bar = (id, pct, cls = '') => `<span class="bar ${cls}"><i data-bar="${id}" style="--w:${pct / 100}"></i></span>`;
 
 // ---- render ---------------------------------------------------------------
-const typing = () => document.activeElement?.matches?.('#app input[type=text], #app input[name=name]');
+const typing = () => document.activeElement?.matches?.('#app input[type=text], #app input[type=search], #app input[name=name]');
 
 // A sync landing mid-scroll would swap the DOM under the finger; hold it until the scroll settles.
 let lastScroll = 0, lastTouch = 0, held = 0;
@@ -238,7 +238,8 @@ const ICONS = {
   today: '<path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3"/>',
   cal: '<rect x="4" y="5" width="16" height="15" rx="1"/><path d="M4 10h16M9 3v4M15 3v4"/>',
   map: '<circle cx="12" cy="5" r="2.5"/><path d="M7 10h10M12 10v6M9 21l3-5 3 5M7 10l-2 5M17 10l2 5"/>',
-  clubs: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
+  // Anytime Fitness running man, from the brand's own logo SVG; filled, not stroked (see .tabs svg.fill).
+  clubs: '<path d="M32.4383 1.57752C31.2676 0.406825 29.2321 0.23328 28.1526 1.42457C28.1526 1.42457 21.0196 10.7166 19.1488 12.5668C16.3838 15.3082 13.4483 17.4937 10.5304 19.0938C10.1803 19.285 9.76559 19.2909 9.48027 19.0085L5.18576 14.7405C3.52679 13.0815 1.60308 13.2139 0.635345 14.1816C-0.217674 15.0346 -0.376512 16.5995 1.19128 18.1673L7.45656 24.3973C8.50665 25.4473 10.1715 25.6091 11.401 24.8091L11.554 24.7061C13.4218 23.353 16.4338 19.8645 18.4458 17.2878C18.7929 16.8436 19.4165 16.7436 19.8665 17.0613C25.7553 21.1999 27.9878 22.8765 28.8232 23.5531C29.6409 24.2149 29.9704 24.6267 29.9586 24.9738C29.938 25.668 28.5085 26.7886 26.9701 27.8946C25.0729 29.2565 23.8522 30.2066 23.008 30.9773C21.8226 32.095 21.3872 32.6627 21.1166 33.5657C20.9225 34.2158 21.049 34.9659 21.149 35.2453C21.4402 36.0777 22.0932 36.8013 23.0639 37.4014L32.0559 42.6313C34.7296 44.0785 36.0709 43.2049 36.8416 42.0489C37.5623 40.9664 37.8888 38.9456 35.4121 37.4426L28.9468 33.3775C28.2408 32.9539 28.5144 32.4803 28.6614 32.3186C28.9879 31.9656 30.3734 30.6714 30.7146 30.336C32.8883 28.2064 33.9384 26.321 33.9266 24.5796C33.9149 22.7853 32.7589 21.4529 31.7529 20.494C30.7999 19.585 29.8998 18.6997 28.5408 17.3643C27.4613 16.3024 26.0965 14.9611 24.1934 13.105C23.9463 12.8638 23.811 12.5373 23.8257 12.2108C23.8375 11.9196 23.9698 11.6549 24.1993 11.4696C24.9493 10.8578 25.9112 9.99888 26.8436 9.17233C27.7967 8.3252 28.6967 7.52512 29.3321 7.01331C29.6498 6.75741 30.1145 6.778 30.4087 7.06332L34.709 11.2284C35.7474 12.2667 37.0416 12.705 38.1741 12.402C38.53 12.3079 38.8447 12.1432 39.1065 11.9255C39.4507 11.6373 39.7007 11.2578 39.8183 10.8195C39.9684 10.2577 40.0242 9.11939 38.7035 7.80162L32.4383 1.57752Z"/><path d="M14.3513 12.1285C16.9197 12.1285 19.0017 10.0464 19.0017 7.47806C19.0017 4.9097 16.9197 2.82764 14.3513 2.82764C11.7829 2.82764 9.70087 4.9097 9.70087 7.47806C9.70087 10.0464 11.7829 12.1285 14.3513 12.1285Z"/>',
   crew: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
 };
 const TABS = [['today', 'Today'], ['cal', 'Calendar'], ['map', 'Muscles'], ['clubs', 'Clubs'], ['crew', 'Crew']];
@@ -266,7 +267,7 @@ function main() {
   </header>
   <div class="view ${tabChanged ? 'tab-in' : ''}">${body}</div>
   <nav class="tabs" aria-label="Sections">${TABS.map(([id, label]) =>
-    `<button class="${tab === id ? 'on' : ''}" data-act="tab" data-t="${id}" aria-current="${tab === id ? 'page' : 'false'}"><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id]}</svg><span>${label}</span></button>`).join('')}</nav>`;
+    `<button class="${tab === id ? 'on' : ''}" data-act="tab" data-t="${id}" aria-current="${tab === id ? 'page' : 'false'}"><svg ${id === 'clubs' ? 'class="fill" viewBox="0 0 41 44"' : 'viewBox="0 0 24 24"'} aria-hidden="true">${ICONS[id]}</svg><span>${label}</span></button>`).join('')}</nav>`;
 }
 
 const SYNC_SVG = '<path d="M20 12a8 8 0 0 1-14.5 4.7M4 12a8 8 0 0 1 14.5-4.7"/><path d="M19 3v4.5h-4.5M5 21v-4.5h4.5"/>';
@@ -500,35 +501,40 @@ function clubSize(c, people) {
   const n = k => votes.filter(v => v === k).length, s = Object.keys(SIZES).sort((a, b) => n(b) - n(a))[0];
   return { s, src: `crew vote (${votes.length})` };
 }
-/** Average 6–8 pm headcount across everyone's logs from the last PEAK_DAYS days. */
-function peak(c, people) {
-  const from = addDays(todayIso(), -PEAK_DAYS), xs = [];
-  for (const p of people) for (const [k, e] of Object.entries(p.checks || {}))
-    if (k.slice(10) === `|crowd:${c.id}` && k.slice(0, 10) >= from && Number.isInteger(e.v) && e.v > 0 && e.v < 500) xs.push(e.v);
-  return xs.length ? { avg: Math.round(xs.reduce((a, b) => a + b, 0) / xs.length), n: xs.length } : null;
+/** Average 6–8 pm headcount per club across everyone's logs from the last PEAK_DAYS days. One pass over all checks, not one per club. */
+function peaks(people) {
+  const from = addDays(todayIso(), -PEAK_DAYS), xs = {};
+  for (const p of people) for (const [k, e] of Object.entries(p.checks || {})) {
+    const id = k.startsWith('|crowd:', 10) && k.slice(17);
+    if (id && k.slice(0, 10) >= from && Number.isInteger(e.v) && e.v > 0 && e.v < 500) (xs[id] ||= []).push(e.v);
+  }
+  return id => { const v = xs[id]; return v ? { avg: Math.round(v.reduce((a, b) => a + b, 0) / v.length), n: v.length } : null; };
 }
+const clubText = c => `${c.name} ${c.addr} ${c.kit.join(' ')}`.toLowerCase();
+const clubHit = c => clubQ.trim().toLowerCase().split(/\s+/).every(w => clubText(c).includes(w));   // every word must match somewhere
 function clubsTab(me, who, people) {
   const been = c => people.filter(p => val(p, clubKey(c)) === 1);
   const kits = [...new Set(plan.clubs.flatMap(c => c.kit))].sort();
   const fav = c => val(who, favKey(c)) === 1;
-  const list = plan.clubs.filter(c => clubFilter === 'all' ? true : clubFilter === 'fav' ? fav(c) : clubFilter === 'todo' ? !val(who, clubKey(c)) : clubFilter === 'done' ? val(who, clubKey(c)) === 1
+  const list = plan.clubs.filter(c => clubFilter === 'all' ? true : clubFilter === 'fav' ? fav(c) : clubFilter === 'special' ? c.kit.length > 0 : clubFilter === 'todo' ? !val(who, clubKey(c)) : clubFilter === 'done' ? val(who, clubKey(c)) === 1
     : Object.hasOwn(SIZES, clubFilter) ? clubSize(c, people)?.s === clubFilter : c.kit.includes(clubFilter))
     .sort((a, b) => fav(b) - fav(a));   // favourites first; otherwise plan order
-  const mine = who.id === me.id, n = plan.clubs.filter(c => val(who, clubKey(c)) === 1).length, today = todayIso();
+  const mine = who.id === me.id, n = plan.clubs.filter(c => val(who, clubKey(c)) === 1).length, today = todayIso(), peak = peaks(people);
   return `${banners(me, who, mine)}<section class="card reveal">
     <div class="kicker">Anytime Fitness · Singapore</div>
-    <h2>Special <span class="grad">clubs</span></h2>
-    <p class="note">Clubs with kit most Anytime Fitness gyms don't have. ${esc(who.name)} has been to <b>${n}</b> of ${plan.clubs.length}. Equipment changes: check with the club before a special trip. Peak crowd is the crew's own 6–8 pm headcounts.</p>
+    <h2>Anytime <span class="grad">clubs</span></h2>
+    <p class="note">Every Anytime Fitness club in Singapore. Special kit is listed where known: check with the club before a special trip. ${esc(who.name)} has been to <b>${n}</b> of ${plan.clubs.length}. Peak crowd is the crew's own 6–8 pm headcounts.</p>
+    <input type="search" class="c-search" data-act="csearch" value="${esc(clubQ)}" placeholder="Search clubs, areas, postcodes or kit" aria-label="Search clubs" enterkeyhint="search" autocomplete="off">
     <div class="c-filters">${[['all', 'All'], ['fav', '★ Favs'], ['todo', 'Not been'], ['done', 'Been']].map(([f, t]) =>
       `<button class="btn-ghost sm ${clubFilter === f ? 'on' : ''}" data-act="cfilter" data-f="${f}">${t}</button>`).join('')}
-      <select data-act="ckit" aria-label="Filter by size or equipment"><option value="all">Any size or equipment</option>
+      <select data-act="ckit" aria-label="Filter by size or equipment"><option value="all">Any size or equipment</option><option value="special" ${clubFilter === 'special' ? 'selected' : ''}>Any special kit</option>
         <optgroup label="Size">${Object.entries(SIZES).map(([k, t]) => `<option value="${k}" ${clubFilter === k ? 'selected' : ''}>${t}</option>`).join('')}</optgroup>
         <optgroup label="Equipment">${kits.map(k => `<option ${clubFilter === k ? 'selected' : ''}>${esc(k)}</option>`).join('')}</optgroup></select></div>
     <ul class="clubs">${list.map(c => {
-      const ps = been(c), on = val(who, clubKey(c)) === 1, f = fav(c), sz = clubSize(c, people), pk = peak(c, people);
+      const ps = been(c), on = val(who, clubKey(c)) === 1, f = fav(c), sz = clubSize(c, people), pk = peak(c.id);
       const myVote = me.checks?.[sizeKey(c)]?.v, crowdK = `${today}|crowd:${c.id}`, myCrowd = num(val(me, crowdK));
-      return `<li class="club ${on ? 'visited' : ''} ${f ? 'fav' : ''}">
-      <h3>${mine ? `<button class="star ${f ? 'on' : ''}" data-act="fav" data-k="${esc(favKey(c))}" data-l="${esc(c.name)}" aria-pressed="${f}" aria-label="${f ? 'Remove' : 'Add'} ${esc(c.name)} ${f ? 'from' : 'to'} favourites">${f ? '★' : '☆'}</button>` : f ? '<span class="star on">★</span>' : ''}${esc(c.name)}${c.home ? '<small>HOME GYM</small>' : ''}</h3>
+      return `<li class="club ${on ? 'visited' : ''} ${f ? 'fav' : ''}" data-q="${esc(clubText(c))}" ${clubHit(c) ? '' : 'hidden'}>
+      <h3>${mine ? `<button class="star ${f ? 'on' : ''}" data-act="fav" data-k="${esc(favKey(c))}" data-l="${esc(c.name)}" aria-pressed="${f}" aria-label="${f ? 'Remove' : 'Add'} ${esc(c.name)} ${f ? 'from' : 'to'} favourites">${f ? '★' : '☆'}</button>` : f ? '<span class="star on">★</span>' : ''}${esc(c.name)}${c.home ? '<small>HOME GYM</small>' : ''}${c.soon ? '<small>OPENING SOON</small>' : ''}</h3>
       <div class="addr"><a class="pin" href="${mapUrl(c)}" target="_blank" rel="noopener" aria-label="Open ${esc(c.name)} in Google Maps">${PIN}</a><a href="${mapUrl(c)}" target="_blank" rel="noopener">${esc(c.addr)}</a></div>
       <div class="been">${mine ? `<button class="visit ${on ? 'on' : ''}" data-act="club" data-k="${esc(clubKey(c))}" data-l="${esc(c.name)}" aria-pressed="${on}">${on ? '✓ Been' : 'Been here?'}</button>` : `<span class="visit ${on ? 'on' : ''}">${on ? '✓ Been' : 'Not yet'}</span>`}
         ${ps.length ? `<span class="who">${ps.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</div>
@@ -542,7 +548,7 @@ function clubsTab(me, who, people) {
         <label class="crowd-in"><span>People here now, 6–8 pm</span><input type="text" inputmode="numeric" maxlength="3" enterkeyhint="done" data-crowd="${esc(crowdK)}" data-l="${esc(c.name)}" value="${myCrowd || ''}" placeholder="count" aria-label="Headcount at ${esc(c.name)} between 6 and 8 pm today"></label>
         ${c.size ? '' : `<div class="size-vote"><span>Size</span>${Object.entries(SIZES).map(([k, t]) => `<button class="btn-ghost sm ${myVote === k ? 'on' : ''}" data-act="csize" data-k="${esc(sizeKey(c))}" data-v="${k}" data-l="${esc(c.name)}">${t}</button>`).join('')}</div>`}
       </details>` : ''}
-    </li>`; }).join('') || '<li class="note">No clubs match.</li>'}</ul>
+    </li>`; }).join('')}<li class="note c-none" ${list.some(clubHit) ? 'hidden' : ''}>No clubs match.</li></ul>
   </section>`;
 }
 
@@ -624,6 +630,15 @@ function write(entries, label, key) {
 const goTab = t => { if (t !== tab) { tab = t; tabChanged = true; } render(); scrollTo({ top: 0, behavior: 'instant' }); };
 const showDay = () => { const d = document.getElementById('day'); if (d && d.getBoundingClientRect().top > innerHeight * .6) d.scrollIntoView({ behavior: calm.matches ? 'auto' : 'smooth', block: 'start' }); };
 
+$app.addEventListener('input', e => {
+  if (e.target.dataset.act !== 'csearch') return;
+  clubQ = e.target.value;
+  const ws = clubQ.trim().toLowerCase().split(/\s+/);
+  let any = false;
+  for (const li of $app.querySelectorAll('.club')) { const hit = ws.every(w => li.dataset.q.includes(w)); li.hidden = !hit; any ||= hit; }
+  $app.querySelector('.c-none')?.toggleAttribute('hidden', any);
+});
+
 $app.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset.kg && !viewing) {
@@ -643,7 +658,7 @@ $app.addEventListener('change', e => {
     toast(!n ? 'Headcount cleared' : h === 18 || h === 19 ? `Headcount ${n} saved` : `Saved ${n}. Counts are meant for 6–8 pm`);
   }
   else if (t.dataset.cnote && !viewing) { const v = t.value.trim().slice(0, 140); S.set({ [t.dataset.cnote]: { v } }, `${v ? '✎ remark on' : 'cleared remark on'} ${t.dataset.l}`); toast(v ? 'Remark saved' : 'Remark cleared'); }
-  else if (t.dataset.act === 'ckit') { clubFilter = t.value; render(); }
+  else if (t.dataset.act === 'ckit') { clubFilter = t.value; document.activeElement?.blur(); render(); }   // a focused search box would otherwise hold the render
   else if (t.dataset.act === 'session') write({ [`${sel}|session`]: { v: t.value } }, `${sel} → ${plan.sessions[t.value]?.title || 'Rest'}`);
 });
 
@@ -700,7 +715,7 @@ $app.addEventListener('click', async e => {
 });
 
 // SVG muscles are role=button; give them the keyboard behaviour real buttons have.
-$app.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.dataset.kg || e.target.dataset.cnote || e.target.dataset.crowd)) e.target.blur(); if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
+$app.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.dataset.kg || e.target.dataset.cnote || e.target.dataset.crowd || e.target.dataset.act === 'csearch')) e.target.blur(); if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('path[data-act]')) { e.preventDefault(); e.target.dispatchEvent(new MouseEvent('click', { bubbles: true })); } });
 
 $app.addEventListener('submit', async e => {
   e.preventDefault();

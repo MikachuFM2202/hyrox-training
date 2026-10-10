@@ -133,6 +133,8 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .tabs svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s var(--spring); }
 .tabs button.on { color: var(--text); }
 .tabs button.on svg { stroke: var(--o2); transform: translateY(-2px); }
+.tabs svg.fill { fill: currentColor; stroke: none; }
+.tabs button.on svg.fill { fill: #6e38d5; stroke: none; }   /* Anytime Fitness purple */
 .tabs button::before { content: ''; position: absolute; top: 0; left: 30%; right: 30%; height: 2px; background: var(--grad); transform: scaleX(0); transition: transform .3s var(--ease); }
 .tabs button.on::before { transform: scaleX(1); }
 .tabs button:active svg { transform: scale(.85); }
@@ -259,6 +261,9 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .a-use { font: 700 10px var(--head); font-stretch: 125%; text-transform: uppercase; color: var(--o2); padding: 0 8px; }
 
 /* clubs */
+.c-search { width: 100%; min-height: 44px; margin-top: 12px; padding: 10px 12px; background: #141414; border: 1px solid #333; color: var(--text); font-size: 16px; -webkit-appearance: none; border-radius: 0; }
+.c-search:focus { outline: none; border-color: var(--o2); }
+.club[hidden], .c-none[hidden] { display: none; }
 .c-filters { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 4px; }
 .c-filters select { flex: 1; min-width: 150px; min-height: 32px; background: var(--panel2); border: 1px solid #444; color: var(--text); padding: 4px 8px; font-size: 16px; }
 .c-filters .on { background: var(--o2); color: #000; border-color: var(--o2); }
@@ -272,8 +277,7 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .club .pin { flex: none; display: grid; place-items: center; width: 28px; height: 28px; margin: -6px 0 -6px -6px; }
 .club .pin svg { width: 16px; height: 16px; fill: none; stroke: var(--o2); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .club .pin:active { transform: scale(.85); }
-.club h3 { display: flex; align-items: center; flex-wrap: wrap; }
-.star { background: none; border: 0; padding: 0 6px 0 0; min-width: 32px; min-height: 32px; margin: -6px 0; font-size: 20px; line-height: 1; color: #666; }
+.star { display: inline-block; vertical-align: -3px; background: none; border: 0; padding: 0 6px 0 0; min-width: 32px; min-height: 32px; margin: -6px 0; font-size: 20px; line-height: 1; color: #666; }
 .star.on { color: #ffd23f; }
 span.star { min-width: 0; margin: 0; }
 .c-stats { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 4px; font-size: 12px; color: var(--mute); }
