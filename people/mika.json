@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791602680656,
- "seen": 1791611795360,
+ "seen": 1791611800899,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -91,6 +91,10 @@
   "2026-10-10|kg:machine-chest-press": {
    "v": 18,
    "t": 1791611342465
+  },
+  "2026-10-10|seated-knee-tucks": {
+   "v": 1,
+   "t": 1791611800899
   }
  },
  "joined": 1791602680656
