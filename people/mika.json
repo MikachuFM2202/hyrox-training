@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791628606811,
- "seen": 1791633069560,
+ "seen": 1791633084883,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -183,6 +183,11 @@
   "clubsize:sg-0203": {
    "v": "S",
    "t": 1791633069560
+  },
+  "kit:sg-0034:skierg": {
+   "v": 1,
+   "name": "SkiErg",
+   "t": 1791633084883
   }
  },
  "joined": 1791602680656
