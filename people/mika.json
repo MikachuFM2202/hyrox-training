@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791602680656,
- "seen": 1791609655071,
+ "seen": 1791609656834,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -59,6 +59,10 @@
   "2026-10-10|cable-chest-fly": {
    "v": 1,
    "t": 1791609655071
+  },
+  "2026-10-10|reverse-fly-machine": {
+   "v": 1,
+   "t": 1791609656834
   }
  },
  "joined": 1791602680656
