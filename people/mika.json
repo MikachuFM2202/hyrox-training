@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791628606811,
- "seen": 1791633060864,
+ "seen": 1791633065199,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -175,6 +175,10 @@
   "clubsize:sg-0034": {
    "v": "M",
    "t": 1791633060864
+  },
+  "clubsize:sg-0206": {
+   "v": "L",
+   "t": 1791633065199
   }
  },
  "joined": 1791602680656
