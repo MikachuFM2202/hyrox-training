@@ -1,5 +1,5 @@
 // Network first so plan updates show straight away; the cache is only the offline fallback.
-const CACHE = 'hyrox-v16';
+const CACHE = 'hyrox-v17';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'store.js', 'muscles.js', 'plan.json', 'manifest.webmanifest', 'icon-192.png', ...['arnold', 'ronnie', 'lou', 'cbum', 'zane', 'cutler'].map(h => `heads/${h}.jpg`)];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.clients.claim(); });

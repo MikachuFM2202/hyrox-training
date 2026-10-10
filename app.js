@@ -498,7 +498,8 @@ function clubSize(c, people) {
   if (c.size) return { s: c.size, src: c.sizeSrc };
   const votes = people.map(p => p.checks?.[sizeKey(c)]?.v).filter(v => Object.hasOwn(SIZES, v));
   if (!votes.length) return null;
-  const n = k => votes.filter(v => v === k).length, s = Object.keys(SIZES).sort((a, b) => n(b) - n(a))[0];
+  const n = k => votes.filter(v => v === k).length, [s, s2] = Object.keys(SIZES).sort((a, b) => n(b) - n(a));
+  if (n(s) === n(s2)) return { s: '', src: `crew split: ${Object.keys(SIZES).filter(n).map(k => `${n(k)} ${SIZES[k]}`).join(', ')}` };   // a tie isn't an answer
   return { s, src: `crew vote (${votes.length})` };
 }
 /** Average 6–8 pm headcount per club across everyone's logs from the last PEAK_DAYS days. One pass over all checks, not one per club. */
@@ -538,7 +539,7 @@ function clubsTab(me, who, people) {
       <div class="addr"><a class="pin" href="${mapUrl(c)}" target="_blank" rel="noopener" aria-label="Open ${esc(c.name)} in Google Maps">${PIN}</a><a href="${mapUrl(c)}" target="_blank" rel="noopener">${esc(c.addr)}</a></div>
       <div class="been">${mine ? `<button class="visit ${on ? 'on' : ''}" data-act="club" data-k="${esc(clubKey(c))}" data-l="${esc(c.name)}" aria-pressed="${on}">${on ? '✓ Been' : 'Been here?'}</button>` : `<span class="visit ${on ? 'on' : ''}">${on ? '✓ Been' : 'Not yet'}</span>`}
         ${ps.length ? `<span class="who">${ps.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</div>
-      <div class="c-stats"><span class="sz ${sz ? 'sz-' + sz.s : ''}" title="${sz ? esc(sz.src) : 'Size unknown'}">${sz ? `${SIZES[sz.s]}${c.sqft ? ` · ${c.sqft.toLocaleString('en-GB')} sq ft` : ''}` : 'Size ?'}</span>
+      <div class="c-stats"><span class="sz ${sz?.s ? 'sz-' + sz.s : ''}" title="${sz ? esc(sz.src) : 'Size unknown'}">${sz?.s ? `${SIZES[sz.s]}${c.sqft ? ` · ${c.sqft.toLocaleString('en-GB')} sq ft` : ''}` : sz ? 'Size split' : 'Size ?'}</span>
         <span class="pk">${pk ? `≈ <b>${pk.avg}</b> people at 6–8 pm <small>${pk.n} log${pk.n > 1 ? 's' : ''}</small>` : '6–8 pm crowd: no counts yet'}</span></div>
       <div class="kit">${c.kit.map(k => `<span class="${clubFilter === k ? 'hot' : ''}">${esc(k)}</span>`).join('') || '<span>Standard kit</span>'}</div>
       ${c.src ? `<div class="src">${esc(c.src)}${sz ? ` · size: ${esc(sz.src)}` : ''}</div>` : ''}
