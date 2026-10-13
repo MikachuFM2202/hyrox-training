@@ -629,7 +629,7 @@ function crewTab(me, people, who) {
   <section class="card reveal settings">
     <p class="sync ${st.state}">${!S.hasToken() ? 'Preview · not synced' : st.state === 'error' ? '⚠ ' + esc(st.error) : st.state === 'saving' ? 'Saving…' : st.last ? 'Synced ' + ago(st.last) : 'Connecting…'}</p>
     ${installEvt ? '<button class="btn wide" data-act="install">Install app</button>' : /iphone|ipad/i.test(navigator.userAgent) && !navigator.standalone ? '<p class="hint">Install: Safari → Share → Add to Home Screen</p>' : ''}
-    ${'Notification' in window ? `<button class="btn-ghost wide" data-act="notif">${Notification.permission === 'granted' ? '🔔 Phone alerts on' : Notification.permission === 'denied' ? '🔕 Alerts blocked in browser settings' : '🔔 Alert me when crew trains'}</button>` : ''}
+    ${'Notification' in window ? `${Notification.permission === 'default' ? '<button class="btn-ghost wide" data-act="notif">🔔 Alert me when crew trains</button>' : `<p class="hint">${Notification.permission === 'granted' ? '🔔 Phone alerts on' : '🔕 Alerts blocked. Allow notifications in browser settings.'}</p>`}` : ''}
     <button class="btn-ghost wide" data-act="switch">Switch person</button>
     ${me.role !== 'guest' ? '' : '<button class="btn-ghost wide" data-act="leave">Leave crew (frees your spot)</button>'}
     ${S.hasToken() ? '<button class="link" data-act="signout">Forget access key on this phone</button>' : ''}
@@ -690,6 +690,7 @@ eaugh.addEventListener('click', () => {
   playClip('eaugh');
   navigator.vibrate?.(40);
   let i; do i = Math.floor(Math.random() * QUOTES.length); while (i === lastQuote); lastQuote = i;
+  document.querySelector('.eaugh-quote')?.remove();   // fast taps replace the quote instead of stacking unreadable copies
   const q = document.createElement('div');
   q.className = 'eaugh-quote'; q.setAttribute('role', 'status'); q.textContent = QUOTES[i];
   document.body.append(q);
@@ -716,7 +717,7 @@ function gymAlerts() {
     if (!a) continue;
     const idle = now - a.last;
     if (idle < IDLE && !sent.start.includes(p.id)) { sent.start.push(p.id); alertCrew(`${p.name} is working out 💪`, p); }
-    else if (idle >= IDLE && idle < STALE && !sent.end.includes(p.id)) { sent.end.push(p.id); alertCrew(`${p.name} finished their gym session ~30 min ago 🏁`, p); }
+    else if (idle >= IDLE && idle < STALE && !sent.end.includes(p.id)) { sent.end.push(p.id); alertCrew(`${p.name} finished their gym session ~${Math.round((idle - IDLE / 2) / 60e3)} min ago 🏁`, p); }   // finish = last tick + 30 min; opened late, the minutes still add up
     if (idle < IDLE) sent.end = sent.end.filter(id => id !== p.id);   // ticking again after a break: a new finish is due later
   }
   S.ls.set('alerts', sent);
@@ -902,5 +903,6 @@ addEventListener('online', tick);
   if (linkKey && !S.hasToken()) { try { await S.connect(linkKey); } catch (x) { err = x.message; } }
   render();
   tick();
+  gymAlerts();   // don't wait a minute (or for a sync) to say who's training
   navigator.serviceWorker?.register('sw.js');
 })();
