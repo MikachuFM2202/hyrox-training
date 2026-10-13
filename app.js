@@ -251,7 +251,7 @@ const ICONS = {
   food: '<path d="M7 3v8a2 2 0 0 0 4 0V3M9 11v10M17 21V3c-2 1.5-3 4-3 8h3"/>',
   crew: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
 };
-const TABS = [['today', 'Today'], ['cal', 'Calendar'], ['map', 'Muscles'], ['clubs', 'Clubs'], ['food', 'Food'], ['crew', 'Crew']];
+const TABS = [['today', 'Today'], ['cal', 'Cal'], ['map', 'Body'], ['clubs', 'Clubs'], ['food', 'Food'], ['crew', 'Crew']];
 
 function main() {
   const me = S.me(), today = todayIso();
