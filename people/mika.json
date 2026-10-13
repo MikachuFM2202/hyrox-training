@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791628606811,
- "seen": 1791895221102,
+ "seen": 1791895223228,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -204,6 +204,14 @@
   "2026-10-13|kg:bicep-curl-dumbbell": {
    "v": 30,
    "t": 1791895221102
+  },
+  "2026-10-13|bicep-curl-dumbbell": {
+   "v": 1,
+   "t": 1791895222704
+  },
+  "2026-10-13|tricep-pushdown-cable": {
+   "v": 1,
+   "t": 1791895223228
   }
  },
  "joined": 1791602680656
