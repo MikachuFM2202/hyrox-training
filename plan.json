@@ -2380,5 +2380,65 @@
    "addr": "Win 5. 15 Yishun Industrial Street 1, Singapore 768091",
    "kit": []
   }
+ ],
+ "nutrition": [
+  {
+   "title": "Protein",
+   "icon": "🥩",
+   "tips": [
+    "Aim for 1.6–2.2 g of protein per kg of body weight a day. Losing weight? Stay at the top end so you keep muscle.",
+    "Spread it out: 25–40 g at each meal, 3–5 times a day, beats one huge dinner.",
+    "Easy hits: chicken breast, eggs, Greek yoghurt, tofu, tempeh, fish, lean beef, a whey shake.",
+    "Have a protein meal or shake within 2 hours after training."
+   ]
+  },
+  {
+   "title": "Carbs & training fuel",
+   "icon": "🍚",
+   "tips": [
+    "Eat carbs 2–3 hours before a session (rice, oats, bread, fruit). A banana 30–60 min before works if you're short on time.",
+    "Big training days need more carbs; rest days need fewer. Cut the extra rice, not the vegetables.",
+    "Before HYROX KL: eat a little more carbs for 2 days before race day, and no new foods that week."
+   ]
+  },
+  {
+   "title": "Fat loss without losing strength",
+   "icon": "⚖️",
+   "tips": [
+    "A small deficit (about 300–500 kcal a day) loses fat and keeps your lifts going up. Crash diets kill training.",
+    "Half the plate vegetables, a quarter protein, a quarter carbs.",
+    "Hawker swaps: chicken rice with less rice and no skin, sliced fish soup, yong tau foo with clear soup, cai fan with 2 veg + 1 meat.",
+    "Watch drinks: teh tarik, bubble tea and soft drinks can be 200–400 kcal each. Kopi-O kosong or teh-O kosong is near zero.",
+    "Weigh in at the same time each morning and watch the weekly average, not one day."
+   ]
+  },
+  {
+   "title": "Hydration",
+   "icon": "💧",
+   "tips": [
+    "It's hot here: drink about 35 ml of water per kg of body weight a day, more on training days.",
+    "Pale yellow pee = good. Dark = drink up.",
+    "Sweaty session over an hour? Add electrolytes (salt, potassium) instead of plain water only.",
+    "Weigh yourself before and after training: drink about 1.5 L for every kg lost."
+   ]
+  },
+  {
+   "title": "Recovery",
+   "icon": "😴",
+   "tips": [
+    "Sleep 7–9 hours. Muscle is built while you sleep, not in the gym.",
+    "Creatine monohydrate 3–5 g a day, every day, is the best-studied supplement for strength. Timing doesn't matter.",
+    "Caffeine about 3 mg per kg, 30–60 min before training, helps. Not after 2 pm if it wrecks your sleep.",
+    "Alcohol slows recovery and adds empty calories. Keep it for after race day."
+   ]
+  },
+  {
+   "title": "Arnold says",
+   "icon": "💪",
+   "tips": [
+    "\"Milk is for babies. When you grow up you have to drink beer.\" (Ignore this one until December.)",
+    "Put that cookie down. NOW."
+   ]
+  }
  ]
 }

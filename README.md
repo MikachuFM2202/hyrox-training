@@ -9,11 +9,14 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 - **Weight log:** every rep-based exercise has a kg box. It shows your last weight for that exercise (green when you beat it), and under the exercise name everyone else's latest weight in their colour (▲ when it's heavier than yours), so the crew can compare. Tap "last …" under the kg box for a weight-over-time chart with one line per person.
 - **Muscle map:** front/back body with a day filter (All/Tue/Thu/Sat/Sun). Tap a muscle to see which exercises hit it. Orange = primary, blue = secondary, green = core/rehab, dark = rest. It is built from each exercise's `muscles` text in `plan.json` (`muscles.js`). Muscle shapes are traced from [innerbody.com's muscular system map](https://www.innerbody.com/image/musfov.html).
 - **Arnold soundboard:** a fold-out panel on the Today tab with 9 short Arnold clips (`sounds/*.m4a`, each under 3 s).
+- **EAUGH button:** Arnold's head, bottom left on every tab. Each tap plays the Eaugh clip and pops up a random Arnold-style motivational quote.
+- **Crew alerts:** when someone ticks or logs anything for the first time today, everyone else gets "<name> is working out". When they've gone an hour with no new ticks, it says they finished about 30 min ago. Alerts show as in-app toasts; tap "Alert me when crew trains" on the Crew tab for phone notifications too. There's no push server, so alerts only arrive while the app is open.
+- **Nutrition tips:** the Food tab, from `nutrition` in `plan.json`.
 - **Sync icon:** top right. Green = synced (tap to sync now), spinning = saving, red dot = error (tap to retry), grey dot = preview, not syncing (tap to add a key).
 - **Free-weight alternatives:** every gym exercise has a "Can't do it?" list of dumbbell/barbell swaps that hit the same muscles and stay knee- and Achilles-safe (`alts` + `altInfo` in `plan.json`, each with a demo video). Picking one is saved per day as `<date>|alt:<slug>`; the tick stays on the plan item, and weights log under the alternative's own name.
 - **Clubs:** every Anytime Fitness club in Singapore (181, from the anytimefitness.com/en-sg sitemap and each club page's schema.org address; a few new clubs are marked Opening soon), with a search box and a tab icon taken from the Anytime Fitness logo. Uncommon kit (sled, SkiErg, punching bags, ice bath…) is listed where known, with a "Been here" marker per person (`club:<id>`) and a free-text remark per person (`clubnote:<id>`) that the whole crew sees. Each person can star favourites (`fav:<id>`, listed first). Size is Small (< 3,000 sq ft), Medium (3,000–5,999) or Large (6,000+): taken from the club page where it says, otherwise the crew's most common vote (`clubsize:<id>`). The 6–8 pm crowd is the average of the crew's own headcounts (`<date>|crowd:<id>`) over the last 90 days. A pin opens the club in Google Maps. Anyone can edit a club's equipment ("Edit club" panel): mark an item here / not here or add a new one. Each edit is `kit:<id>:<slug>` = {v: 1 here / 2 not here, name}; the newest edit by anyone wins over `plan.json`. The list comes from each club's equipment section on the old anytimefitness.sg pages (Wayback Machine, 2026 captures), plus Dhoby Ghaut from a crew visit. The new anytimefitness.com pages don't list equipment.
 - **Core is optional** in every session (`pick: 0`), and **Cardio · 30 min** (session E: bike, rower, elliptical or a 3 × 10 min mix, no running) can be picked for any day from the session dropdown.
-- **Phone first:** a bottom tab bar with Today, Calendar, Muscles, Clubs and Crew.
+- **Phone first:** a bottom tab bar with Today, Calendar, Muscles, Clubs, Food and Crew.
 - **Crew:** the top-right corner shows how many people are online and a dot for each person. Tap a dot to see that person's checklist (read only). Everyone's ticks show as coloured dots on each exercise.
 - **Install:** the site is a PWA. On Android or Chrome use "Install app". On iPhone, use Safari: Share → Add to Home Screen.
 
@@ -21,7 +24,7 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 
 1. Enter the site password.
 2. Paste the access key, or tap "Preview without syncing" to try the site without saving to GitHub.
-3. Pick **Mika**, **Aidan** or **Barath** (each needs their own PIN), or **Guest**. A guest picks a bodybuilder head and a colour. Named members all follow the same plan.
+3. Pick **Mika**, **Aidan**, **Barath**, **Sat**, **Maddy** or **Yatha** (each needs their own PIN), or **Guest**. A guest picks a bodybuilder head and a colour. Named members all follow the same plan, except Yatha, who also gets a Gag section (`GAGS` in `app.js`).
 
 There are at most 5 guests, which keeps polling and GitHub API use small. Mika can free a guest's spot from the Crew tab (✕), and a guest can use "Leave crew". When someone comes online, their head pops into the top-right corner.
 

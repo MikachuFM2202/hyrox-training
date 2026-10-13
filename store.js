@@ -61,6 +61,16 @@ export function kgHistory(checks = {}, slug, upto) {
   return out.sort((a, b) => a.date < b.date ? -1 : 1);
 }
 
+/** First and last time anything was ticked or logged for `date` (session swaps don't count). Null if nothing. */
+export function dayActivity(checks = {}, date) {
+  let first = Infinity, last = 0;
+  for (const [k, c] of Object.entries(checks)) {
+    if (!k.startsWith(date + '|') || k === `${date}|session` || typeof c.t !== 'number' || !isFinite(c.t)) continue;
+    first = Math.min(first, c.t); last = Math.max(last, c.t);
+  }
+  return last ? { first, last } : null;
+}
+
 // Other people's files are untrusted: one corrupt or hand-edited file must not blank the page (or stop sync) for the whole crew.
 export function clean(d) {
   if (!d || typeof d !== 'object' || Array.isArray(d)) return null;

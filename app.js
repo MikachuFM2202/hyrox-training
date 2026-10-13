@@ -1,16 +1,24 @@
 import * as S from './store.js';
 import { muscleMap, MUSCLES } from './muscles.js';
 
-const COLORS = ['#ff6b2b', '#ffb020', '#2ecc71', '#4da6ff', '#b07cff', '#ff5fc8', '#2ee6e6'];   // no near-duplicates: these tell people apart in charts
+const COLORS = ['#ff6b2b', '#ffb020', '#2ecc71', '#4da6ff', '#b07cff', '#ff5fc8', '#2ee6e6', '#ffe14d', '#ffffff', '#a3e635', '#c8a27a'];   // no near-duplicates: these tell people apart in charts
 // Guest heads: freely licensed Wikimedia Commons photos, credits in README.md.
 const HEADS = { arnold: 'Arnold', ronnie: 'Ronnie', lou: 'Lou', cbum: 'CBum', zane: 'Zane', cutler: 'Cutler' };
 const MAX_GUESTS = 5;   // keeps polling + GitHub API use small enough to stay stable
-// Named crew: a fixed id each, so all of one person's devices share one file. Same plan for both.
+// Named crew: a fixed id each, so all of one person's devices share one file. Same plan for everyone.
 const MEMBERS = {
   mika:  { id: 'mika',  name: 'Mika',  head: 'mika',  role: 'owner',  color: '#ff6b2b', pin: '31d8edb99534fd4800651db4d241d86e0380fa7376718b88590c2d772b41d5f4' },
   aidan: { id: 'aidan', name: 'Aidan', head: 'aidan', role: 'member', color: '#4da6ff', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
   barath: { id: 'barath', name: 'Barath', head: 'barath', role: 'member', color: '#b07cff', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
+  sat:   { id: 'sat',   name: 'Sat',   head: 'sat',   role: 'member', color: '#2ecc71', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
+  maddy: { id: 'maddy', name: 'Maddy', head: 'maddy', role: 'member', color: '#ff5fc8', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
+  yatha: { id: 'yatha', name: 'Yatha', head: 'yatha', role: 'member', color: '#2ee6e6', pin: '03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4' },
 };
+// Per-person joke sections, added to every session for that person. Optional (pick 0), so they never change the %.
+const GAGS = {
+  yatha: { name: 'Gag', pick: 0, note: 'Mandatory cardio for the wallet.', items: [{ name: 'Shopping at Scarlett', sets: '1 round · till the card declines', muscles: 'Wallet, Ego, Forearms (bag carry)' }] },
+};
+const sectionsOf = (p, s) => GAGS[p?.id] ? [...s.sections, GAGS[p.id]] : s.sections;
 const memberProfile = id => { const { pin, ...m } = MEMBERS[id]; return { ...m, color: S.people[id]?.color || m.color }; };
 // Arnold soundboard: sounds/<file>.m4a, each under 3 s. Playback is also cut at 3 s in case a longer clip slips in.
 const SOUNDS = [['do-it', 'Do it!'], ['belong', 'You belong to me'], ['cookie', 'Put that cookie down'], ['stop-it', 'Stop it'], ['problemo', 'No problemo'],
@@ -229,7 +237,7 @@ function join() {
   </section>`;
 }
 
-/** Colours a person may pick: never Mika's or Aidan's (unless it's their own), so weights and charts stay readable. */
+/** Colours a person may pick: never a named member's (unless it's their own), so weights and charts stay readable. */
 const pickable = id => COLORS.filter(c => !Object.keys(MEMBERS).some(m => m !== id && memberProfile(m).color === c));
 const swatches = (selC, id) => `<div class="swatches" role="radiogroup" aria-label="Colour">${pickable(id).map(c =>
   `<label><input type="radio" name="color" value="${c}" ${c === selC ? 'checked' : ''}><span style="background:${c}"></span></label>`).join('')}</div>`;
@@ -240,9 +248,10 @@ const ICONS = {
   map: '<circle cx="12" cy="5" r="2.5"/><path d="M7 10h10M12 10v6M9 21l3-5 3 5M7 10l-2 5M17 10l2 5"/>',
   // Anytime Fitness running man, from the brand's own logo SVG; filled, not stroked (see .tabs svg.fill).
   clubs: '<path d="M32.4383 1.57752C31.2676 0.406825 29.2321 0.23328 28.1526 1.42457C28.1526 1.42457 21.0196 10.7166 19.1488 12.5668C16.3838 15.3082 13.4483 17.4937 10.5304 19.0938C10.1803 19.285 9.76559 19.2909 9.48027 19.0085L5.18576 14.7405C3.52679 13.0815 1.60308 13.2139 0.635345 14.1816C-0.217674 15.0346 -0.376512 16.5995 1.19128 18.1673L7.45656 24.3973C8.50665 25.4473 10.1715 25.6091 11.401 24.8091L11.554 24.7061C13.4218 23.353 16.4338 19.8645 18.4458 17.2878C18.7929 16.8436 19.4165 16.7436 19.8665 17.0613C25.7553 21.1999 27.9878 22.8765 28.8232 23.5531C29.6409 24.2149 29.9704 24.6267 29.9586 24.9738C29.938 25.668 28.5085 26.7886 26.9701 27.8946C25.0729 29.2565 23.8522 30.2066 23.008 30.9773C21.8226 32.095 21.3872 32.6627 21.1166 33.5657C20.9225 34.2158 21.049 34.9659 21.149 35.2453C21.4402 36.0777 22.0932 36.8013 23.0639 37.4014L32.0559 42.6313C34.7296 44.0785 36.0709 43.2049 36.8416 42.0489C37.5623 40.9664 37.8888 38.9456 35.4121 37.4426L28.9468 33.3775C28.2408 32.9539 28.5144 32.4803 28.6614 32.3186C28.9879 31.9656 30.3734 30.6714 30.7146 30.336C32.8883 28.2064 33.9384 26.321 33.9266 24.5796C33.9149 22.7853 32.7589 21.4529 31.7529 20.494C30.7999 19.585 29.8998 18.6997 28.5408 17.3643C27.4613 16.3024 26.0965 14.9611 24.1934 13.105C23.9463 12.8638 23.811 12.5373 23.8257 12.2108C23.8375 11.9196 23.9698 11.6549 24.1993 11.4696C24.9493 10.8578 25.9112 9.99888 26.8436 9.17233C27.7967 8.3252 28.6967 7.52512 29.3321 7.01331C29.6498 6.75741 30.1145 6.778 30.4087 7.06332L34.709 11.2284C35.7474 12.2667 37.0416 12.705 38.1741 12.402C38.53 12.3079 38.8447 12.1432 39.1065 11.9255C39.4507 11.6373 39.7007 11.2578 39.8183 10.8195C39.9684 10.2577 40.0242 9.11939 38.7035 7.80162L32.4383 1.57752Z"/><path d="M14.3513 12.1285C16.9197 12.1285 19.0017 10.0464 19.0017 7.47806C19.0017 4.9097 16.9197 2.82764 14.3513 2.82764C11.7829 2.82764 9.70087 4.9097 9.70087 7.47806C9.70087 10.0464 11.7829 12.1285 14.3513 12.1285Z"/>',
+  food: '<path d="M7 3v8a2 2 0 0 0 4 0V3M9 11v10M17 21V3c-2 1.5-3 4-3 8h3"/>',
   crew: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
 };
-const TABS = [['today', 'Today'], ['cal', 'Calendar'], ['map', 'Muscles'], ['clubs', 'Clubs'], ['crew', 'Crew']];
+const TABS = [['today', 'Today'], ['cal', 'Calendar'], ['map', 'Muscles'], ['clubs', 'Clubs'], ['food', 'Food'], ['crew', 'Crew']];
 
 function main() {
   const me = S.me(), today = todayIso();
@@ -256,7 +265,7 @@ function main() {
   seenOnline = new Set(live.map(p => p.id));
   if (fresh.length) toast(fresh.length === 1 ? `${fresh[0].name} is online` : `${fresh.slice(0, -1).map(p => p.name).join(', ')} & ${fresh.at(-1).name} are online`, fresh[0]);
 
-  const body = tab === 'cal' ? calTab(who) : tab === 'map' ? muscleMap(plan, mm) : tab === 'clubs' ? clubsTab(me, who, people) : tab === 'crew' ? crewTab(me, people, who) : todayTab(me, who, mine, people, today);
+  const body = tab === 'cal' ? calTab(who) : tab === 'map' ? muscleMap(plan, mm) : tab === 'clubs' ? clubsTab(me, who, people) : tab === 'food' ? foodTab() : tab === 'crew' ? crewTab(me, people, who) : todayTab(me, who, mine, people, today);
   return `<header class="top">
     ${brand()}
     <div class="crew-dots" aria-label="${live.length} online">
@@ -352,7 +361,7 @@ function dayPanel(who, mine, people) {
       ${st.s.leg ? `<p class="note">${esc(plan.warmup.legExtra)}</p>` : ''}
       <ul class="rows">${plan.warmup.items.map(it => row(who, mine, people, `${sel}|wu:${slug(it.name)}`, it, false)).join('')}</ul>
     </details>
-    ${st.s.sections.map(sec => {
+    ${sectionsOf(who, st.s).map(sec => {
       const ss = secStats(who, sel, sec), full = sec.pick > 0 && ss.resolved >= sec.pick;   // optional sections (pick 0) never grey out
       return `<section class="sec ${ss.skipped ? 'skipped' : ''} ${sec.pick && full && !ss.skipped ? 'full' : ''}">
         <header><h3>${esc(sec.name)}</h3>
@@ -581,6 +590,16 @@ function clubsTab(me, who, people) {
   </section>`;
 }
 
+function foodTab() {
+  return `<section class="card reveal food">
+    <div class="kicker">Fuel the engine</div>
+    <h2>Nutrition <span class="grad">tips</span></h2>
+    <p class="note">General tips for training and fat loss, not medical advice. Check with a doctor or dietitian if you have a health condition.</p>
+    ${(plan.nutrition || []).map((g, i) => `<details class="warm" data-keep="food${i}" ${i ? '' : 'open'}><summary>${esc(g.icon)} ${esc(g.title)} <small>${g.tips.length}</small></summary>
+      <ul class="tips">${g.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>`).join('')}
+  </section>`;
+}
+
 function crewTab(me, people, who) {
   const owner = me.role === 'owner', st = S.status;
   return `<section class="card reveal crew">
@@ -610,6 +629,7 @@ function crewTab(me, people, who) {
   <section class="card reveal settings">
     <p class="sync ${st.state}">${!S.hasToken() ? 'Preview · not synced' : st.state === 'error' ? '⚠ ' + esc(st.error) : st.state === 'saving' ? 'Saving…' : st.last ? 'Synced ' + ago(st.last) : 'Connecting…'}</p>
     ${installEvt ? '<button class="btn wide" data-act="install">Install app</button>' : /iphone|ipad/i.test(navigator.userAgent) && !navigator.standalone ? '<p class="hint">Install: Safari → Share → Add to Home Screen</p>' : ''}
+    ${'Notification' in window ? `<button class="btn-ghost wide" data-act="notif">${Notification.permission === 'granted' ? '🔔 Phone alerts on' : Notification.permission === 'denied' ? '🔕 Alerts blocked in browser settings' : '🔔 Alert me when crew trains'}</button>` : ''}
     <button class="btn-ghost wide" data-act="switch">Switch person</button>
     ${me.role !== 'guest' ? '' : '<button class="btn-ghost wide" data-act="leave">Leave crew (frees your spot)</button>'}
     ${S.hasToken() ? '<button class="link" data-act="signout">Forget access key on this phone</button>' : ''}
@@ -646,6 +666,63 @@ function toast(msg, p) {
   setTimeout(() => t.classList.add('out'), 2600);
   setTimeout(() => t.remove(), 3100);
 }
+
+/** Play one soundboard clip, cutting off the one playing now. */
+function playClip(f) {
+  clip?.pause();
+  const a = clip = new Audio(`sounds/${f}.m4a`);
+  a.onerror = () => toast('Clip failed to load');
+  a.play().catch(() => {});
+  setTimeout(() => a.pause(), 3000);
+}
+
+// ---- EAUGH button: bottom left, Arnold's head. Plays the Eaugh clip and floats up a quote. ----
+const QUOTES = ['Pump it!', 'Come on! Do it! Do it now!', 'I’ll be back… for another set.', 'No pain, no gain!', 'The last three or four reps is what makes the muscle grow.',
+  'Strength does not come from winning. Your struggles develop your strengths.', 'Get to the choppa!', 'Hasta la vista, baby fat.', 'The mind is the limit.',
+  'Stop whining!', 'You can’t climb the ladder of success with your hands in your pockets.', 'It’s not a tumour! It’s a pump!', 'Milk is for babies.',
+  'Pain is temporary. Gains are forever.', 'Who is your daddy, and what does he lift?', 'Put that cookie down. NOW!', 'EAUGH!'];
+const eaugh = document.createElement('button');
+eaugh.className = 'eaugh-fab'; eaugh.setAttribute('aria-label', 'EAUGH! Play Arnold and show a quote');
+eaugh.innerHTML = '<img src="heads/arnold.jpg" alt="">';
+document.body.append(eaugh);
+let lastQuote = -1;
+eaugh.addEventListener('click', () => {
+  playClip('eaugh');
+  navigator.vibrate?.(40);
+  let i; do i = Math.floor(Math.random() * QUOTES.length); while (i === lastQuote); lastQuote = i;
+  const q = document.createElement('div');
+  q.className = 'eaugh-quote'; q.setAttribute('role', 'status'); q.textContent = QUOTES[i];
+  document.body.append(q);
+  setTimeout(() => q.remove(), 2600);
+  if (!calm.matches) eaugh.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.25) rotate(-10deg)' }, { transform: 'scale(.95) rotate(6deg)' }, { transform: 'scale(1)' }], { duration: 450, easing: 'cubic-bezier(.34, 1.56, .64, 1)' });
+});
+
+// ---- crew alerts: someone's first tick of the day = working out; no ticks for an hour = they finished ~30 min ago ----
+// ponytail: only fires while the app is open (no push server); a background push service is the upgrade path.
+const IDLE = 60 * 60e3, STALE = 3 * IDLE;
+function alertCrew(title, p) {
+  toast(title, p);
+  if ('Notification' in window && Notification.permission === 'granted')
+    navigator.serviceWorker?.ready.then(r => r.showNotification('HYROX crew', { body: title, icon: 'icon-192.png' })).catch(() => {});
+}
+function gymAlerts() {
+  const me = S.me(), today = todayIso(), now = Date.now();
+  if (!me || !plan) return;
+  let sent = S.ls.get('alerts', {});
+  if (sent.date !== today) sent = { date: today, start: [], end: [] };
+  for (const p of crew()) {
+    if (p.id === me.id) continue;
+    const a = S.dayActivity(p.checks, today);
+    if (!a) continue;
+    const idle = now - a.last;
+    if (idle < IDLE && !sent.start.includes(p.id)) { sent.start.push(p.id); alertCrew(`${p.name} is working out 💪`, p); }
+    else if (idle >= IDLE && idle < STALE && !sent.end.includes(p.id)) { sent.end.push(p.id); alertCrew(`${p.name} finished their gym session ~30 min ago 🏁`, p); }
+    if (idle < IDLE) sent.end = sent.end.filter(id => id !== p.id);   // ticking again after a break: a new finish is due later
+  }
+  S.ls.set('alerts', sent);
+}
+S.onChange(gymAlerts);
+setInterval(gymAlerts, 60e3);   // "finished" needs time to pass, not new data
 
 // ---- events ---------------------------------------------------------------
 /** Write entries for me, then fire confetti if that finished the day. */
@@ -745,13 +822,8 @@ $app.addEventListener('click', async e => {
   else if (act === 'switch') { viewing = null; joinMode = ''; tab = 'today'; await S.switchPerson(); }
   else if (act === 'leave') { const id = S.meId; viewing = null; joinMode = ''; tab = 'today'; await S.switchPerson(); await S.remove(id); }
   else if (act === 'sync') { if (!S.hasToken()) { preview = false; S.ls.set('preview', false); err = ''; render(); } else { S.poll(); toast(S.status.state === 'error' ? 'Retrying sync…' : 'Syncing…'); } }
-  else if (act === 'sound') {
-    clip?.pause();
-    const a = clip = new Audio(`sounds/${b.dataset.f}.m4a`);
-    a.onerror = () => toast('Clip failed to load');
-    a.play().catch(() => {});
-    setTimeout(() => a.pause(), 3000);
-  }
+  else if (act === 'sound') playClip(b.dataset.f);
+  else if (act === 'notif' && 'Notification' in window) { await Notification.requestPermission(); lastHtml = ''; render(); }
   else if (act === 'install') { installEvt.prompt(); installEvt = null; render(); }
   else if (act === 'signout') { viewing = null; preview = false; S.ls.set('preview', false); S.signOut(); }
   else if (act === 'preview' || act === 'addkey') { preview = act === 'preview'; S.ls.set('preview', preview); err = ''; render(); }

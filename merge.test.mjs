@@ -37,3 +37,9 @@ assert.equal(clean(null), null); assert.equal(clean([1]), null); assert.equal(cl
 assert.deepEqual(clean({ id: 'g', checks: null }).checks, {}, 'null checks become empty');
 assert.deepEqual(clean({ id: 'g', checks: { a: null, b: 5, c: { v: 1, t: 1 } } }).checks, { c: { v: 1, t: 1 } }, 'non-object entries dropped');
 console.log('clean ok');
+
+import { dayActivity } from './store.js';
+assert.equal(dayActivity({}, '2026-10-13'), null);
+assert.deepEqual(dayActivity({ '2026-10-13|row': { v: 1, t: 50 }, '2026-10-13|kg:row': { v: 20, t: 90 }, '2026-10-13|session': { v: 'A', t: 10 },
+  '2026-10-12|row': { v: 1, t: 5 }, '2026-10-13|bad': { v: 1, t: 'x' } }, '2026-10-13'), { first: 50, last: 90 }, 'only that day, session swaps and bad times ignored');
+console.log('activity ok');
