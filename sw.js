@@ -1,5 +1,5 @@
 // Network first so plan updates show straight away; the cache is only the offline fallback.
-const CACHE = 'hyrox-v25';
+const CACHE = 'hyrox-v26';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'store.js', 'muscles.js', 'plan.json', 'manifest.webmanifest', 'icon-192.png', ...['arnold', 'ronnie', 'lou', 'cbum', 'zane', 'cutler'].map(h => `heads/${h}.jpg`),
   // audio is fetched with Range requests (206), which the fetch handler never caches, so precache the clips for offline taps
   ...['augh', 'belong', 'cookie', 'do-it', 'eaugh', 'mick', 'problemo', 'roar', 'stop-it'].map(f => `sounds/${f}.m4a`)];
@@ -12,4 +12,9 @@ self.addEventListener('fetch', e => {
     if (r.status === 200) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); }
     return r;
   }).catch(() => caches.match(e.request, { ignoreSearch: true })));
+});
+// Tapping a crew alert brings the app forward (or opens it), instead of doing nothing.
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(cs => cs[0] ? cs[0].focus() : self.clients.openWindow('./')));
 });

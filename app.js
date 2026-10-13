@@ -703,7 +703,7 @@ eaugh.addEventListener('click', () => {
 const IDLE = 60 * 60e3, STALE = 3 * IDLE;
 function alertCrew(title, p) {
   toast(title, p);
-  if ('Notification' in window && Notification.permission === 'granted')
+  if (document.hidden && 'Notification' in window && Notification.permission === 'granted')   // visible: the toast is enough, no double alert
     navigator.serviceWorker?.ready.then(r => r.showNotification('HYROX crew', { body: title, icon: 'icon-192.png' })).catch(() => {});
 }
 function gymAlerts() {
@@ -889,7 +889,13 @@ S.onChange(() => { if (screen !== 'pass' && (screen !== 'gate' || S.hasToken()))
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (screen === 'main') render(); });
 
 // Stay live while the page is open: pull everyone's ticks every 15 s, say "I'm here" every few minutes.
-const tick = () => { if (!document.hidden && S.hasToken()) { S.poll(); S.heartbeat(); } };
+// Hidden with phone alerts on: keep checking once a minute (no heartbeat, so you don't show as online) so crew alerts still arrive.
+let hiddenPoll = 0;
+const tick = () => {
+  if (!S.hasToken()) return;
+  if (!document.hidden) { S.poll(); S.heartbeat(); }
+  else if (window.Notification?.permission === 'granted' && Date.now() - hiddenPoll > 60e3) { hiddenPoll = Date.now(); S.poll(); }
+};
 setInterval(tick, 15e3);
 let lastDay = todayIso();
 const newDay = () => { if (todayIso() !== lastDay) { lastDay = sel = todayIso(); calMonth = sel.slice(0, 7); } };   // past midnight: jump to today
