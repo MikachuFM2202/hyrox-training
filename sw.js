@@ -1,5 +1,5 @@
 // Network first so plan updates show straight away; the cache is only the offline fallback.
-const CACHE = 'hyrox-v23';
+const CACHE = 'hyrox-v24';
 const SHELL = ['./', 'index.html', 'style.css', 'app.js', 'store.js', 'muscles.js', 'plan.json', 'manifest.webmanifest', 'icon-192.png', ...['arnold', 'ronnie', 'lou', 'cbum', 'zane', 'cutler'].map(h => `heads/${h}.jpg`),
   // audio is fetched with Range requests (206), which the fetch handler never caches, so precache the clips for offline taps
   ...['augh', 'belong', 'cookie', 'do-it', 'eaugh', 'mick', 'problemo', 'roar', 'stop-it'].map(f => `sounds/${f}.m4a`)];

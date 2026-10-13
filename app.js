@@ -767,7 +767,7 @@ $app.addEventListener('change', e => {
   else if (t.dataset.act === 'goal' && !viewing && S.me()?.role !== 'owner') { if (!t.value || isIso(t.value)) { S.setProfile({ goal: t.value }); toast(t.value ? `Goal set: ${fmt(t.value, { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Goal cleared'); } }
   else if (t.dataset.crowd && !viewing) {
     const raw = t.value.trim(), n = raw ? Number(raw) : 0;
-    if (!Number.isInteger(n) || n < 0 || n > 499) { t.value = val(S.me(), t.dataset.crowd) || ''; toast('Headcount must be a whole number, 1 to 499'); return; }
+    if (!Number.isInteger(n) || n < 0 || n > 499) { t.value = val(S.me(), t.dataset.crowd) || ''; toast('Headcount must be a whole number up to 499 (blank clears it)'); return; }
     const h = new Date().getHours();
     S.set({ [t.dataset.crowd]: { v: n } }, `👥 ${n || 'cleared'} at ${t.dataset.l}`);
     toast(!n ? 'Headcount cleared' : h === 18 || h === 19 ? `Headcount ${n} saved` : `Saved ${n}. Counts are meant for 6–8 pm`);
@@ -820,8 +820,13 @@ $app.addEventListener('click', async e => {
   else if (act === 'joinback') { joinMode = ''; err = ''; render(); }
   else if (act === 'claim') { const p = S.people[b.dataset.id]; err = ''; intro = true; S.join({ id: p.id, name: p.name, color: p.color, head: p.head, role: 'guest' }); }
   else if (act === 'kick') { const p = S.people[b.dataset.id]; if (p) { if (viewing === p.id) viewing = null; S.remove(p.id); toast(`${p.name}'s spot is free`); } }
-  else if (act === 'switch') { viewing = null; joinMode = ''; tab = 'today'; await S.switchPerson(); }
-  else if (act === 'leave') { const id = S.meId; viewing = null; joinMode = ''; tab = 'today'; await S.switchPerson(); await S.remove(id); }
+  else if (act === 'switch' || act === 'leave') {
+    const id = S.meId;
+    if (!await S.switchPerson()) return toast('Unsynced ticks. Get online and sync first, then switch.');
+    viewing = null; joinMode = ''; tab = 'today';
+    if (act === 'leave') await S.remove(id);
+    render();
+  }
   else if (act === 'sync') { if (!S.hasToken()) { preview = false; S.ls.set('preview', false); err = ''; render(); } else { S.poll(); toast(S.status.state === 'error' ? 'Retrying sync…' : 'Syncing…'); } }
   else if (act === 'sound') playClip(b.dataset.f);
   else if (act === 'notif' && 'Notification' in window) { await Notification.requestPermission(); lastHtml = ''; render(); }
@@ -876,7 +881,7 @@ async function overflow() {
   if (order.findIndex(g => g.id === me.id) < MAX_GUESTS) return;
   bumping = true; viewing = null; joinMode = 'guest'; tab = 'today';
   const id = me.id;
-  await S.switchPerson(); await S.remove(id);
+  await S.switchPerson(true); await S.remove(id);
   err = 'Crew filled up just before you. Ask Mika to free a spot.'; bumping = false; render();
 }
 S.onChange(overflow);

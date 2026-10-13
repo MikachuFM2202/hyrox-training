@@ -168,10 +168,14 @@ export function join(profile) {
 }
 export const setProfile = fields => update(d => ({ ...d, ...fields, u: Date.now() }), `${people[meId].name} updated profile`);
 
-/** Stop being this person on this device (saves first so no ticks are lost). */
-export async function switchPerson() {
+/** Stop being this person on this device. Saves first; returns false (and stays) if ticks couldn't be saved,
+ *  because once switched, the next poll replaces this person's copy with the server's and the unsynced ticks are gone.
+ *  `force` skips that check (a bumped guest whose spot is being freed anyway). Preview has no server, so it never blocks. */
+export async function switchPerson(force = false) {
   clearTimeout(timer); await save();
+  if (dirty && token && !force) return false;
   meId = ''; ls.del('me'); dirty = false; ls.set('dirty', false); emit();
+  return true;
 }
 
 /** Free a guest spot: marks the person's file removed (never deletes it, so a device mid-save can't resurrect it). */
