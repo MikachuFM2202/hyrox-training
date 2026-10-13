@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791628606811,
- "seen": 1791893132329,
+ "seen": 1791893143016,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -188,6 +188,10 @@
    "v": 1,
    "name": "SkiErg",
    "t": 1791633084883
+  },
+  "2026-10-13|incline-chest-press": {
+   "v": 1,
+   "t": 1791893143016
   }
  },
  "joined": 1791602680656
