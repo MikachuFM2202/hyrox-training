@@ -39,10 +39,9 @@ let altOpen = new Set();   // exercise slugs whose free-weight alternatives are 
 let clubFilter = 'all', clubQ = '', openClubs = new Set();   // openClubs: clubs whose Edit panel is open (only those get built)   // Clubs tab: chip/dropdown filter and the search box
 let seenOnline = null;   // who was online at the last render, to pop in newcomers
 
-// Site password. ponytail: client-side gate only (anyone reading the public repo can skip it); the access key is the real lock.
-const PASS_HASH = '64d27cba265dd65d63ef0b8cb90436d3d4c5bbeb9c59b4ea0309ac4f26bd78e8';
-let unlocked = S.ls.get('pass', '') === PASS_HASH;
-let preview = S.ls.get('preview', false);   // look around before an access key exists; ticks stay on this device and sync once a key is added
+// Opening the site goes straight to "Who's training?". The GitHub access key screen is for Mika (the owner) only;
+// everyone else gets the key silently from Mika's one-tap crew link (#k=…), or uses the app on their own phone without syncing.
+let wantKey = false;
 const sha256 = async s => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, '0')).join('');
 
 // The owner can share a one-tap link: https://…/#k=<key>. The key is read once, then wiped from the address bar.
@@ -145,8 +144,8 @@ function render() {
   if (screen === 'main' && typing()) { deferred = true; return; }
 
   const me = S.me();
-  screen = !unlocked ? 'pass' : !S.hasToken() && !preview ? 'gate' : !me?.role || me.removed ? 'join' : 'main';
-  const html = screen === 'pass' ? pass() : screen === 'gate' ? gate() : screen === 'join' ? join() : main();
+  screen = wantKey ? 'gate' : !me?.role || me.removed ? 'join' : 'main';
+  const html = screen === 'gate' ? gate() : screen === 'join' ? join() : main();
   // Sync fires every 15 s; replacing identical markup would restart every animation, so skip it.
   if (html === lastHtml) return;
   lastHtml = html;
@@ -174,26 +173,16 @@ const brand = () => `<div class="brand"><span class="logo">HYROX</span><span cla
 const raceTitle = () => `<div class="kicker">${esc(plan.race.season)} · ${esc(plan.race.venue)}</div>
   <h1>Road to<br><span class="grad">${esc(plan.race.name.replace(/^HYROX\s*/i, ''))}</span></h1>`;
 
-function pass() {
-  return `<section class="gate">${brand()}${raceTitle()}
-    <p>Enter the site password.</p>
-    <form data-form="pass">
-      <input name="p" type="password" placeholder="Password" autocomplete="current-password" required aria-label="Password">
-      <button class="btn">Unlock</button>
-    </form>
-    <p class="err" role="alert">${esc(err)}</p>
-  </section>`;
-}
-
 function gate() {
-  return `<section class="gate">${brand()}${raceTitle()}
-    <p>Paste the access key you were given.</p>
+  return `<section class="gate">${brand()}
+    <button class="link back" data-act="keyback">‹ Back</button>
+    <h1>Owner<br><span class="grad">setup</span></h1>
+    <p><b>Only for Mika.</b> Paste the GitHub access key to turn on crew sync for this phone. Everyone else: go back and tap your name.</p>
     <form data-form="gate">
       <input name="k" type="password" placeholder="github_pat_…" autocomplete="off" autocapitalize="off" spellcheck="false" required aria-label="Access key">
       <button class="btn">Enter</button>
     </form>
     <p class="err" role="alert">${esc(err || (S.status.state === 'error' ? S.status.error : ''))}</p>
-    <button class="link" data-act="preview">No key yet? Preview without syncing</button>
   </section>`;
 }
 
@@ -211,10 +200,12 @@ function join() {
   </section>`; }
   if (joinMode !== 'guest') return `<section class="gate">${brand()}
     <h1>Who’s<br><span class="grad">training?</span></h1>
+    <p>Tap your name to start. New here? Pick Guest.</p>
     <div class="pick2">
       ${Object.keys(MEMBERS).map(id => { const m = memberProfile(id); return `<button class="pick-card member" style="--c:${col(m.color)}" data-act="asmember" data-id="${id}">${avatar(m, 'xl')}<b>${m.name}</b><small>Enter as ${m.name}</small></button>`; }).join('')}
       <button class="pick-card guest" data-act="asguest"><span class="av xl guest-ic">+</span><b>Guest</b><small>${gs.length}/${MAX_GUESTS} spots taken</small></button>
     </div>
+    ${S.hasToken() ? '' : '<button class="link" data-act="addkey">Mika only: set up crew sync</button>'}
   </section>`;
 
   const taken = new Set(gs.map(g => g.head)), usedC = new Set(crew().map(p => p.color));
@@ -280,15 +271,15 @@ function main() {
 }
 
 const SYNC_SVG = '<path d="M20 12a8 8 0 0 1-14.5 4.7M4 12a8 8 0 0 1 14.5-4.7"/><path d="M19 3v4.5h-4.5M5 21v-4.5h4.5"/>';
-/** Top-right sync state: green synced, spinning while saving, red on error, grey in preview. Tap to sync now. */
+/** Top-right sync state: green synced, spinning while saving, red on error, grey when this phone has no key. Tap to sync now. */
 function syncIcon() {
   const st = S.status, k = !S.hasToken() ? 'off' : st.state === 'error' ? 'err' : st.state === 'saving' ? 'busy' : st.last ? 'ok' : 'busy';
-  const label = { off: 'Preview: not synced. Tap to add a key', err: `Sync error: ${st.error}. Tap to retry`, busy: 'Syncing…', ok: `Synced ${ago(st.last)}. Tap to sync now` }[k];
+  const label = { off: 'Not syncing. Ask Mika for the crew link', err: `Sync error: ${st.error}. Tap to retry`, busy: 'Syncing…', ok: `Synced ${ago(st.last)}. Tap to sync now` }[k];
   return `<button class="sync-ic ${k}" data-act="sync" aria-label="${esc(label)}" title="${esc(label)}"><svg viewBox="0 0 24 24" aria-hidden="true">${SYNC_SVG}</svg></button>`;
 }
 
 function banners(me, who, mine) {
-  return `${S.hasToken() ? '' : '<div class="banner" style="--c:#ffa41b"><span>Preview · ticks stay on this phone</span><button class="btn-ghost" data-act="addkey">Add key</button></div>'}
+  return `${S.hasToken() ? '' : `<div class="banner" style="--c:#ffa41b"><span>Not syncing · ticks stay on this phone.${me.role === 'owner' ? '' : ' Ask Mika for the crew link.'}</span>${me.role === 'owner' ? '<button class="btn-ghost" data-act="addkey">Add key</button>' : ''}</div>`}
   ${mine ? '' : `<div class="banner" style="--c:${col(who.color)}">${avatar(who)}<span>Viewing <b>${esc(who.name)}</b> · read only</span><button class="btn-ghost" data-act="view" data-id="${esc(me.id)}">Mine</button></div>`}`;
 }
 
@@ -627,7 +618,7 @@ function crewTab(me, people, who) {
     </form>
   </details>
   <section class="card reveal settings">
-    <p class="sync ${st.state}">${!S.hasToken() ? 'Preview · not synced' : st.state === 'error' ? '⚠ ' + esc(st.error) : st.state === 'saving' ? 'Saving…' : st.last ? 'Synced ' + ago(st.last) : 'Connecting…'}</p>
+    <p class="sync ${st.state}">${!S.hasToken() ? 'Not syncing on this phone · ask Mika for the crew link' : st.state === 'error' ? '⚠ ' + esc(st.error) : st.state === 'saving' ? 'Saving…' : st.last ? 'Synced ' + ago(st.last) : 'Connecting…'}</p>
     ${installEvt ? '<button class="btn wide" data-act="install">Install app</button>' : /iphone|ipad/i.test(navigator.userAgent) && !navigator.standalone ? '<p class="hint">Install: Safari → Share → Add to Home Screen</p>' : ''}
     ${'Notification' in window ? `${Notification.permission === 'default' ? '<button class="btn-ghost wide" data-act="notif">🔔 Alert me when crew trains</button>' : `<p class="hint">${Notification.permission === 'granted' ? '🔔 Phone alerts on' : '🔕 Alerts blocked. Allow notifications in browser settings.'}</p>`}` : ''}
     <button class="btn-ghost wide" data-act="switch">Switch person</button>
@@ -827,12 +818,12 @@ $app.addEventListener('click', async e => {
     if (act === 'leave') await S.remove(id);
     render();
   }
-  else if (act === 'sync') { if (!S.hasToken()) { preview = false; S.ls.set('preview', false); err = ''; render(); } else { S.poll(); toast(S.status.state === 'error' ? 'Retrying sync…' : 'Syncing…'); } }
+  else if (act === 'sync') { if (!S.hasToken()) { if (S.me()?.role === 'owner') { wantKey = true; err = ''; render(); } else toast('Not syncing. Ask Mika for the crew link.'); } else { S.poll(); toast(S.status.state === 'error' ? 'Retrying sync…' : 'Syncing…'); } }
   else if (act === 'sound') playClip(b.dataset.f);
   else if (act === 'notif' && 'Notification' in window) { await Notification.requestPermission(); lastHtml = ''; render(); }
   else if (act === 'install') { installEvt.prompt(); installEvt = null; render(); }
-  else if (act === 'signout') { viewing = null; preview = false; S.ls.set('preview', false); S.signOut(); }
-  else if (act === 'preview' || act === 'addkey') { preview = act === 'preview'; S.ls.set('preview', preview); err = ''; render(); }
+  else if (act === 'signout') { viewing = null; S.signOut(); }
+  else if (act === 'addkey' || act === 'keyback') { wantKey = act === 'addkey'; err = ''; render(); }
 });
 
 // SVG muscles are role=button; give them the keyboard behaviour real buttons have.
@@ -841,13 +832,9 @@ $app.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.datas
 $app.addEventListener('submit', async e => {
   e.preventDefault();
   const f = new FormData(e.target), form = e.target.dataset.form;
-  if (form === 'pass') {
-    const h = await sha256(f.get('p'));
-    if (h === PASS_HASH) { unlocked = true; S.ls.set('pass', h); err = ''; } else err = 'Wrong password';
-    render();
-  } else if (form === 'gate') {
+  if (form === 'gate') {
     const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = 'Checking…';
-    try { err = ''; await S.connect(f.get('k')); } catch (x) { err = x.message; }
+    try { err = ''; await S.connect(f.get('k')); wantKey = false; toast('Crew sync on'); } catch (x) { err = x.message; }
     render();
   } else if (form === 'member') {
     const id = joinMode;
@@ -885,7 +872,7 @@ async function overflow() {
   err = 'Crew filled up just before you. Ask Mika to free a spot.'; bumping = false; render();
 }
 S.onChange(overflow);
-S.onChange(() => { if (screen !== 'pass' && (screen !== 'gate' || S.hasToken())) render(); });  // never wipe a half-typed password or key
+S.onChange(() => { if (screen !== 'gate') render(); });  // never wipe a half-typed key
 addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEvt = e; if (screen === 'main') render(); });
 
 // Stay live while the page is open: pull everyone's ticks every 15 s, say "I'm here" every few minutes.
@@ -911,7 +898,7 @@ addEventListener('online', tick);
   render();
   try { plan = await (await fetch('plan.json', { cache: 'no-cache' })).json(); }
   catch { $app.innerHTML = '<div class="loading">Offline. Open once with internet first.</div>'; return; }
-  if (linkKey && !S.hasToken()) { try { await S.connect(linkKey); } catch (x) { err = x.message; } }
+  if (linkKey && !S.hasToken()) { try { await S.connect(linkKey); toast('Crew sync on'); } catch (x) { toast(`Crew link didn’t work (${x.message}). Ask Mika for a new one.`); } }   // the profile screen has no error line
   render();
   tick();
   gymAlerts();   // don't wait a minute (or for a sync) to say who's training

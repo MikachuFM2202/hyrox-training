@@ -22,9 +22,9 @@ A private crew training checklist for HYROX Kuala Lumpur (11–13 Dec 2026, MITE
 
 ## Signing in
 
-1. Enter the site password.
-2. Paste the access key, or tap "Preview without syncing" to try the site without saving to GitHub.
-3. Pick **Mika**, **Aidan**, **Barath**, **Sat**, **Maddy** or **Yatha** (each needs their own PIN), or **Guest**. A guest picks a bodybuilder head and a colour. Named members all follow the same plan, except Yatha, who also gets a Gag section (`GAGS` in `app.js`).
+Opening the site goes straight to "Who's training?". Pick **Mika**, **Aidan**, **Barath**, **Sat**, **Maddy** or **Yatha** (each needs their own PIN), or **Guest**. A guest picks a bodybuilder head and a colour. Named members all follow the same plan, except Yatha, who also gets a Gag section (`GAGS` in `app.js`).
+
+Crew sync needs the GitHub access key on each phone. Nobody types it except Mika: share the one-tap crew link (below) and the key is added silently. Without it, the app still works but ticks stay on that phone. Mika adds the key by hand from "Mika only: set up crew sync" on the profile screen (or the sync icon / "Add key" once signed in).
 
 There are at most 5 guests, which keeps polling and GitHub API use small. Mika can free a guest's spot from the Crew tab (✕), and a guest can use "Leave crew". When someone comes online, their head pops into the top-right corner.
 
