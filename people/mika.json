@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1791628606811,
- "seen": 1791895208268,
+ "seen": 1791895215552,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -196,6 +196,10 @@
   "2026-10-13|kg:incline-chest-press": {
    "v": 15,
    "t": 1791893178684
+  },
+  "2026-10-13|kg:tricep-pushdown-cable": {
+   "v": 35,
+   "t": 1791895215552
   }
  },
  "joined": 1791602680656
