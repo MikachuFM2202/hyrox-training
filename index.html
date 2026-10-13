@@ -20,6 +20,22 @@
 </head>
 <body>
 <div id="app"></div>
+<script>
+// iOS 14–15.3 and Chrome < 98 lack these, and the app crashed on a blank loading screen. Tiny stand-ins:
+// Plain old syntax on purpose: this must parse on the very browsers it patches.
+if (!Object.hasOwn) Object.hasOwn = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
+[Array, String].forEach(function (T) { if (!T.prototype.at) Object.defineProperty(T.prototype, 'at', { configurable: true, writable: true,
+  value: function (i) { i = Math.trunc(i) || 0; if (i < 0) i += this.length; return this[i]; } }); });
+if (!window.structuredClone) window.structuredClone = function (v) { return v === undefined ? v : JSON.parse(JSON.stringify(v)); };   // only ever clones plain JSON data here
+// Never leave someone staring at the loading screen: if the app breaks before it draws, say why.
+function hyroxFail(msg) {
+  var app = document.getElementById('app');
+  if (app && (!app.children.length || app.querySelector('.loading'))) app.innerHTML = '<div class="loading-err"><b>The site couldn\u2019t start on this browser.</b><p>Update your phone\u2019s browser (iPhone: iOS 14 or newer), or open the link in Chrome or Safari instead of an in-app browser.</p><small>' + String(msg).replace(/[<>&]/g, '') + '</small></div>';
+}
+addEventListener('error', function (e) { hyroxFail(e.message || 'Script failed to load'); });
+addEventListener('unhandledrejection', function (e) { hyroxFail(e.reason && e.reason.message || e.reason); });
+</script>
 <script type="module" src="app.js"></script>
+<script nomodule>hyroxFail('This browser is too old for the site.');</script>
 </body>
 </html>

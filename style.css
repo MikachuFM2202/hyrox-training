@@ -28,6 +28,9 @@ h1, h2, h3 { font-family: var(--head); font-stretch: 125%; text-transform: upper
 .kicker { font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--o3); }
 .note { color: var(--mute); font-size: 13px; margin: 6px 0 10px; }
 .loading { margin: auto; font: 900 52px var(--head); font-stretch: 125%; }
+.loading-err { margin: auto; max-width: 340px; padding: 24px 16px; display: grid; gap: 8px; text-align: center; }
+.loading-err p { margin: 0; color: var(--mute); }
+.loading-err small { font: 11px var(--mono); color: var(--mute); word-break: break-word; }
 .loading span { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; animation: pulse 1.2s ease-in-out infinite; }
 
 /* buttons */
