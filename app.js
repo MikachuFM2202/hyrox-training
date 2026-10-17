@@ -1,5 +1,5 @@
 import * as S from './store.js';
-import { muscleMap, MUSCLES } from './muscles.js';
+import { muscleMap, MUSCLES, groupsOf } from './muscles.js';
 
 const COLORS = ['#ff6b2b', '#ffb020', '#2ecc71', '#4da6ff', '#b07cff', '#ff5fc8', '#2ee6e6', '#ffe14d', '#ffffff', '#a3e635', '#c8a27a'];   // no near-duplicates: these tell people apart in charts
 // Guest heads: freely licensed Wikimedia Commons photos, credits in README.md.
@@ -35,7 +35,6 @@ let tab = 'today', joinMode = '', intro = true, justSet = '', deferred = false, 
 let mm = { view: 'front', filter: 'all', muscle: 'chest' };
 let clip = null;   // the soundboard clip playing now; a new tap cuts it off
 let trendOpen = new Set();   // exercise slugs whose weight chart is expanded
-let altOpen = new Set();   // exercise slugs whose free-weight alternatives are listed
 let clubFilter = 'all', clubQ = '', openClubs = new Set();   // openClubs: clubs whose Edit panel is open (only those get built)   // Clubs tab: chip/dropdown filter and the search box
 let seenOnline = null;   // who was online at the last render, to pop in newcomers
 
@@ -79,22 +78,60 @@ const avatar = (p, cls = '') => `<span class="av ${cls} ${Object.hasOwn(MEMBERS,
 const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const val = (p, k) => p?.checks?.[k]?.v || 0;
 
+// Own programs (plan.programs, e.g. Maddy's volleyball block) replace the crew plan from their start date on; earlier days keep the crew plan, so old ticks still add up.
+const progOf = (p, date) => { const g = plan.programs?.[p?.id]; return g && date >= g.start ? g : null; };
+const scheduleOf = (p, date) => progOf(p, date)?.schedule || plan.schedule;
+/** Sessions a person can do on a date: their program's while it runs, else the crew plan's. */
+const sessionsFor = (p, date) => { const g = progOf(p, date); return Object.fromEntries(Object.entries(plan.sessions).filter(([, s]) => g ? s.program === p.id : !s.program)); };
+
 /** Session id for a person on a date: their day swap if they made one, else the weekly schedule. */
 function sessionId(p, date) {
   const o = p?.checks?.[`${date}|session`]?.v;
-  return o === 'rest' || Object.hasOwn(plan.sessions, o) ? o : plan.schedule[dow(date)];
+  return o === 'rest' || Object.hasOwn(plan.sessions, o) ? o : scheduleOf(p, date)[dow(date)];
 }
 const itemKey = (date, it) => `${date}|${slug(it.name)}`;
 const kgKey = (date, it) => `${date}|kg:${slug(it.name)}`;
 // Free-weight alternatives (plan.alts): same muscles, knee- and Achilles-safe. "(light)" variants share the base list.
 const altsFor = it => plan.alts?.[it.name] || plan.alts?.[it.name.replace(/\s*\((very )?light( only)?\)/i, '')] || [];
 const altKey = (date, it) => `${date}|alt:${slug(it.name)}`;
-/** What a person actually does for a plan item on a date: the item, or the alternative they swapped in. Ticks stay on the item's key. */
-function shown(p, date, it) {
-  const a = p?.checks?.[altKey(date, it)]?.v;
-  return typeof a === 'string' && altsFor(it).includes(a) ? { ...plan.altInfo[a], name: a, sets: it.sets, from: it.name } : it;   // synced files are untrusted: only known alternatives
+
+// Swap library: every rep-based plan exercise plus plan.altInfo. Zone = first muscle group of its "muscles" text.
+// ponytail: "compound" = hits 3+ muscle groups; an explicit flag per exercise if that heuristic misfiles one.
+let LIB = null;
+function library() {
+  if (LIB) return LIB;
+  LIB = new Map();
+  const add = (name, e) => { const g = groupsOf(e.muscles); if (!LIB.has(name) && g.length) LIB.set(name, { ...e, name, zone: g[0], compound: g.length >= 3 }); };
+  for (const s of Object.values(plan.sessions)) for (const sec of s.sections) for (const it of sec.items)
+    if (/×/.test(it.sets || '') && !/\((very )?light/i.test(it.name)) add(it.name, { ...it, risk: plan.altInfo[it.name]?.risk, plyo: plan.altInfo[it.name]?.plyo });   // "(light)" rehab copies would list twice
+  for (const [n, e] of Object.entries(plan.altInfo)) add(n, e);
+  return LIB;
 }
-const lifts = it => /×\s*\d+$/.test(it.sets || '');   // rep-based sets get a weight box; timed ones (plank, stretches, rowing) don't
+// Where the bigger compound lifts for a zone live: the muscle groups next door.
+const NEAR = { chest: ['shoulders', 'triceps'], shoulders: ['chest', 'triceps', 'traps'], reardelts: ['traps', 'lats', 'shoulders'], traps: ['lats', 'reardelts', 'shoulders'],
+  lats: ['traps', 'biceps', 'reardelts'], biceps: ['lats', 'forearms'], triceps: ['chest', 'shoulders'], forearms: ['biceps', 'lats'], abs: ['obliques', 'hipflexors'],
+  obliques: ['abs'], hipflexors: ['abs', 'quads'], quads: ['glutes', 'hamstrings', 'adductors'], hamstrings: ['glutes', 'quads'], glutes: ['hamstrings', 'quads'],
+  adductors: ['glutes', 'quads'], calves: ['quads', 'glutes'] };
+// Knee- or Achilles-risky exercises (squats, lunges, jumps, heavy calf raises) are never offered on the crew's injury-safe plan; an "open" program allows them.
+const allowed = (p, e) => plan.programs?.[p?.id]?.open || !e.risk?.length;
+/** Swap options for a plan item, grouped: hand-picked suggestions, same muscles, then bigger compound lifts next door. */
+function swaps(it, p) {
+  const lib = library(), zone = lib.get(it.name)?.zone ?? groupsOf(it.muscles)[0];
+  const seen = new Set([it.name]);
+  const plyo = !!lib.get(it.name)?.plyo;   // jumps and throws swap for jumps and throws, lifts for lifts
+  const take = list => list.filter(e => e && !seen.has(e.name) && !!e.plyo === plyo && allowed(p, e)).map(e => (seen.add(e.name), e));
+  const all = [...lib.values()].sort((a, b) => a.name.localeCompare(b.name));
+  return [['Suggested', take(altsFor(it).map(n => lib.get(n)))],
+    [`Same muscles · ${MUSCLES[zone]?.name || ''}`, zone ? take(all.filter(e => e.zone === zone)) : []],
+    ['Bigger lifts nearby', zone ? take(all.filter(e => e.compound && NEAR[zone]?.includes(e.zone))) : []]].filter(([, l]) => l.length);
+}
+/** What a person actually does for a plan item on a date: the item, or the exercise they swapped in. Ticks stay on the item's key. */
+function shown(p, date, it) {
+  const a = p?.checks?.[altKey(date, it)]?.v, e = typeof a === 'string' && a !== it.name && library().get(a);
+  return e && allowed(p, e) ? { ...e, name: a, sets: it.sets, from: it.name } : it;   // synced files are untrusted: only known, allowed exercises
+}
+// Rep-based sets ("4 × 15", "3 × 6 each leg") get a weight box; timed ones (plank, stretches, rowing) and `kg: false` (jumps, throws) don't.
+const lifts = it => it.kg !== false && /×\s*\d+(-\d+)?(\s|$)/.test(it.sets || '') && !/\d\s*(s|sec|min)\b/i.test(it.sets);
 const secKey = (date, sec) => `${date}|sec:${slug(sec.name)}`;
 const bonuses = (p, date) => Object.entries(p?.checks || {})
   .filter(([k, c]) => k.startsWith(`${date}|bonus:`) && c.v && typeof c.name === 'string').map(([k, c]) => ({ k, ...c }));
@@ -257,7 +294,7 @@ function main() {
   seenOnline = new Set(live.map(p => p.id));
   if (fresh.length) toast(fresh.length === 1 ? `${fresh[0].name} is online` : `${fresh.slice(0, -1).map(p => p.name).join(', ')} & ${fresh.at(-1).name} are online`, fresh[0]);
 
-  const body = tab === 'cal' ? calTab(who) : tab === 'map' ? muscleMap(plan, mm) : tab === 'clubs' ? clubsTab(me, who, people) : tab === 'food' ? foodTab() : tab === 'crew' ? crewTab(me, people, who) : todayTab(me, who, mine, people, today);
+  const body = tab === 'cal' ? calTab(who) : tab === 'map' ? muscleMap({ ...plan, schedule: scheduleOf(who, today), sessions: sessionsFor(who, today) }, mm) : tab === 'clubs' ? clubsTab(me, who, people) : tab === 'food' ? foodTab() : tab === 'crew' ? crewTab(me, people, who) : todayTab(me, who, mine, people, today);
   return `<header class="top">
     ${brand()}
     <div class="crew-dots" aria-label="${live.length} online">
@@ -331,15 +368,15 @@ function goalTile(who, mine, c) {
 }
 
 function dayPanel(who, mine, people) {
-  const st = dayStats(who, sel), def = plan.schedule[dow(sel)];
+  const st = dayStats(who, sel), def = scheduleOf(who, sel)[dow(sel)];
   const swap = mine ? `<label class="swap"><span>Session</span>
       <select data-act="session" aria-label="Session for this day">
-        ${[...Object.entries(plan.sessions).map(([id, s]) => [id, `${s.title}${s.optional ? ' (optional)' : ''}`]), ['rest', 'Rest day']]
+        ${[...Object.entries(sessionsFor(who, sel)).map(([id, s]) => [id, `${s.title}${s.optional ? ' (optional)' : ''}`]), ['rest', 'Rest day']]
           .map(([id, t]) => `<option value="${id}" ${id === (st?.sid || 'rest') ? 'selected' : ''}>${esc(t)}${id === def ? ' · plan' : ''}</option>`).join('')}
       </select></label>` : '';
   const head = `<header class="dp-head">
       <div class="kicker">${fmt(sel, { weekday: 'long', day: 'numeric', month: 'long' })}${sel === todayIso() ? ' · Today' : ''}</div>
-      <h2>${st ? esc(st.s.title) : 'Rest day'}</h2>${swap}</header>`;
+      <h2>${st ? esc(st.s.title) : 'Rest day'}</h2>${swap}</header>${progCard(who)}`;
 
   if (!st) return `${head}<div class="rest-card"><b>Recover.</b> Walk, stretch, sleep.${mine ? ' Feeling good? Pick a session above to add an extra one.' : ''}</div>${bonusBlock(who, mine)}`;
 
@@ -367,9 +404,20 @@ function dayPanel(who, mine, people) {
     ${bonusBlock(who, mine)}`;
 }
 
+/** Own-program header: which week and phase the selected day falls in, with that phase's focus. */
+function progCard(who) {
+  const g = progOf(who, sel);
+  if (!g) return '';
+  const wk = Math.floor(daysTo(sel) / 7 - daysTo(g.start) / 7) + 1, ph = g.phases.find(f => wk >= f.from && wk <= f.to);
+  return `<details class="warm prog" data-keep="prog"><summary>${esc(g.title)} <small>${wk > g.weeks ? 'Done · repeat or ask for the next block' : `Week ${wk}/${g.weeks}${ph ? ' · ' + esc(ph.name) : ''}`}</small></summary>
+    <p class="note">${esc(g.about)}</p>
+    ${ph ? `<ul class="tips">${ph.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+    <p class="note">${g.tips.map(esc).join(' · ')}</p></details>`;
+}
+
 function row(who, mine, people, k, base, sectionFull) {
-  const wu = k.includes('|wu:'), it = wu ? base : shown(who, sel, base), alts = wu ? [] : altsFor(base);
-  const v = val(who, k), link = safeUrl(it.link), open = alts.length && altOpen.has(slug(base.name));
+  const wu = k.includes('|wu:'), it = wu ? base : shown(who, sel, base), sw = wu || !mine ? [] : swaps(base, who);
+  const v = val(who, k), link = safeUrl(it.link);
   const others = people.filter(p => p.id !== who.id && val(p, k) === 1);
   return `<li class="${v === 1 ? 'done' : v === 2 ? 'skip' : sectionFull ? 'dim' : ''} ${k === justSet ? 'pop' : ''}">
     <label><input type="checkbox" data-k="${esc(k)}" data-l="${esc(it.name)}" ${v === 1 ? 'checked' : ''} ${mine ? '' : 'disabled'}>
@@ -377,26 +425,19 @@ function row(who, mine, people, k, base, sectionFull) {
         <span class="r-meta">${v === 2 ? '<b class="skipped">Skipped</b>' : `<b>${esc(it.sets || '')}</b>`}${it.muscles ? ` · ${esc(it.muscles)}` : ''}</span>
         ${it.from ? `<span class="r-note">Swapped in for ${esc(it.from)}</span>` : ''}${it.note ? `<span class="r-note">${esc(it.note)}</span>` : ''}
         ${showBtn(it.name, link, it.clip)}
-        ${alts.length ? `<button class="r-alt" data-act="alt" data-s="${esc(slug(base.name))}" aria-expanded="${!!open}">⇄ ${open ? 'Hide options' : `Can’t do it? <small>${alts.length} free-weight option${alts.length > 1 ? 's' : ''}</small>`}</button>` : ''}
         ${kgVs(who, people, k, it)}
         ${others.length ? `<span class="who">${others.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</span></label>
     ${kgBox(who, mine, k, it)}
     ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video${it.clip ? ', ' + esc(it.clip) : ''}: ${esc(it.name)}">▶${it.clip ? `<small>${esc(it.clip)}</small>` : ''}</a>` : ''}
     ${mine ? `<button class="r-skip" data-act="skip" data-k="${esc(k)}" data-l="${esc(it.name)}" aria-label="${v === 2 ? 'Undo skip' : 'Skip'} ${esc(it.name)}">${v === 2 ? '↺' : '✕'}</button>` : ''}
+    ${sw.length ? `<span class="r-swap">⇄ <select data-act="swap" data-k="${esc(altKey(sel, base))}" data-l="${esc(base.name)}" aria-label="Swap ${esc(base.name)} for another exercise">
+          <option value="">${it.from ? `Back to plan: ${esc(base.name)}` : 'Can’t do it? Swap…'}</option>
+          ${sw.map(([g, l]) => `<optgroup label="${esc(g)}">${l.map(e => `<option value="${esc(e.name)}" ${e.name === it.name ? 'selected' : ''}>${esc(e.name)} · ${esc(e.muscles)}</option>`).join('')}</optgroup>`).join('')}
+        </select></span>` : ''}
     ${!wu && trendOpen.has(slug(it.name)) ? trendChart(who, people, it) : ''}
-    ${open ? altList(who, mine, base, it) : ''}
   </li>`;
 }
 
-/** The swap panel under a row: the plan item plus its free-weight alternatives, each with its demo video. */
-function altList(who, mine, base, cur) {
-  return `<ul class="alts">${[base.name, ...altsFor(base)].map(n => {
-    const a = n === base.name ? base : plan.altInfo[n], on = n === cur.name, link = safeUrl(a.link);
-    return `<li class="${on ? 'on' : ''}"><span class="a-main"><b>${esc(n)}</b><small>${n === base.name ? 'Plan · ' : ''}${esc(a.muscles || '')}</small>${a.note && n !== base.name ? `<small class="r-note">${esc(a.note)}</small>` : ''}${showBtn(n, link, a.clip)}</span>
-      ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video: ${esc(n)}">▶${a.clip ? `<small>${esc(a.clip)}</small>` : ''}</a>` : ''}
-      ${mine ? (on ? '<span class="a-use">Doing</span>' : `<button class="btn-ghost sm" data-act="useAlt" data-k="${esc(altKey(sel, base))}" data-v="${n === base.name ? '' : esc(n)}" data-l="${esc(n)}">Use</button>`) : on ? '<span class="a-use">Doing</span>' : ''}</li>`;
-  }).join('')}</ul>`;
-}
 
 // Other people's files are untrusted: only finite numbers reach the markup.
 const num = x => typeof x === 'number' && isFinite(x) ? x : 0;
@@ -860,6 +901,7 @@ $app.addEventListener('focusout', e => { const t = e.target; if (t.dataset?.pre 
 $app.addEventListener('change', e => {
   const t = e.target;
   if (t.dataset.kg && !viewing) saveKg(t);
+  else if (t.dataset.act === 'swap' && !viewing) { S.set({ [t.dataset.k]: { v: t.value } }, `⇄ ${t.value || 'back to'} ${t.dataset.l} (${sel})`); toast(t.value ? `Swapped to ${t.value}` : `Back to ${t.dataset.l}`); }
   else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
   else if (t.dataset.act === 'goal' && !viewing && S.me()?.role !== 'owner') { if (!t.value || isIso(t.value)) { S.setProfile({ goal: t.value }); toast(t.value ? `Goal set: ${fmt(t.value, { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Goal cleared'); } }
   else if (t.dataset.crowd && !viewing) {
@@ -903,8 +945,6 @@ $app.addEventListener('click', async e => {
   }
   else if (act === 'muscle') { mm.muscle = b.dataset.m; if (b.tagName === 'BUTTON') mm.view = MUSCLES[mm.muscle].view; render(); }
   else if (act === 'showme') { e.preventDefault(); showMe(b.dataset.u, b.dataset.c, b.dataset.n); }
-  else if (act === 'alt') { e.preventDefault(); const s = b.dataset.s; altOpen.has(s) ? altOpen.delete(s) : altOpen.add(s); render(); }
-  else if (act === 'useAlt' && !viewing) { S.set({ [k]: { v: b.dataset.v } }, `⇄ ${b.dataset.l} (${sel})`); toast(b.dataset.v ? `Swapped to ${b.dataset.l}` : 'Back to the plan exercise'); }
   else if (act === 'club' && !viewing) { const v = val(S.me(), k) ? 0 : 1; S.set({ [k]: { v } }, `${v ? '📍 visited' : 'unvisited'} ${b.dataset.l}`); }
   else if (act === 'kit' && !viewing) { const v = +b.dataset.v; S.set({ [k]: { v, name: b.dataset.n } }, `${v === 1 ? '✓' : '✕'} ${b.dataset.n} at ${b.dataset.l}`); toast(`${b.dataset.n}: ${v === 1 ? 'here' : 'not here'}`); }
   else if (act === 'fav' && !viewing) { const v = val(S.me(), k) ? 0 : 1; S.set({ [k]: { v } }, `${v ? '★' : '☆'} ${b.dataset.l}`); }

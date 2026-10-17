@@ -743,6 +743,279 @@
      ]
     }
    ]
+  },
+  "V1": {
+   "title": "Lower Body Strength + Power",
+   "short": "Lower",
+   "program": "maddy",
+   "sections": [
+    {
+     "name": "Strength",
+     "pick": 6,
+     "note": "Focus: max strength, posterior chain, single-leg stability, power production.",
+     "items": [
+      {
+       "name": "Back Squat",
+       "sets": "5 × 3-5",
+       "muscles": "Quads, Glutes, Hamstrings, Core",
+       "link": "https://youtu.be/SW_C1A-rejs",
+       "clip": "2:35",
+       "note": "80–90% 1RM"
+      },
+      {
+       "name": "Romanian Deadlift",
+       "sets": "4 × 6",
+       "muscles": "Hamstrings, Glutes, Lower Back",
+       "link": "https://youtu.be/5WxMW-Fu5KU",
+       "clip": "0:48"
+      },
+      {
+       "name": "Bulgarian Split Squat",
+       "sets": "3 × 6 each leg",
+       "muscles": "Quads, Glutes, Adductors",
+       "link": "https://youtu.be/vgn7bSXkgkA",
+       "clip": "0:31"
+      },
+      {
+       "name": "Hip Thrust",
+       "sets": "3 × 8",
+       "muscles": "Glutes, Hamstrings",
+       "link": "https://youtu.be/pUdIL5x0fWg",
+       "clip": "0:36"
+      },
+      {
+       "name": "Nordic Hamstring Curl",
+       "sets": "3 × 5",
+       "muscles": "Hamstrings",
+       "link": "https://youtu.be/qPRZcNx_C0A",
+       "clip": "0:37",
+       "kg": false
+      },
+      {
+       "name": "Standing Calf Raise",
+       "sets": "4 × 12",
+       "muscles": "Calves, Achilles",
+       "link": "https://youtu.be/3UWi44yN-wM",
+       "clip": "1:21"
+      }
+     ]
+    },
+    {
+     "name": "Power finisher",
+     "pick": 2,
+     "items": [
+      {
+       "name": "Depth Jumps",
+       "sets": "4 × 4",
+       "muscles": "Quads, Glutes, Calves",
+       "link": "https://youtu.be/AzPJZHOmGEg",
+       "clip": "0:17",
+       "note": "24–30\" box",
+       "kg": false
+      },
+      {
+       "name": "Broad Jumps",
+       "sets": "3 × 5",
+       "muscles": "Glutes, Quads, Hamstrings, Calves",
+       "link": "https://youtu.be/96zJo3nlmHI",
+       "clip": "0:32",
+       "kg": false
+      }
+     ]
+    },
+    {
+     "name": "Cool-down · 10 min",
+     "pick": 1,
+     "items": [
+      {
+       "name": "Stretch + Foam Roll",
+       "sets": "10 min",
+       "muscles": "Mobility, Recovery"
+      }
+     ]
+    }
+   ]
+  },
+  "V2": {
+   "title": "Upper Body Strength + Explosive Power",
+   "short": "Upper",
+   "program": "maddy",
+   "sections": [
+    {
+     "name": "Strength",
+     "pick": 6,
+     "note": "Focus: upper body strength, shoulder health, explosive pressing power.",
+     "items": [
+      {
+       "name": "Bench Press",
+       "sets": "5 × 3-5",
+       "muscles": "Pecs, Anterior Delt, Triceps",
+       "link": "https://youtu.be/SCVCLChPQFY",
+       "clip": "0:55",
+       "note": "80–90% 1RM"
+      },
+      {
+       "name": "Pull-Ups",
+       "sets": "4 × 6-8",
+       "muscles": "Lats, Biceps, Rear Delt, Core",
+       "link": "https://youtu.be/9rckBLbVe8c",
+       "clip": "0:21",
+       "note": "Weighted if able"
+      },
+      {
+       "name": "Push Press",
+       "sets": "4 × 4",
+       "muscles": "Deltoids, Triceps, Traps, Quads",
+       "link": "https://youtu.be/iaBVSJm78ko",
+       "clip": "1:03"
+      },
+      {
+       "name": "Single-Arm Dumbbell Row",
+       "sets": "4 × 8 each arm",
+       "muscles": "Lats, Rhomboids, Biceps",
+       "link": "https://youtu.be/DMo3HJoawrU",
+       "clip": "0:14"
+      },
+      {
+       "name": "Landmine Press",
+       "sets": "3 × 6 each arm",
+       "muscles": "Anterior Delt, Upper Pecs, Triceps, Core",
+       "link": "https://youtu.be/t9GuiNQo1O4",
+       "clip": "0:16"
+      },
+      {
+       "name": "Face Pulls",
+       "sets": "3 × 15",
+       "muscles": "Rear Delt, Rhomboids, Rotator Cuff, Traps",
+       "link": "https://youtu.be/V8dZ3pyiCBo",
+       "clip": "1:56"
+      }
+     ]
+    },
+    {
+     "name": "Power finisher",
+     "pick": 2,
+     "items": [
+      {
+       "name": "Med Ball Overhead Throws",
+       "sets": "4 × 6",
+       "muscles": "Lats, Abs, Shoulders, Triceps",
+       "link": "https://youtu.be/z1JiHB8a4PY",
+       "clip": "1:09",
+       "kg": false
+      },
+      {
+       "name": "Med Ball Rotational Slams",
+       "sets": "3 × 8 each side",
+       "muscles": "Obliques, Abs, Lats, Shoulders",
+       "link": "https://youtu.be/k67D95cDohc",
+       "clip": "1:12",
+       "kg": false
+      }
+     ]
+    },
+    {
+     "name": "Cool-down · 10 min",
+     "pick": 1,
+     "items": [
+      {
+       "name": "Stretch + Mobility Work",
+       "sets": "10 min",
+       "muscles": "Mobility, Recovery"
+      }
+     ]
+    }
+   ]
+  },
+  "V3": {
+   "title": "Power, Speed + Volleyball Movement",
+   "short": "Power",
+   "program": "maddy",
+   "sections": [
+    {
+     "name": "A. Plyometric circuit · 3 rounds",
+     "pick": 4,
+     "note": "Focus: explosiveness, change of direction, core and joint stability.",
+     "items": [
+      {
+       "name": "Box Jumps",
+       "sets": "4 × 5",
+       "muscles": "Quads, Glutes, Calves",
+       "link": "https://youtu.be/IgB8NkJ5Xpc",
+       "clip": "3:16",
+       "kg": false
+      },
+      {
+       "name": "Lateral Bounds",
+       "sets": "3 × 6 each side",
+       "muscles": "Glutes (medius), Quads, Adductors, Calves",
+       "link": "https://youtu.be/gjiZLF5S6aA",
+       "clip": "3:42",
+       "kg": false
+      },
+      {
+       "name": "Hurdle Hops",
+       "sets": "3 × 5 each leg",
+       "muscles": "Calves, Quads, Glutes",
+       "link": "https://youtu.be/MXGrFkxkub0",
+       "clip": "0:54",
+       "kg": false
+      },
+      {
+       "name": "Sprint to Stick",
+       "sets": "3 × 5",
+       "muscles": "Glutes, Hamstrings, Quads, Calves",
+       "link": "https://youtu.be/61eMtbLHFP0",
+       "clip": "0:54",
+       "kg": false
+      }
+     ]
+    },
+    {
+     "name": "B. Strength accessories",
+     "pick": 4,
+     "items": [
+      {
+       "name": "Single Leg RDL",
+       "sets": "3 × 8 each leg",
+       "muscles": "Hamstrings, Glutes, Core",
+       "link": "https://youtu.be/MsE_T9nAsSE",
+       "clip": "0:16"
+      },
+      {
+       "name": "Copenhagen Plank",
+       "sets": "3 × 20 sec each side",
+       "muscles": "Adductors, Inner Thigh, Obliques",
+       "link": "https://youtu.be/1NNqUQvMYGc",
+       "clip": "0:21"
+      },
+      {
+       "name": "Banded Lateral Walks",
+       "sets": "3 × 15 steps each way",
+       "muscles": "Glutes (medius), Outer Thigh",
+       "link": "https://youtu.be/5VtGyiddPh4",
+       "clip": "0:37",
+       "kg": false
+      },
+      {
+       "name": "Core Circuit · 3 rounds",
+       "sets": "Plank 30 sec · Dead Bug 10 · Side Plank 20 sec",
+       "muscles": "Abs, Obliques, Deep Core"
+      }
+     ]
+    },
+    {
+     "name": "Cool-down · 10 min",
+     "pick": 1,
+     "items": [
+      {
+       "name": "Stretch + Breathing Reset",
+       "sets": "10 min",
+       "muscles": "Mobility, Recovery"
+      }
+     ]
+    }
+   ]
   }
  },
  "alts": {
@@ -900,6 +1173,34 @@
    "link": "https://youtu.be/6Z15_WdXmVw",
    "clip": "1:25"
   },
+  "Assisted Chest Dip": {
+   "muscles": "Lower Pecs, Triceps, Anterior Delt",
+   "link": "https://youtu.be/g3o0dC_qCns",
+   "clip": "0:35"
+  },
+  "Assisted Pull-Up Machine": {
+   "muscles": "Lats, Biceps, Rear Delt",
+   "link": "https://youtu.be/wFj808u2HWU",
+   "clip": "1:12"
+  },
+  "Back Extension": {
+   "muscles": "Lower Back, Glutes, Hamstrings",
+   "link": "https://youtu.be/ph3pddpKzzw",
+   "clip": "1:24"
+  },
+  "Back Squat": {
+   "muscles": "Quads, Glutes, Hamstrings, Core",
+   "link": "https://youtu.be/SW_C1A-rejs",
+   "clip": "2:35",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Banded Lateral Walks": {
+   "muscles": "Glutes (medius), Outer Thigh",
+   "link": "https://youtu.be/5VtGyiddPh4",
+   "clip": "0:37"
+  },
   "Barbell Bent-Over Row": {
    "muscles": "Lats, Rhomboids, Rear Delt, Biceps",
    "link": "https://youtu.be/6FZHJGzMFEc",
@@ -925,6 +1226,26 @@
    "link": "https://youtu.be/O-d6HC9gLcw",
    "clip": "1:11"
   },
+  "Barbell Shrug": {
+   "muscles": "Traps, Forearms",
+   "link": "https://youtu.be/NAqCVe2mwzM",
+   "clip": "2:11"
+  },
+  "Bayesian Cable Curl": {
+   "muscles": "Biceps (long head)",
+   "link": "https://youtu.be/aeS38n_Ht6A",
+   "clip": "1:18"
+  },
+  "Bench Dip": {
+   "muscles": "Triceps, Anterior Delt, Lower Pecs",
+   "link": "https://youtu.be/0326dy_-CzM",
+   "clip": "1:48"
+  },
+  "Bench Press": {
+   "muscles": "Pecs, Anterior Delt, Triceps",
+   "link": "https://youtu.be/SCVCLChPQFY",
+   "clip": "0:55"
+  },
   "Bent-Over Dumbbell Reverse Fly": {
    "muscles": "Rear Delt, Rhomboids, Traps",
    "link": "https://youtu.be/evXOlgLTPCw",
@@ -935,15 +1256,108 @@
    "link": "https://youtu.be/QABW99qPiNM",
    "clip": "1:19"
   },
+  "Box Jumps": {
+   "muscles": "Quads, Glutes, Calves",
+   "link": "https://youtu.be/IgB8NkJ5Xpc",
+   "clip": "3:16",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
+  "Broad Jumps": {
+   "muscles": "Glutes, Quads, Hamstrings, Calves",
+   "link": "https://youtu.be/96zJo3nlmHI",
+   "clip": "0:32",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
+  "Bulgarian Split Squat": {
+   "muscles": "Quads, Glutes, Adductors",
+   "link": "https://youtu.be/vgn7bSXkgkA",
+   "clip": "0:31",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Cable Curl": {
+   "muscles": "Biceps, Brachialis, Forearms",
+   "link": "https://youtu.be/NFzTWp2qpiE",
+   "clip": "2:00"
+  },
+  "Cable Glute Kickback": {
+   "muscles": "Glutes",
+   "link": "https://youtu.be/dU1R-AHW4IM",
+   "clip": "0:27"
+  },
+  "Cable Hip Adduction": {
+   "muscles": "Inner Thigh, Adductors",
+   "link": "https://youtu.be/EHq78mQYLbI",
+   "clip": "0:44"
+  },
+  "Cable Lateral Raise": {
+   "muscles": "Medial Delt, Supraspinatus",
+   "link": "https://youtu.be/Z5FA9aq3L6A",
+   "clip": "0:15"
+  },
+  "Cable Overhead Tricep Extension": {
+   "muscles": "Triceps Long Head",
+   "link": "https://youtu.be/ns-RGsbzqok",
+   "clip": "0:43"
+  },
+  "Cable Pull-Through": {
+   "muscles": "Glutes, Hamstrings",
+   "link": "https://youtu.be/4oZ_0_bQcOg",
+   "clip": "1:23"
+  },
+  "Cable Upright Row": {
+   "muscles": "Medial Delt, Traps, Biceps",
+   "link": "https://youtu.be/WNz7O59GORA",
+   "clip": "0:16"
+  },
+  "Cable Woodchop": {
+   "muscles": "Obliques, Core, Shoulders",
+   "link": "https://youtu.be/gcGNypjIQDo",
+   "clip": "0:36"
+  },
   "Chest-Supported Dumbbell Row": {
    "muscles": "Lats, Rhomboids, Rear Delt, Biceps",
    "link": "https://youtu.be/nl2MnK1i504",
    "clip": "0:43"
   },
+  "Chin-Up": {
+   "muscles": "Lats, Biceps, Forearms",
+   "link": "https://youtu.be/pspXcUhoygA",
+   "clip": "2:13"
+  },
   "Clamshell": {
    "muscles": "Outer Thigh, Glutes",
    "link": "https://youtu.be/EG5_gXcfozw",
    "clip": "1:07"
+  },
+  "Close-Grip Bench Press": {
+   "muscles": "Triceps, Pecs, Anterior Delt",
+   "link": "https://youtu.be/nEF0bv2FW94",
+   "clip": "1:36"
+  },
+  "Close-Grip Lat Pulldown": {
+   "muscles": "Lats, Biceps, Teres Major",
+   "link": "https://youtu.be/gZr4wiQTfMM",
+   "clip": "0:53"
+  },
+  "Concentration Curl": {
+   "muscles": "Biceps (short head)",
+   "link": "https://youtu.be/Jvj2wV0vOYU",
+   "clip": "1:41"
+  },
+  "Copenhagen Plank": {
+   "muscles": "Adductors, Inner Thigh, Obliques",
+   "link": "https://youtu.be/1NNqUQvMYGc",
+   "clip": "0:21"
   },
   "Copenhagen Plank (knees bent)": {
    "muscles": "Inner Thigh, Adductors, Obliques",
@@ -955,6 +1369,31 @@
    "muscles": "Brachialis, Biceps, Forearms",
    "link": "https://youtu.be/On2eca-C00E",
    "clip": "0:43"
+  },
+  "Decline Dumbbell Press": {
+   "muscles": "Lower Pecs, Triceps, Anterior Delt",
+   "link": "https://youtu.be/0xRvl4Qv3ZY",
+   "clip": "1:06"
+  },
+  "Decline Sit-Up": {
+   "muscles": "Rectus Abdominis, Hip Flexors",
+   "link": "https://youtu.be/QhGU5cmNZds",
+   "clip": "1:36"
+  },
+  "Depth Jumps": {
+   "muscles": "Quads, Glutes, Calves",
+   "link": "https://youtu.be/AzPJZHOmGEg",
+   "clip": "0:17",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
+  "Diamond Push-Up": {
+   "muscles": "Triceps, Pecs, Anterior Delt",
+   "link": "https://youtu.be/J0DnG1_S92I",
+   "clip": "1:50"
   },
   "Dumbbell Bench Press": {
    "muscles": "Pecs, Anterior Delt, Triceps",
@@ -1007,6 +1446,11 @@
    "clip": "1:19",
    "note": "Soft knees, hinge at the hips"
   },
+  "Dumbbell Shrug": {
+   "muscles": "Traps, Forearms",
+   "link": "https://youtu.be/cJRVVxmytaM",
+   "clip": "1:42"
+  },
   "Dumbbell Side Bend": {
    "muscles": "Obliques",
    "link": "https://youtu.be/ARAWlmlgPbg",
@@ -1033,16 +1477,116 @@
    "link": "https://youtu.be/Rf-2l8Z40dg",
    "clip": "0:51"
   },
+  "EZ-Bar Curl": {
+   "muscles": "Biceps, Brachialis, Forearms",
+   "link": "https://youtu.be/kwG2ipFRgfo",
+   "clip": "1:59"
+  },
   "EZ-Bar Skull Crusher": {
    "muscles": "Triceps Long Head",
    "link": "https://youtu.be/jR7Y5YcugYc",
    "clip": "1:02"
+  },
+  "Face Pulls": {
+   "muscles": "Rear Delt, Rhomboids, Rotator Cuff, Traps",
+   "link": "https://youtu.be/V8dZ3pyiCBo",
+   "clip": "1:56"
+  },
+  "Farmer's Carry": {
+   "muscles": "Forearms, Traps, Core, Glutes",
+   "link": "https://youtu.be/8OtwXwrJizk",
+   "clip": "0:16"
+  },
+  "Flutter Kicks": {
+   "muscles": "Lower Abs, Hip Flexors",
+   "link": "https://youtu.be/ANVdMDaYRts",
+   "clip": "2:01"
+  },
+  "Frog Pump": {
+   "muscles": "Glutes",
+   "link": "https://youtu.be/MQ62r2V7Lw8",
+   "clip": "0:57"
+  },
+  "Front Squat": {
+   "muscles": "Quads, Glutes, Core, Upper Back",
+   "link": "https://youtu.be/wyDbagKS7Rg",
+   "clip": "2:26",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Glute Kickback Machine": {
+   "muscles": "Glutes",
+   "link": "https://youtu.be/WhtxQnm4254",
+   "clip": "0:58"
   },
   "Goblet Box Squat (high box)": {
    "muscles": "Quads, Glutes",
    "link": "https://youtu.be/uzjfcTvgpoc",
    "clip": "0:16",
    "note": "High box, partial range: no deep squat"
+  },
+  "Goblet Squat": {
+   "muscles": "Quads, Glutes, Core",
+   "link": "https://youtu.be/CkFzgR55gho",
+   "clip": "1:27",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Good Morning": {
+   "muscles": "Hamstrings, Glutes, Lower Back",
+   "link": "https://youtu.be/Iycq-kJann0",
+   "clip": "2:24"
+  },
+  "Hack Squat": {
+   "muscles": "Quads, Glutes",
+   "link": "https://youtu.be/0tn5K9NlCfo",
+   "clip": "1:23",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Hammer Strength Row": {
+   "muscles": "Lats, Rhomboids, Rear Delt, Biceps",
+   "link": "https://youtu.be/0GU9_kT6tBY",
+   "clip": "0:42"
+  },
+  "Hanging Knee Raise": {
+   "muscles": "Lower Abs, Hip Flexors",
+   "link": "https://youtu.be/iC_fu-XjNPo",
+   "clip": "0:54"
+  },
+  "High Box Step-Up": {
+   "muscles": "Quads, Glutes",
+   "link": "https://youtu.be/2bjBtT94Zxo",
+   "clip": "0:23",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Hip Thrust": {
+   "muscles": "Glutes, Hamstrings",
+   "link": "https://youtu.be/pUdIL5x0fWg",
+   "clip": "0:36",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Hollow Body Hold": {
+   "muscles": "Abs, Deep Core",
+   "link": "https://youtu.be/BQCdzRPE9Ao",
+   "clip": "1:22"
+  },
+  "Hurdle Hops": {
+   "muscles": "Calves, Quads, Glutes",
+   "link": "https://youtu.be/MXGrFkxkub0",
+   "clip": "0:54",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
   },
   "Incline Barbell Bench Press": {
    "muscles": "Upper Pecs, Anterior Delt, Triceps",
@@ -1064,16 +1608,64 @@
    "link": "https://youtu.be/6tW4LUaOxlE",
    "clip": "0:36"
   },
+  "Incline Push-Up": {
+   "muscles": "Pecs, Anterior Delt, Triceps",
+   "link": "https://youtu.be/Z0bRiVhnO8Q",
+   "clip": "1:40"
+  },
+  "Incline Y-Raise": {
+   "muscles": "Lower Traps, Rear Delt",
+   "link": "https://youtu.be/U7Pdw5wFGh0",
+   "clip": "0:29"
+  },
+  "Inverted Row": {
+   "muscles": "Lats, Rhomboids, Rear Delt, Biceps",
+   "link": "https://youtu.be/9fItzuh9Iok",
+   "clip": "0:33"
+  },
+  "Kettlebell Swing": {
+   "muscles": "Glutes, Hamstrings, Core, Shoulders",
+   "link": "https://youtu.be/YSxHifyI6s8",
+   "clip": "1:58"
+  },
+  "Landmine Press": {
+   "muscles": "Anterior Delt, Upper Pecs, Triceps, Core",
+   "link": "https://youtu.be/t9GuiNQo1O4",
+   "clip": "0:16"
+  },
+  "Lateral Bounds": {
+   "muscles": "Glutes (medius), Quads, Adductors, Calves",
+   "link": "https://youtu.be/gjiZLF5S6aA",
+   "clip": "3:42",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
   "Leaning Single-Arm Lateral Raise": {
    "muscles": "Medial Delt",
    "link": "https://youtu.be/Qc3v4fAdv9c",
    "clip": "0:26"
+  },
+  "Leg Press": {
+   "muscles": "Quads, Glutes, Hamstrings",
+   "link": "https://youtu.be/8EMbB0tCn7Q",
+   "clip": "0:51",
+   "risk": [
+    "knee"
+   ]
   },
   "Low Box Step-Up": {
    "muscles": "Quads (VMO), Glutes",
    "link": "https://youtu.be/tQ5EhfnETls",
    "clip": "0:15",
    "note": "Low box only, slow, pain-free"
+  },
+  "Low-to-High Cable Fly": {
+   "muscles": "Upper Pecs, Anterior Delt",
+   "link": "https://youtu.be/eQ_NBB6OBH4",
+   "clip": "3:08"
   },
   "Lying Dumbbell Hamstring Curl": {
    "muscles": "Hamstrings",
@@ -1084,6 +1676,53 @@
    "muscles": "Lower Abs, Hip Flexors",
    "link": "https://youtu.be/Wp4BlxcFTkE",
    "clip": "0:42"
+  },
+  "Meadows Row": {
+   "muscles": "Lats, Rhomboids, Rear Delt",
+   "link": "https://youtu.be/G-jU1aPVhnY",
+   "clip": "1:55"
+  },
+  "Med Ball Chest Pass": {
+   "muscles": "Pecs, Triceps, Anterior Delt",
+   "link": "https://youtu.be/e-zHTwXA8mE",
+   "clip": "0:43",
+   "plyo": true
+  },
+  "Med Ball Overhead Throws": {
+   "muscles": "Lats, Abs, Shoulders, Triceps",
+   "link": "https://youtu.be/z1JiHB8a4PY",
+   "clip": "1:09",
+   "plyo": true
+  },
+  "Med Ball Rotational Slams": {
+   "muscles": "Obliques, Abs, Lats, Shoulders",
+   "link": "https://youtu.be/k67D95cDohc",
+   "clip": "1:12",
+   "plyo": true
+  },
+  "Med Ball Slam": {
+   "muscles": "Abs, Lats, Shoulders",
+   "link": "https://youtu.be/QxYhFwMd1Ks",
+   "clip": "0:43",
+   "plyo": true
+  },
+  "Nordic Hamstring Curl": {
+   "muscles": "Hamstrings",
+   "link": "https://youtu.be/qPRZcNx_C0A",
+   "clip": "0:37",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Overhead Barbell Press": {
+   "muscles": "Deltoids, Triceps, Traps, Core",
+   "link": "https://youtu.be/2yjwXTZQDDI",
+   "clip": "2:48"
+  },
+  "Pallof Press": {
+   "muscles": "Obliques, Deep Core",
+   "link": "https://youtu.be/nFspBRHke4w",
+   "clip": "0:28"
   },
   "Plank Shoulder Taps": {
    "muscles": "Core, Shoulders",
@@ -1100,15 +1739,83 @@
    "link": "https://youtu.be/hikbChhbeLI",
    "clip": "0:36"
   },
+  "Pogo Hops": {
+   "muscles": "Calves, Achilles",
+   "link": "https://youtu.be/3cW9dETEPjA",
+   "clip": "3:50",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
+  "Preacher Curl": {
+   "muscles": "Biceps, Brachialis",
+   "link": "https://youtu.be/fIWP-FRFNU0",
+   "clip": "2:27"
+  },
   "Prone Incline Dumbbell Reverse Fly": {
    "muscles": "Rear Delt, Rhomboids, Traps",
    "link": "https://youtu.be/BCrk5C52ZSI",
    "clip": "0:27"
   },
+  "Pull-Ups": {
+   "muscles": "Lats, Biceps, Rear Delt, Core",
+   "link": "https://youtu.be/9rckBLbVe8c",
+   "clip": "0:21"
+  },
+  "Push Press": {
+   "muscles": "Deltoids, Triceps, Traps, Quads",
+   "link": "https://youtu.be/iaBVSJm78ko",
+   "clip": "1:03"
+  },
+  "Push-Up": {
+   "muscles": "Pecs, Anterior Delt, Triceps, Core",
+   "link": "https://youtu.be/IODxDxX7oi4",
+   "clip": "3:38"
+  },
+  "Rack Pull": {
+   "muscles": "Traps, Lats, Glutes, Hamstrings, Lower Back",
+   "link": "https://youtu.be/u7NE34Vw81w",
+   "clip": "1:03"
+  },
   "Reverse Crunch": {
    "muscles": "Lower Abs, Hip Flexors",
    "link": "https://youtu.be/gAyTBB4lm3I",
    "clip": "1:14"
+  },
+  "Reverse Curl": {
+   "muscles": "Brachioradialis, Forearms, Biceps",
+   "link": "https://youtu.be/nRgxYX2Ve9w",
+   "clip": "1:49"
+  },
+  "Reverse Lunge": {
+   "muscles": "Quads, Glutes",
+   "link": "https://youtu.be/xrPteyQLGAo",
+   "clip": "0:15",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Romanian Deadlift": {
+   "muscles": "Hamstrings, Glutes, Lower Back",
+   "link": "https://youtu.be/5WxMW-Fu5KU",
+   "clip": "0:48"
+  },
+  "Rope Pushdown": {
+   "muscles": "Triceps (lateral head)",
+   "link": "https://youtu.be/qHDrQglWgS4",
+   "clip": "1:24"
+  },
+  "Seal Row": {
+   "muscles": "Lats, Rhomboids, Rear Delt",
+   "link": "https://youtu.be/9ffaage-LjY",
+   "clip": "0:45"
+  },
+  "Seated Calf Raise Machine": {
+   "muscles": "Calves (soleus)",
+   "link": "https://youtu.be/_LxQH4o7COk",
+   "clip": "0:56"
   },
   "Seated Dumbbell Calf Raise": {
    "muscles": "Calves (soleus), Achilles",
@@ -1131,6 +1838,11 @@
    "link": "https://youtu.be/HzIiNhHhhtA",
    "clip": "0:13"
   },
+  "Seated Leg Curl": {
+   "muscles": "Hamstrings",
+   "link": "https://youtu.be/ELOCsoDSmrg",
+   "clip": "3:10"
+  },
   "Side Plank": {
    "muscles": "Obliques, Core",
    "link": "https://youtu.be/N_s9em1xTqU",
@@ -1146,6 +1858,21 @@
    "link": "https://youtu.be/lhwT35sshrI",
    "clip": "0:40"
   },
+  "Single Leg RDL": {
+   "muscles": "Hamstrings, Glutes, Core",
+   "link": "https://youtu.be/MsE_T9nAsSE",
+   "clip": "0:16"
+  },
+  "Single-Arm Cable Pushdown": {
+   "muscles": "Triceps",
+   "link": "https://youtu.be/Zl46Cxc4DDs",
+   "clip": "1:17"
+  },
+  "Single-Arm Cable Row": {
+   "muscles": "Lats, Rhomboids, Biceps",
+   "link": "https://youtu.be/_z5NMUxkxxw",
+   "clip": "1:32"
+  },
   "Single-Arm Dumbbell Row": {
    "muscles": "Lats, Rhomboids, Biceps",
    "link": "https://youtu.be/DMo3HJoawrU",
@@ -1156,10 +1883,109 @@
    "link": "https://youtu.be/fDxl-0uZMJo",
    "clip": "1:12"
   },
+  "Smith Machine Bench Press": {
+   "muscles": "Pecs, Anterior Delt, Triceps",
+   "link": "https://youtu.be/N-nimt37c-Y",
+   "clip": "2:34"
+  },
+  "Smith Machine Squat": {
+   "muscles": "Quads, Glutes",
+   "link": "https://youtu.be/AHnX-aimA4E",
+   "clip": "2:16",
+   "risk": [
+    "knee"
+   ]
+  },
+  "Spider Curl": {
+   "muscles": "Biceps (short head), Brachialis",
+   "link": "https://youtu.be/nvufDW-MSQk",
+   "clip": "1:15"
+  },
+  "Sprint to Stick": {
+   "muscles": "Glutes, Hamstrings, Quads, Calves",
+   "link": "https://youtu.be/61eMtbLHFP0",
+   "clip": "0:54",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
+  "Squat Jump": {
+   "muscles": "Quads, Glutes, Calves",
+   "link": "https://youtu.be/A-cFYWvaHr0",
+   "clip": "3:03",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
+  "Stability Ball Hamstring Curl": {
+   "muscles": "Hamstrings, Glutes, Core",
+   "link": "https://youtu.be/Kk8dpH4ZPos",
+   "clip": "0:38"
+  },
+  "Standing Calf Raise": {
+   "muscles": "Calves, Achilles",
+   "link": "https://youtu.be/3UWi44yN-wM",
+   "clip": "1:21",
+   "risk": [
+    "achilles"
+   ]
+  },
+  "Stir the Pot": {
+   "muscles": "Abs, Obliques, Shoulders",
+   "link": "https://youtu.be/7zO_tLN1ffU",
+   "clip": "0:17"
+  },
+  "Svend Press": {
+   "muscles": "Pecs, Anterior Delt",
+   "link": "https://youtu.be/cIoUZOnypS8",
+   "clip": "0:50"
+  },
+  "T-Bar Row": {
+   "muscles": "Lats, Rhomboids, Traps, Biceps",
+   "link": "https://youtu.be/GG6EjB3ZVf4",
+   "clip": "0:56"
+  },
+  "Tibialis Raise": {
+   "muscles": "Shins, Knee Stabilisers",
+   "link": "https://youtu.be/OPEuhclsTUQ",
+   "clip": "0:42"
+  },
+  "V-Up": {
+   "muscles": "Abs, Hip Flexors",
+   "link": "https://youtu.be/iP2fjvG0g3w",
+   "clip": "0:38"
+  },
+  "Volleyball Approach Jump": {
+   "muscles": "Quads, Glutes, Calves, Shoulders",
+   "link": "https://youtu.be/85TUlTfKwUE",
+   "clip": "0:53",
+   "risk": [
+    "knee",
+    "achilles"
+   ],
+   "plyo": true
+  },
+  "Walking Lunge": {
+   "muscles": "Quads, Glutes, Hamstrings",
+   "link": "https://youtu.be/Pbmj6xPo-Hw",
+   "clip": "1:50",
+   "risk": [
+    "knee"
+   ]
+  },
   "Weighted Plate Sit-Up": {
    "muscles": "Rectus Abdominis, Hip Flexors",
    "link": "https://youtu.be/AUvF2CiUyKg",
    "clip": "0:22"
+  },
+  "Wrist Curl": {
+   "muscles": "Forearms (flexors)",
+   "link": "https://youtu.be/3VLTzIrnb5g",
+   "clip": "0:16"
   },
   "Zottman Curl": {
    "muscles": "Biceps, Brachialis, Forearms",
@@ -2440,5 +3266,60 @@
     "Put that cookie down. NOW."
    ]
   }
- ]
+ ],
+ "programs": {
+  "maddy": {
+   "title": "6-Week Volleyball Strength + Vertical",
+   "start": "2026-10-19",
+   "weeks": 6,
+   "open": true,
+   "schedule": [
+    "V1",
+    "rest",
+    "V2",
+    "rest",
+    "V3",
+    "rest",
+    "rest"
+   ],
+   "about": "3 sessions a week (Mon, Wed, Fri), 75–90 min each. Barbells, dumbbells, bands, plyo box, med ball, cables.",
+   "phases": [
+    {
+     "from": 1,
+     "to": 2,
+     "name": "Foundation",
+     "tips": [
+      "Build movement quality",
+      "Moderate loads",
+      "Perfect technique"
+     ]
+    },
+    {
+     "from": 3,
+     "to": 4,
+     "name": "Intensity",
+     "tips": [
+      "Increase load",
+      "Reduce rest",
+      "Add explosive finisher work"
+     ]
+    },
+    {
+     "from": 5,
+     "to": 6,
+     "name": "Peak + Integrate",
+     "tips": [
+      "Heavy + fast combinations",
+      "More complex movements"
+     ]
+    }
+   ],
+   "tips": [
+    "Sleep 7–9 hours for recovery and hormone balance",
+    "Water before, during and after training",
+    "Foam roll, stretch and mobility daily",
+    "Fuel your performance and recovery"
+   ]
+  }
+ }
 }
