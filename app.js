@@ -155,6 +155,7 @@ function render() {
   $app.innerHTML = html;
   document.body.classList.toggle('intro', intro && screen === 'main');
   document.body.classList.toggle('in-main', screen === 'main');
+  document.body.classList.toggle('on-today', screen === 'main' && tab === 'today');
 
   open.forEach(k => { const d = $app.querySelector(`details[data-keep="${k}"]`); if (d) d.open = true; });
   // Progress bars grow from their previous value instead of jumping.
@@ -312,6 +313,7 @@ function todayTab(me, who, mine, people, today) {
       </button>`;
     }).join('')}</div>
   </nav>
+  ${mine ? bwBlock(who) : ''}
   <details class="warm sb reveal" data-keep="sb"><summary>Arnold soundboard <small>tap to pump</small></summary>
     <div class="sb-grid">${SOUNDS.map(([f, t]) => `<button class="btn-ghost" data-act="sound" data-f="${f}">${esc(t)}</button>`).join('')}</div>
   </details>
@@ -374,6 +376,7 @@ function row(who, mine, people, k, base, sectionFull) {
       <span class="r-main"><span class="r-name">${esc(it.name)}</span>
         <span class="r-meta">${v === 2 ? '<b class="skipped">Skipped</b>' : `<b>${esc(it.sets || '')}</b>`}${it.muscles ? ` · ${esc(it.muscles)}` : ''}</span>
         ${it.from ? `<span class="r-note">Swapped in for ${esc(it.from)}</span>` : ''}${it.note ? `<span class="r-note">${esc(it.note)}</span>` : ''}
+        ${showBtn(it.name, link, it.clip)}
         ${alts.length ? `<button class="r-alt" data-act="alt" data-s="${esc(slug(base.name))}" aria-expanded="${!!open}">⇄ ${open ? 'Hide options' : `Can’t do it? <small>${alts.length} free-weight option${alts.length > 1 ? 's' : ''}</small>`}</button>` : ''}
         ${kgVs(who, people, k, it)}
         ${others.length ? `<span class="who">${others.map(p => avatar(p, 'xs')).join('')}</span>` : ''}</span></label>
@@ -389,7 +392,7 @@ function row(who, mine, people, k, base, sectionFull) {
 function altList(who, mine, base, cur) {
   return `<ul class="alts">${[base.name, ...altsFor(base)].map(n => {
     const a = n === base.name ? base : plan.altInfo[n], on = n === cur.name, link = safeUrl(a.link);
-    return `<li class="${on ? 'on' : ''}"><span class="a-main"><b>${esc(n)}</b><small>${n === base.name ? 'Plan · ' : ''}${esc(a.muscles || '')}</small>${a.note && n !== base.name ? `<small class="r-note">${esc(a.note)}</small>` : ''}</span>
+    return `<li class="${on ? 'on' : ''}"><span class="a-main"><b>${esc(n)}</b><small>${n === base.name ? 'Plan · ' : ''}${esc(a.muscles || '')}</small>${a.note && n !== base.name ? `<small class="r-note">${esc(a.note)}</small>` : ''}${showBtn(n, link, a.clip)}</span>
       ${link ? `<a class="r-demo" href="${esc(link)}" target="_blank" rel="noopener" aria-label="Demo video: ${esc(n)}">▶${a.clip ? `<small>${esc(a.clip)}</small>` : ''}</a>` : ''}
       ${mine ? (on ? '<span class="a-use">Doing</span>' : `<button class="btn-ghost sm" data-act="useAlt" data-k="${esc(altKey(sel, base))}" data-v="${n === base.name ? '' : esc(n)}" data-l="${esc(n)}">Use</button>`) : on ? '<span class="a-use">Doing</span>' : ''}</li>`;
   }).join('')}</ul>`;
@@ -439,11 +442,14 @@ function trendChart(who, people, it) {
   </div>`;
 }
 
+/** Heaviest weight logged for an exercise on any day before `date`; 0 if none. */
+const bestBefore = (checks, s, date) => Math.max(0, ...S.kgHistory(checks, s, addDays(date, -1)).map(q => q.kg));
+
 function kgBox(who, mine, k, it) {
   if (k.includes('|wu:') || !lifts(it)) return '';   // warm-up rows share row() but aren't lifts
-  const cur = num(val(who, kgKey(sel, it))), last = S.lastKg(who.checks, sel, slug(it.name));
+  const cur = num(val(who, kgKey(sel, it))), last = S.lastKg(who.checks, sel, slug(it.name)), best = bestBefore(who.checks, slug(it.name), sel);
   if (!mine && !cur && !hasTrend(who, crew(), it)) return '';
-  return `<span class="r-kg ${cur && last && cur > last.kg ? 'up' : ''}"><input type="text" inputmode="decimal" enterkeyhint="done" maxlength="6"
+  return `<span class="r-kg ${cur && last && cur > last.kg ? 'up' : ''}">${cur && best && cur > best ? '<small class="pr-tag" title="Heaviest yet">🏆 PR</small>' : ''}<input type="text" inputmode="decimal" enterkeyhint="done" maxlength="6"
     data-kg="${esc(kgKey(sel, it))}" data-l="${esc(it.name)}" value="${cur || ''}" placeholder="${last ? last.kg : 'kg'}" ${mine ? '' : 'disabled'}
     aria-label="Weight in kg for ${esc(it.name)}${last ? `, last time ${last.kg}` : ''}">${hasTrend(who, crew(), it)
     ? `<button class="r-trend" data-act="trend" data-s="${esc(slug(it.name))}" aria-expanded="${trendOpen.has(slug(it.name))}" aria-label="Weight trend for ${esc(it.name)}">${last ? `last ${last.kg}` : 'trend'} ${trendOpen.has(slug(it.name)) ? '▴' : '▾'}</button>`
@@ -460,6 +466,84 @@ function bonusBlock(who, mine) {
       <input type="text" name="sets" maxlength="20" placeholder="4 × 12" aria-label="Sets and reps" enterkeyhint="done"><button class="btn">Add</button></form>` : ''}
   </section>`;
 }
+
+// Body weight rides on the lift weight keys (`<date>|kg:body-weight`), so lastKg, kgHistory and trendChart work unchanged.
+const BW = 'body-weight';
+function bwBlock(who) {
+  const k = `${sel}|kg:${BW}`, cur = num(val(who, k)), last = S.lastKg(who.checks, sel, BW);
+  const d = cur && last ? Math.round((cur - last.kg) * 10) / 10 : 0;
+  return `<details class="warm bw reveal" data-keep="bw"><summary>Body weight <small>${cur ? `${cur} kg` : last ? `last ${last.kg} kg` : 'not logged'}</small></summary>
+    <div class="bw-in"><input type="text" inputmode="decimal" enterkeyhint="done" maxlength="6" data-kg="${k}" data-bw="1" data-l="Body weight" value="${cur || ''}" placeholder="${last ? last.kg : 'kg'}" aria-label="Body weight in kg on ${fmt(sel)}">
+      <span>kg on ${fmt(sel)}</span>${d ? `<b class="${d < 0 ? 'down' : 'gain'}">${d > 0 ? '▲' : '▼'} ${Math.abs(d)} vs ${fmt(last.date)}</b>` : ''}</div>
+    ${S.kgHistory(who.checks, BW, sel).length >= 2 ? trendChart(who, [], { name: 'Body weight' }) : ''}
+  </details>`;   // own line only: body weight isn't a crew comparison
+}
+
+// "Show me": the row's demo clip plays inline in a dock outside #app, so re-renders never restart it.
+const ytId = u => u.match(/youtu\.be\/([\w-]{11})(?:\?t=(\d+))?/);
+function embedUrl(u, clipLen) {
+  const yt = ytId(u), tt = u.match(/tiktok\.com\/@[\w.]+\/video\/(\d+)/);
+  if (tt) return `https://www.tiktok.com/embed/v2/${tt[1]}`;
+  if (!yt) return '';
+  const start = +(yt[2] || 0), [m, s] = (clipLen || '').split(':').map(Number), end = clipLen ? start + m * 60 + s : 0;
+  return `https://www.youtube-nocookie.com/embed/${yt[1]}?autoplay=1&mute=1&playsinline=1&rel=0&start=${start}${end ? `&end=${end}` : ''}`;
+}
+let playing = '';   // link of the demo in the dock
+const showBtn = (name, link, clipLen) => link && embedUrl(link, clipLen) ? `<button class="r-show" data-act="showme" data-u="${esc(link)}" data-c="${esc(clipLen || '')}" data-n="${esc(name)}" aria-pressed="${playing === link}">${playing === link ? '■ Hide demo' : '▶ Show me'}</button>` : '';
+const dock = Object.assign(document.createElement('div'), { className: 'player', hidden: true });
+document.body.append(dock);
+function showMe(u, clipLen, name) {
+  playing = playing === u ? '' : u;
+  dock.hidden = !playing;
+  document.body.classList.toggle('playing', !!playing);
+  dock.innerHTML = playing ? `<div class="p-head"><b>${esc(name)}</b><button data-p="replay" aria-label="Replay demo">↺</button><button data-p="close" aria-label="Close demo">✕</button></div>
+    <iframe class="${/tiktok/.test(u) ? 'tall' : ''}" src="${esc(embedUrl(u, clipLen))}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="${esc(name)} demo"></iframe>` : '';
+  render();
+}
+dock.addEventListener('click', e => {
+  const a = e.target.closest('[data-p]')?.dataset.p;
+  if (a === 'close') showMe(playing);
+  else if (a === 'replay') { const f = dock.querySelector('iframe'); f.src = f.src; }
+});
+
+// Rest timer: floating chip, bottom right. Tap to start, tap again to stop; ⇅ cycles the length (remembered per phone).
+// ponytail: phones pause JS in the background, so the end alert only fires once the app is open again; a push server is the upgrade path.
+const RESTS = [60, 90, 120, 180];
+let restLen = RESTS.includes(S.ls.get('rest', 90)) ? S.ls.get('rest', 90) : 90, restEnd = 0, restTick = 0, ac = null;
+const restFab = Object.assign(document.createElement('div'), { className: 'rest-fab' });
+document.body.append(restFab);
+function beep() {
+  try {
+    const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+    o.frequency.value = 880; g.gain.setValueAtTime(.3, t); g.gain.exponentialRampToValueAtTime(.001, t + .8);
+    o.connect(g).connect(ac.destination); o.start(t); o.stop(t + .8);
+  } catch {}
+}
+function restDraw() {
+  restFab.classList.toggle('on', !!restEnd);
+  restFab.innerHTML = restEnd ? '<button data-r="stop" aria-label="Stop rest timer"><span class="r-left"></span></button>'
+    : `<button data-r="go" aria-label="Start ${restLen} second rest">⏱ ${restLen}s</button><button data-r="len" aria-label="Change rest length">⇅</button>`;
+  restLeft();
+}
+function restLeft() {
+  if (!restEnd) return;
+  const left = Math.ceil((restEnd - Date.now()) / 1e3);
+  if (left > 0) { restFab.querySelector('.r-left').textContent = `${Math.floor(left / 60)}:${pad(left % 60)}`; return; }
+  restEnd = 0; clearInterval(restTick); restDraw();
+  beep(); navigator.vibrate?.([200, 100, 200]);
+  alertCrew('Rest over · next set 💪');
+}
+restFab.addEventListener('click', e => {
+  const a = e.target.closest('[data-r]')?.dataset.r;
+  if (a === 'go') {
+    try { ac ||= new (window.AudioContext || window.webkitAudioContext)(); ac.resume(); } catch {}   // phones only allow sound unlocked by a tap
+    restEnd = Date.now() + restLen * 1e3; clearInterval(restTick); restTick = setInterval(restLeft, 250);
+  } else if (a === 'stop') { restEnd = 0; clearInterval(restTick); }
+  else if (a === 'len') { restLen = RESTS[(RESTS.indexOf(restLen) + 1) % RESTS.length]; S.ls.set('rest', restLen); }
+  restDraw();
+});
+document.addEventListener('visibilitychange', () => { if (!document.hidden) restLeft(); });
+restDraw();
 
 function calTab(who) {
   const [y, m] = calMonth.split('-').map(Number);
@@ -745,16 +829,38 @@ $app.addEventListener('input', e => {
   $app.querySelector('.c-none')?.toggleAttribute('hidden', any);
 });
 
+/** Save a weight box (lift or body weight). A new heaviest-ever lift gets a PR toast and confetti. */
+function saveKg(t) {
+  const raw = t.value.trim().replace(',', '.'), kg = raw ? Math.round(+raw * 100) / 100 : 0, k = t.dataset.kg, me = S.me();
+  if (!(kg >= 0 && kg < 1000) || (kg === 0 && +raw !== 0)) {
+    t.value = me?.checks?.[k]?.v || '';   // put back what's saved, not a blank that looks saved
+    toast('Weight must be 0.01 to 999.99 kg'); return;
+  }
+  if ((me?.checks?.[k]?.v || 0) === kg) return;   // unchanged (a prefill left as is fires both blur and change)
+  const best = bestBefore(me.checks, k.slice(k.indexOf('|kg:') + 4), k.slice(0, 10));
+  S.set({ [k]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
+  if (!t.dataset.bw && best && kg > best) { toast(`🏆 New PR · ${t.dataset.l} ${kg} kg (was ${best})`); celebrate(); }
+}
+// Prefill: tapping an empty weight box fills in last time's weight, selected, so typing replaces it and leaving it logs it.
+$app.addEventListener('focusin', e => {
+  const t = e.target;
+  if (!t.dataset?.kg || t.value || viewing || !(+t.placeholder > 0)) return;
+  t.value = t.dataset.pre = t.placeholder;
+  t.select(); setTimeout(() => t.select());
+});
+// iOS often drops that selection, so the first keystroke would append ("40" + "45" = "4045"): typing replaces the prefill instead.
+$app.addEventListener('input', e => {
+  const t = e.target, pre = t.dataset?.pre;
+  if (!pre) return;
+  delete t.dataset.pre;
+  if (t.value.length > pre.length && t.value.startsWith(pre)) t.value = t.value.slice(pre.length);
+});
+$app.addEventListener('focusout', e => { const t = e.target; if (t.dataset?.pre && t.value === t.dataset.pre && !viewing) saveKg(t); });
+
 $app.addEventListener('change', e => {
   const t = e.target;
-  if (t.dataset.kg && !viewing) {
-    const raw = t.value.trim().replace(',', '.'), kg = raw ? Math.round(+raw * 100) / 100 : 0;
-    if (!(kg >= 0 && kg < 1000) || (kg === 0 && +raw !== 0)) {
-      t.value = S.me()?.checks?.[t.dataset.kg]?.v || '';   // put back what's saved, not a blank that looks saved
-      toast('Weight must be 0.01 to 999.99 kg'); return;
-    }
-    S.set({ [t.dataset.kg]: { v: kg } }, `${t.dataset.l} ${kg ? kg + ' kg' : 'weight cleared'} (${sel})`);
-  } else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
+  if (t.dataset.kg && !viewing) saveKg(t);
+  else if (t.dataset.k && !viewing) write({ [t.dataset.k]: { v: t.checked ? 1 : 0 } }, `${t.checked ? '✓' : '○'} ${t.dataset.l} (${sel})`, t.dataset.k);
   else if (t.dataset.act === 'goal' && !viewing && S.me()?.role !== 'owner') { if (!t.value || isIso(t.value)) { S.setProfile({ goal: t.value }); toast(t.value ? `Goal set: ${fmt(t.value, { day: 'numeric', month: 'short', year: 'numeric' })}` : 'Goal cleared'); } }
   else if (t.dataset.crowd && !viewing) {
     const raw = t.value.trim(), n = raw ? Number(raw) : 0;
@@ -796,6 +902,7 @@ $app.addEventListener('click', async e => {
     write(entries, `✓ all of ${st.s.title} (${sel})`);
   }
   else if (act === 'muscle') { mm.muscle = b.dataset.m; if (b.tagName === 'BUTTON') mm.view = MUSCLES[mm.muscle].view; render(); }
+  else if (act === 'showme') { e.preventDefault(); showMe(b.dataset.u, b.dataset.c, b.dataset.n); }
   else if (act === 'alt') { e.preventDefault(); const s = b.dataset.s; altOpen.has(s) ? altOpen.delete(s) : altOpen.add(s); render(); }
   else if (act === 'useAlt' && !viewing) { S.set({ [k]: { v: b.dataset.v } }, `⇄ ${b.dataset.l} (${sel})`); toast(b.dataset.v ? `Swapped to ${b.dataset.l}` : 'Back to the plan exercise'); }
   else if (act === 'club' && !viewing) { const v = val(S.me(), k) ? 0 : 1; S.set({ [k]: { v } }, `${v ? '📍 visited' : 'unvisited'} ${b.dataset.l}`); }
