@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1792243383082,
- "seen": 1794313717624,
+ "seen": 1794313725237,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -328,6 +328,14 @@
   "2026-11-10|tricep-pushdown-cable": {
    "v": 1,
    "t": 1794313717624
+  },
+  "2026-11-12|leg-extension-light": {
+   "v": 1,
+   "t": 1794313724794
+  },
+  "2026-11-12|adductor-machine-inner": {
+   "v": 1,
+   "t": 1794313725237
   }
  },
  "joined": 1791602680656
