@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1792243383082,
- "seen": 1794313726174,
+ "seen": 1794313729497,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -340,6 +340,10 @@
   "2026-11-12|abductor-machine-outer": {
    "v": 1,
    "t": 1794313726174
+  },
+  "2026-11-12|pendulum-squat-light-only": {
+   "v": 1,
+   "t": 1794313729497
   }
  },
  "joined": 1791602680656
