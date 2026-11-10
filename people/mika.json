@@ -6,7 +6,7 @@
  "color": "#ff6b2b",
  "removed": false,
  "u": 1792243383082,
- "seen": 1794313730547,
+ "seen": 1794313752015,
  "checks": {
   "2026-10-08|pendulum-squat-light-only": {
    "v": 0,
@@ -348,6 +348,10 @@
   "2026-11-12|bicep-curl-dumbbell": {
    "v": 1,
    "t": 1794313730547
+  },
+  "2026-11-12|leg-curl-hamstring-machine": {
+   "v": 1,
+   "t": 1794313752015
   }
  },
  "joined": 1791602680656
